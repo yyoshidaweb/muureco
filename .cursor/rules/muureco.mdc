@@ -1,0 +1,24 @@
+---
+description: Muureco プロジェクトの基本方針
+alwaysApply: true
+---
+
+# Muureco
+
+好きなアーティスト（最大5人）から音楽性を診断し、おすすめアーティストを表示するサービス。
+
+- UI 表記: **ミューレコ**
+- 英語・コード: **Muureco** / `muureco`（`Mureco` は使わない）
+
+## 技術スタック
+
+- Next.js（App Router）+ TypeScript + Tailwind CSS
+- バックエンド: Next.js Route Handler（BFF）
+- 外部 API: Last.fm（`api_key` は BFF 経由のみ。クライアントに露出しない）
+- デプロイ想定: Cloudflare
+
+## コーディング方針
+
+- 依頼された範囲だけ変更する（過剰な抽象化・未要求機能は追加しない）
+- 既存コードの命名・構成に合わせる
+- UI 文言は日本語
