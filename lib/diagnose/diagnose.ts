@@ -8,7 +8,8 @@ import { ArtistNotFoundError } from "./errors";
 import type { DiagnoseResult, DiagnosisTag, Recommendation } from "./types";
 
 const DIAGNOSIS_LIMIT = 10;
-const RECOMMENDATION_LIMIT = 20;
+const RECOMMENDATION_LIMIT = 10;
+const SIMILAR_ARTISTS_LIMIT = 10;
 
 function normalizeName(name: string): string {
   return name.trim().toLowerCase();
@@ -107,6 +108,7 @@ export async function diagnose(artistNames: string[]): Promise<DiagnoseResult> {
       const [tags, similar] = await Promise.all([
         getArtistTopTags(artist.name, { mbid: artist.mbid || undefined }),
         getSimilarArtists(artist.name, {
+          limit: SIMILAR_ARTISTS_LIMIT,
           mbid: artist.mbid || undefined,
         }),
       ]);

@@ -102,6 +102,14 @@ describe("diagnose", () => {
     expect(mockGetArtistTopTags).toHaveBeenCalledWith("Bjork", {
       mbid: "bjork-mbid",
     });
+    expect(mockGetSimilarArtists).toHaveBeenCalledWith("Radiohead", {
+      limit: 10,
+      mbid: "radiohead-mbid",
+    });
+    expect(mockGetSimilarArtists).toHaveBeenCalledWith("Bjork", {
+      limit: 10,
+      mbid: "bjork-mbid",
+    });
   });
 
   it("excludes input artists from recommendations by resolved name", async () => {
@@ -127,6 +135,11 @@ describe("diagnose", () => {
     ]);
 
     const result = await diagnose(["radiohead"]);
+
+    expect(mockGetSimilarArtists).toHaveBeenCalledWith("Radiohead", {
+      limit: 10,
+      mbid: undefined,
+    });
 
     expect(result.recommendations).toEqual([
       {

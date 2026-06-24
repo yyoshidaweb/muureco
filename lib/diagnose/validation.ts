@@ -1,6 +1,8 @@
 import { DiagnoseValidationError } from "./errors";
 import type { DiagnoseRequest } from "./types";
 
+export const MAX_ARTISTS = 10;
+
 export function parseDiagnoseRequest(body: unknown): string[] {
   if (typeof body !== "object" || body === null) {
     throw new DiagnoseValidationError(
@@ -22,7 +24,14 @@ export function parseDiagnoseRequest(body: unknown): string[] {
     );
   }
 
+  if (artists.length > MAX_ARTISTS) {
+    throw new DiagnoseValidationError(
+      `artists は ${MAX_ARTISTS} 件以下で指定してください`,
+    );
+  }
+
   const parsed: string[] = [];
+  const seen = new Set<string>();
 
   for (const item of artists) {
     if (typeof item !== "string") {
@@ -37,6 +46,14 @@ export function parseDiagnoseRequest(body: unknown): string[] {
         "空のアーティスト名は指定できません",
       );
     }
+
+    const normalized = trimmed.toLowerCase();
+    if (seen.has(normalized)) {
+      throw new DiagnoseValidationError(
+        "同じアーティスト名を重複して指定できません",
+      );
+    }
+    seen.add(normalized);
 
     parsed.push(trimmed);
   }
