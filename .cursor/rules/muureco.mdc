@@ -47,4 +47,5 @@ alwaysApply: true
 ## 文章・GitHub
 
 - 日本語と英語の間にスペースを入れない（例: `本Issue`、不可: `本 Issue`）
-- GitHub上でIssue、PR、コメントなどを書く際は、必ず末尾に `Made with Cursor` という署名を付ける
+- GitHub上でIssue、コメントなどを書く際は、必ず末尾に `Made with Cursor` という署名を付ける
+- PR作成時は署名を付けない（Cursorが自動付与するため）
