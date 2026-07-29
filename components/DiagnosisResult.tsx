@@ -19,11 +19,15 @@ export function DiagnosisResult({ tags }: DiagnosisResultProps) {
       <h2 className="text-lg font-medium text-black">おすすめジャンル</h2>
       <ul className="flex flex-wrap gap-2">
         {tags.map((tag) => (
-          <li
-            key={tag.name}
-            className="border border-neutral-300 bg-white px-3 py-1 text-sm text-black"
-          >
-            {tag.name}
+          <li key={tag.name}>
+            <a
+              href={tag.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="border border-neutral-300 bg-white px-3 py-1 text-sm text-black hover:underline"
+            >
+              {tag.name}
+            </a>
           </li>
         ))}
       </ul>

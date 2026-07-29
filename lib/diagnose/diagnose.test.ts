@@ -75,9 +75,21 @@ describe("diagnose", () => {
     const result = await diagnose(["Radiohead", "Bjork"]);
 
     expect(result.diagnosis).toEqual([
-      { name: "rock", score: 160 },
-      { name: "alternative", score: 80 },
-      { name: "electronic", score: 40 },
+      {
+        name: "rock",
+        score: 160,
+        url: "https://www.last.fm/tag/rock",
+      },
+      {
+        name: "alternative",
+        score: 80,
+        url: "https://www.last.fm/tag/alternative",
+      },
+      {
+        name: "electronic",
+        score: 40,
+        url: "https://www.last.fm/tag/electronic",
+      },
     ]);
 
     expect(result.recommendations).toEqual([
