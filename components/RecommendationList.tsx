@@ -30,12 +30,15 @@ export function RecommendationList({
             ) : (
               <ul className="flex flex-col gap-3">
                 {recommendations.map((rec) => (
-                  <li key={rec.mbid ?? rec.name}>
+                  <li
+                    key={rec.mbid ?? rec.name}
+                    className="rounded-md border border-neutral-300 bg-white px-3 py-2"
+                  >
                     <a
                       href={rec.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center justify-between gap-3 py-1 text-black hover:underline"
+                      className="flex items-center justify-between gap-3 text-black hover:underline"
                     >
                       <span>{rec.name}</span>
                       <span className="shrink-0 text-sm text-neutral-500">
