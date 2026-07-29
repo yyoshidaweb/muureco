@@ -170,7 +170,7 @@ export function ArtistInputForm({
                   type="button"
                   onClick={() => removeArtist(index)}
                   aria-label={`アーティスト ${index + 1} を削除`}
-                  className="flex shrink-0 items-center justify-center px-2 text-black hover:text-neutral-500"
+                  className="flex shrink-0 cursor-pointer items-center justify-center px-2 text-black hover:text-neutral-500"
                 >
                   <CloseIcon />
                 </button>
@@ -186,7 +186,7 @@ export function ArtistInputForm({
               onClick={addArtist}
               disabled={!canAdd}
               aria-label="アーティストを追加"
-              className="flex h-10 w-10 items-center justify-center border border-black bg-white text-black hover:bg-neutral-100 disabled:cursor-not-allowed disabled:border-neutral-300 disabled:text-neutral-400 disabled:hover:bg-white"
+              className="flex h-10 w-10 cursor-pointer items-center justify-center border border-black bg-white text-black hover:bg-neutral-100 disabled:cursor-not-allowed disabled:border-neutral-300 disabled:text-neutral-400 disabled:hover:bg-white"
             >
               <AddIcon />
             </button>
