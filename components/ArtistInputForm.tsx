@@ -130,7 +130,10 @@ export function ArtistInputForm({
   }
 
   function removeArtist(index: number) {
-    if (fields.length <= 1) return;
+    if (fields.length <= 1) {
+      commitFields([{ query: "", selected: null, selectedUrl: null }]);
+      return;
+    }
     commitFields(fields.filter((_, i) => i !== index));
   }
 
@@ -162,16 +165,14 @@ export function ArtistInputForm({
                   Last.fm ↗
                 </a>
               )}
-              {fields.length > 1 && (
-                <button
-                  type="button"
-                  onClick={() => removeArtist(index)}
-                  aria-label={`アーティスト ${index + 1} を削除`}
-                  className="flex shrink-0 items-center justify-center px-2 text-black hover:text-neutral-500"
-                >
-                  <CloseIcon />
-                </button>
-              )}
+              <button
+                type="button"
+                onClick={() => removeArtist(index)}
+                aria-label={`アーティスト ${index + 1} を削除`}
+                className="flex shrink-0 items-center justify-center px-2 text-black hover:text-neutral-500"
+              >
+                <CloseIcon />
+              </button>
             </div>
           );
         })}
