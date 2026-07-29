@@ -28,7 +28,7 @@ export function RecommendationList({
                 おすすめアーティストが見つかりませんでした
               </p>
             ) : (
-              <ul className="flex flex-col gap-4">
+              <ul className="flex flex-col gap-2">
                 {recommendations.map((rec) => (
                   <li key={rec.mbid ?? rec.name}>
                     <a
