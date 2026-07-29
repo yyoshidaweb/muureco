@@ -24,9 +24,10 @@ export function DiagnosisResult({ tags }: DiagnosisResultProps) {
               href={tag.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="border border-neutral-300 bg-white px-3 py-1 text-sm text-black hover:underline"
+              className="inline-flex items-center gap-1 border border-neutral-300 bg-white px-3 py-1 text-sm text-black hover:underline"
             >
-              {tag.name}
+              <span>{tag.name}</span>
+              <span className="text-neutral-500">↗</span>
             </a>
           </li>
         ))}
