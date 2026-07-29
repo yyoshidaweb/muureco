@@ -165,14 +165,16 @@ export function ArtistInputForm({
                   Last.fm ↗
                 </a>
               )}
-              <button
-                type="button"
-                onClick={() => removeArtist(index)}
-                aria-label={`アーティスト ${index + 1} を削除`}
-                className="flex shrink-0 items-center justify-center px-2 text-black hover:text-neutral-500"
-              >
-                <CloseIcon />
-              </button>
+              {(fields.length > 1 || field.selected !== null) && (
+                <button
+                  type="button"
+                  onClick={() => removeArtist(index)}
+                  aria-label={`アーティスト ${index + 1} を削除`}
+                  className="flex shrink-0 items-center justify-center px-2 text-black hover:text-neutral-500"
+                >
+                  <CloseIcon />
+                </button>
+              )}
             </div>
           );
         })}
