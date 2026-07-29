@@ -117,7 +117,7 @@ export default function Home() {
             ミューレコ
           </h1>
           <p className="mt-1 text-sm text-neutral-600 sm:text-base">
-            好きなアーティストから、あなたの音楽性を診断します
+            あなたの「好き」から次の出会いを。
           </p>
         </div>
       </header>

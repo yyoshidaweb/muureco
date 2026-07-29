@@ -17,7 +17,7 @@ export function RecommendationList({
       <div className="flex flex-1 flex-col gap-8">
         {isLoading && (
           <p className="text-sm text-neutral-500" aria-live="polite">
-            診断中...
+            考え中...
           </p>
         )}
 
