@@ -35,7 +35,7 @@ export function RecommendationList({
                       href={rec.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="block rounded-md border border-neutral-300 bg-white px-3 py-2 text-black transition-colors hover:bg-neutral-50"
+                      className="block rounded-md border border-neutral-300 bg-white px-4 py-3 text-black transition-colors hover:bg-neutral-50"
                     >
                       <span className="flex items-center justify-between gap-3">
                         <span>{rec.name}</span>
