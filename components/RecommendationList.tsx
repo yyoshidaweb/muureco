@@ -28,21 +28,20 @@ export function RecommendationList({
                 おすすめアーティストが見つかりませんでした
               </p>
             ) : (
-              <ul className="flex flex-col gap-3">
+              <ul className="flex flex-col gap-4">
                 {recommendations.map((rec) => (
-                  <li
-                    key={rec.mbid ?? rec.name}
-                    className="rounded-md border border-neutral-300 bg-white px-3 py-2"
-                  >
+                  <li key={rec.mbid ?? rec.name}>
                     <a
                       href={rec.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center justify-between gap-3 text-black hover:underline"
+                      className="block rounded-md border border-neutral-300 bg-white px-3 py-2 text-black transition-colors hover:bg-neutral-50"
                     >
-                      <span>{rec.name}</span>
-                      <span className="shrink-0 text-sm text-neutral-500">
-                        Last.fm ↗
+                      <span className="flex items-center justify-between gap-3">
+                        <span>{rec.name}</span>
+                        <span className="shrink-0 text-sm text-neutral-500">
+                          Last.fm ↗
+                        </span>
                       </span>
                     </a>
                   </li>
