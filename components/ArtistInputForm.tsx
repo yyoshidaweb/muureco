@@ -1,12 +1,16 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { ArtistSuggestField } from "@/components/ArtistSuggestField";
+import {
+  ArtistSuggestField,
+  type ArtistSuggestion,
+} from "@/components/ArtistSuggestField";
 import { MAX_ARTISTS } from "@/lib/diagnose";
 
 type ArtistField = {
   query: string;
   selected: string | null;
+  selectedUrl: string | null;
 };
 
 type ArtistInputFormProps = {
@@ -77,7 +81,7 @@ export function ArtistInputForm({
   error,
 }: ArtistInputFormProps) {
   const [fields, setFields] = useState<ArtistField[]>([
-    { query: "", selected: null },
+    { query: "", selected: null, selectedUrl: null },
   ]);
   const lastEmittedKey = useRef<string>("");
 
@@ -105,22 +109,24 @@ export function ArtistInputForm({
   function updateQuery(index: number, query: string) {
     commitFields(
       fields.map((field, i) =>
-        i === index ? { query, selected: null } : field,
+        i === index ? { query, selected: null, selectedUrl: null } : field,
       ),
     );
   }
 
-  function selectArtist(index: number, name: string) {
+  function selectArtist(index: number, artist: ArtistSuggestion) {
     commitFields(
       fields.map((field, i) =>
-        i === index ? { query: name, selected: name } : field,
+        i === index
+          ? { query: artist.name, selected: artist.name, selectedUrl: artist.url }
+          : field,
       ),
     );
   }
 
   function addArtist() {
     if (!canAdd) return;
-    commitFields([...fields, { query: "", selected: null }]);
+    commitFields([...fields, { query: "", selected: null, selectedUrl: null }]);
   }
 
   function removeArtist(index: number) {
@@ -142,10 +148,20 @@ export function ArtistInputForm({
                 query={field.query}
                 selected={field.selected}
                 onQueryChange={(query) => updateQuery(index, query)}
-                onSelect={(name) => selectArtist(index, name)}
+                onSelect={(artist) => selectArtist(index, artist)}
                 excludedNames={excludedNames}
                 aria-label={`アーティスト名 ${index + 1}`}
               />
+              {field.selectedUrl && (
+                <a
+                  href={field.selectedUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex shrink-0 items-center px-1 text-sm text-neutral-500 hover:underline"
+                >
+                  Last.fm ↗
+                </a>
+              )}
               {fields.length > 1 && (
                 <button
                   type="button"

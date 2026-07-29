@@ -12,7 +12,7 @@ type ArtistSuggestFieldProps = {
   query: string;
   selected: string | null;
   onQueryChange: (query: string) => void;
-  onSelect: (name: string) => void;
+  onSelect: (artist: ArtistSuggestion) => void;
   excludedNames: string[];
   disabled?: boolean;
   "aria-label": string;
@@ -118,8 +118,8 @@ export function ArtistSuggestField({
     return () => document.removeEventListener("mousedown", handlePointerDown);
   }, []);
 
-  function selectSuggestion(name: string) {
-    onSelect(name);
+  function selectSuggestion(artist: ArtistSuggestion) {
+    onSelect(artist);
     setIsOpen(false);
     setSearchState({ status: "idle" });
     setActiveIndex(-1);
@@ -162,7 +162,7 @@ export function ArtistSuggestField({
       event.preventDefault();
       if (visibleSuggestions.length > 0) {
         const index = activeIndex >= 0 ? activeIndex : 0;
-        selectSuggestion(visibleSuggestions[index].name);
+        selectSuggestion(visibleSuggestions[index]);
       }
       return;
     }
@@ -218,7 +218,7 @@ export function ArtistSuggestField({
                 <button
                   type="button"
                   onMouseDown={(e) => e.preventDefault()}
-                  onClick={() => selectSuggestion(suggestion.name)}
+                  onClick={() => selectSuggestion(suggestion)}
                   className={`block w-full px-3 py-2 text-left text-sm text-black hover:bg-neutral-100 ${
                     index === activeIndex ? "bg-neutral-100" : ""
                   }`}
