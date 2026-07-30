@@ -1,7 +1,6 @@
 import {
   DEFAULT_LOCALE,
   LOCALES,
-  LOCALE_STORAGE_KEY,
   type Locale,
 } from "./types";
 
@@ -13,34 +12,47 @@ export function parseLocale(value: unknown): Locale | null {
   return isLocale(value) ? value : null;
 }
 
-export function readStoredLocale(): Locale | null {
-  if (typeof window === "undefined") {
-    return null;
+/** Build the localized app path for a locale (e.g. `/ja`, `/en`). */
+export function localePath(locale: Locale, pathname = ""): string {
+  const rest = pathname.replace(/^\/(ja|en)(?=\/|$)/, "").replace(/\/$/, "");
+  if (!rest || rest === "/") {
+    return `/${locale}`;
   }
-  try {
-    return parseLocale(window.localStorage.getItem(LOCALE_STORAGE_KEY));
-  } catch {
-    return null;
-  }
+  return `/${locale}${rest.startsWith("/") ? rest : `/${rest}`}`;
 }
 
-export function writeStoredLocale(locale: Locale): void {
-  if (typeof window === "undefined") {
-    return;
+/**
+ * Detect locale from country / Accept-Language.
+ * Japan → ja; otherwise → en. Unknown country falls back to Accept-Language.
+ */
+export function detectLocaleFromHeaders(headers: Headers): Locale {
+  const country = (
+    headers.get("cf-ipcountry") ??
+    headers.get("x-vercel-ip-country") ??
+    headers.get("x-country-code") ??
+    ""
+  ).toUpperCase();
+
+  if (country === "JP") {
+    return "ja";
   }
-  try {
-    window.localStorage.setItem(LOCALE_STORAGE_KEY, locale);
-  } catch {
-    // Ignore quota / private mode failures.
+
+  // Cloudflare uses XX for unknown; T1 for Tor. Treat those as unknown.
+  if (country && country !== "XX" && country !== "T1") {
+    return "en";
   }
+
+  const acceptLanguage = headers.get("accept-language")?.toLowerCase() ?? "";
+  if (acceptLanguage.includes("ja")) {
+    return "ja";
+  }
+
+  return "en";
 }
 
-export function resolveInitialLocale(searchParams?: URLSearchParams): Locale {
-  const fromQuery = searchParams
-    ? parseLocale(searchParams.get("lang"))
-    : null;
-  if (fromQuery) {
-    return fromQuery;
-  }
-  return readStoredLocale() ?? DEFAULT_LOCALE;
+export function resolveLocaleFromPathname(pathname: string): Locale | null {
+  const segment = pathname.split("/").filter(Boolean)[0];
+  return parseLocale(segment);
 }
+
+export { DEFAULT_LOCALE };

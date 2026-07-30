@@ -4,20 +4,14 @@ import {
   createContext,
   useCallback,
   useContext,
-  useEffect,
   useMemo,
-  useSyncExternalStore,
   type ReactNode,
 } from "react";
+import { usePathname, useRouter } from "next/navigation";
 import { localizeLastfmUrl } from "./lastfm-url";
-import {
-  resolveInitialLocale,
-  writeStoredLocale,
-} from "./locale";
+import { localePath } from "./locale";
 import { translate, type TranslateParams } from "./translate";
-import { DEFAULT_LOCALE, type Locale, type TranslationKey } from "./types";
-
-const LOCALE_CHANGE_EVENT = "muureco-locale-change";
+import type { Locale, TranslationKey } from "./types";
 
 type LocaleContextValue = {
   locale: Locale;
@@ -28,54 +22,23 @@ type LocaleContextValue = {
 
 const LocaleContext = createContext<LocaleContextValue | null>(null);
 
-function subscribe(onStoreChange: () => void): () => void {
-  window.addEventListener(LOCALE_CHANGE_EVENT, onStoreChange);
-  window.addEventListener("storage", onStoreChange);
-  return () => {
-    window.removeEventListener(LOCALE_CHANGE_EVENT, onStoreChange);
-    window.removeEventListener("storage", onStoreChange);
-  };
-}
+export function LocaleProvider({
+  locale,
+  children,
+}: {
+  locale: Locale;
+  children: ReactNode;
+}) {
+  const router = useRouter();
+  const pathname = usePathname();
 
-function getLocaleSnapshot(): Locale {
-  return resolveInitialLocale(new URLSearchParams(window.location.search));
-}
-
-function getServerLocaleSnapshot(): Locale {
-  return DEFAULT_LOCALE;
-}
-
-function applyLocaleToUrl(locale: Locale): void {
-  const url = new URL(window.location.href);
-  if (locale === DEFAULT_LOCALE) {
-    url.searchParams.delete("lang");
-  } else {
-    url.searchParams.set("lang", locale);
-  }
-  window.history.replaceState(null, "", url);
-}
-
-function notifyLocaleChange(): void {
-  window.dispatchEvent(new Event(LOCALE_CHANGE_EVENT));
-}
-
-export function LocaleProvider({ children }: { children: ReactNode }) {
-  const locale = useSyncExternalStore(
-    subscribe,
-    getLocaleSnapshot,
-    getServerLocaleSnapshot,
+  const setLocale = useCallback(
+    (next: Locale) => {
+      if (next === locale) return;
+      router.push(localePath(next, pathname));
+    },
+    [locale, pathname, router],
   );
-
-  useEffect(() => {
-    document.documentElement.lang = locale;
-    writeStoredLocale(locale);
-  }, [locale]);
-
-  const setLocale = useCallback((next: Locale) => {
-    writeStoredLocale(next);
-    applyLocaleToUrl(next);
-    notifyLocaleChange();
-  }, []);
 
   const t = useCallback(
     (key: TranslationKey, params?: TranslateParams) =>

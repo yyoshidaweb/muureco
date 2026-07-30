@@ -2,9 +2,8 @@ export const LOCALES = ["ja", "en"] as const;
 
 export type Locale = (typeof LOCALES)[number];
 
-export const DEFAULT_LOCALE: Locale = "ja";
-
-export const LOCALE_STORAGE_KEY = "muureco-locale";
+/** Fallback when locale cannot be inferred (e.g. missing headers). */
+export const DEFAULT_LOCALE: Locale = "en";
 
 export type TranslationKey =
   | "brand.tagline"

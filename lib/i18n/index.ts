@@ -2,17 +2,16 @@ export { dictionaries } from "./dictionaries";
 export { LocaleProvider, useLocale } from "./context";
 export { localizeLastfmUrl } from "./lastfm-url";
 export {
+  detectLocaleFromHeaders,
   isLocale,
+  localePath,
   parseLocale,
-  readStoredLocale,
-  resolveInitialLocale,
-  writeStoredLocale,
+  resolveLocaleFromPathname,
 } from "./locale";
 export { translate } from "./translate";
 export {
   DEFAULT_LOCALE,
   LOCALES,
-  LOCALE_STORAGE_KEY,
   type Dictionary,
   type Locale,
   type TranslationKey,

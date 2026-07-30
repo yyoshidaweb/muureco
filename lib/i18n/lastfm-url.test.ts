@@ -1,5 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { isLocale, parseLocale } from "./locale";
+import {
+  detectLocaleFromHeaders,
+  isLocale,
+  localePath,
+  parseLocale,
+  resolveLocaleFromPathname,
+} from "./locale";
 import { localizeLastfmUrl } from "./lastfm-url";
 import { translate } from "./translate";
 
@@ -74,5 +80,48 @@ describe("locale helpers", () => {
     expect(isLocale("fr")).toBe(false);
     expect(parseLocale("en")).toBe("en");
     expect(parseLocale("nope")).toBeNull();
+  });
+
+  it("builds locale paths", () => {
+    expect(localePath("ja")).toBe("/ja");
+    expect(localePath("en")).toBe("/en");
+    expect(localePath("en", "/ja")).toBe("/en");
+    expect(localePath("ja", "/en")).toBe("/ja");
+  });
+
+  it("resolves locale from pathname", () => {
+    expect(resolveLocaleFromPathname("/ja")).toBe("ja");
+    expect(resolveLocaleFromPathname("/en")).toBe("en");
+    expect(resolveLocaleFromPathname("/")).toBeNull();
+  });
+
+  it("detects locale from country headers", () => {
+    expect(
+      detectLocaleFromHeaders(new Headers({ "cf-ipcountry": "JP" })),
+    ).toBe("ja");
+    expect(
+      detectLocaleFromHeaders(new Headers({ "cf-ipcountry": "US" })),
+    ).toBe("en");
+    expect(
+      detectLocaleFromHeaders(new Headers({ "x-vercel-ip-country": "JP" })),
+    ).toBe("ja");
+  });
+
+  it("falls back to Accept-Language when country is unknown", () => {
+    expect(
+      detectLocaleFromHeaders(
+        new Headers({
+          "cf-ipcountry": "XX",
+          "accept-language": "ja-JP,ja;q=0.9,en;q=0.8",
+        }),
+      ),
+    ).toBe("ja");
+    expect(
+      detectLocaleFromHeaders(
+        new Headers({
+          "accept-language": "en-US,en;q=0.9",
+        }),
+      ),
+    ).toBe("en");
   });
 });
