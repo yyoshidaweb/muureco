@@ -14,7 +14,7 @@ function stripLocalePrefix(pathname: string, locale: "en" | "ja"): string {
   return pathname;
 }
 
-export function proxy(request: NextRequest) {
+export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Japanese uses a public `/ja` prefix.
