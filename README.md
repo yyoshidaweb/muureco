@@ -46,7 +46,7 @@ API キーは [Last.fm API アカウント作成](https://www.last.fm/api/accoun
 npm run dev
 ```
 
-[http://localhost:3000](http://localhost:3000) を開いて確認します。
+[http://localhost:3001](http://localhost:3001) を開いて確認します（他プロジェクトとのポート競合を避けるため、本プロジェクトは3001番を使用します）。
 
 ## スクリプト
 
