@@ -79,14 +79,24 @@ npm run preview
 npm run deploy
 ```
 
-初回デプロイ後、Wrangler の出力に `*.workers.dev` の公開URLが表示されます。
+`workers.dev` のURLは `{Worker名}.{アカウントのサブドメイン}.workers.dev` 形式です（本番は `muureco.yyoshidaweb.workers.dev`）。
 
-`workers.dev` のURLは `{Worker名}.{アカウントのサブドメイン}.workers.dev` 形式です（本番は `muureco.yyoshidaweb.workers.dev`）。アカウントのサブドメインは [Workers & Pages](https://dash.cloudflare.com/?to=/:account/workers-and-pages) の **Your subdomain** → **Change** から変更できます（設定済みの場合はAPIからは変更できません）。
+### GitHub Actionsでの自動デプロイ
+
+`main` ブランチへのマージ時に [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml) が `npm run deploy` を実行します。
+
+リポジトリの **Settings** → **Secrets and variables** → **Actions** に次を登録してください。
+
+| Secret | 説明 |
+|--------|------|
+| `CLOUDFLARE_API_TOKEN` | Workers デプロイ用APIトークン（[作成手順](https://developers.cloudflare.com/fundamentals/api/get-started/create-token/)） |
+| `CLOUDFLARE_ACCOUNT_ID` | CloudflareアカウントID（`npx wrangler whoami` で確認） |
+
+APIトークンには最低限 **Account** の **Workers Scripts: Edit** 権限が必要です。`LASTFM_API_KEY` は Worker のシークレットとして Cloudflare 側に設定済みであること（デプロイでは上書きしません）。
 
 ### 本番での注意
 
 - `LASTFM_API_KEY` は Cloudflare のシークレットとしてのみ保持し、クライアントバンドルには含めません
-- `/api/debug/lastfm` は本番（`NODE_ENV=production`）では 404 を返します
 
 ## スクリプト
 

@@ -1,9 +1,13 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "muureco",
+  "account_id": "244b372cbbf09351cd5e5ae0ddc8b41d",
   "main": ".open-next/worker.js",
   "compatibility_date": "2026-07-29",
   "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "secrets": {
+    "required": ["LASTFM_API_KEY"]
+  },
   "assets": {
     "directory": ".open-next/assets",
     "binding": "ASSETS"
