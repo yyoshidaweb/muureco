@@ -25,18 +25,23 @@ async function resolveArtist(name: string): Promise<LastfmArtist> {
 }
 
 function buildDiagnosis(
-  tagLists: { name: string; count: number }[][],
+  tagLists: { name: string; count: number; url: string }[][],
 ): DiagnosisTag[] {
-  const scores = new Map<string, number>();
+  const scores = new Map<string, { score: number; url: string }>();
 
   for (const tags of tagLists) {
     for (const tag of tags) {
-      scores.set(tag.name, (scores.get(tag.name) ?? 0) + tag.count);
+      const existing = scores.get(tag.name);
+      if (existing) {
+        existing.score += tag.count;
+      } else {
+        scores.set(tag.name, { score: tag.count, url: tag.url });
+      }
     }
   }
 
   return [...scores.entries()]
-    .map(([name, score]) => ({ name, score }))
+    .map(([name, { score, url }]) => ({ name, score, url }))
     .sort((a, b) => b.score - a.score)
     .slice(0, DIAGNOSIS_LIMIT);
 }

@@ -1,6 +1,7 @@
 export type DiagnosisTag = {
   name: string;
   score: number;
+  url: string;
 };
 
 export type Recommendation = {

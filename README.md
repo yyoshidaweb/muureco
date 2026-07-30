@@ -72,4 +72,6 @@ npm run dev
 
 ## クレジット
 
-Powered by [Last.fm](https://www.last.fm/)
+開発：[@yyoshidaweb](https://piku.page/@yyoshidaweb)
+
+データ提供元：[Last.fm](https://www.last.fm/)（非公式・非提携。API を利用しています）
