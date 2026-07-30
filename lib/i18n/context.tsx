@@ -9,7 +9,7 @@ import {
 } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { localizeLastfmUrl } from "./lastfm-url";
-import { localePath } from "./locale";
+import { localePath, writeLocaleCookie } from "./locale";
 import { translate, type TranslateParams } from "./translate";
 import type { Locale, TranslationKey } from "./types";
 
@@ -35,6 +35,7 @@ export function LocaleProvider({
   const setLocale = useCallback(
     (next: Locale) => {
       if (next === locale) return;
+      writeLocaleCookie(next);
       router.push(localePath(next, pathname));
     },
     [locale, pathname, router],

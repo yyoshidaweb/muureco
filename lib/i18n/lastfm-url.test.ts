@@ -82,17 +82,18 @@ describe("locale helpers", () => {
     expect(parseLocale("nope")).toBeNull();
   });
 
-  it("builds locale paths", () => {
+  it("builds locale paths (en unprefixed, ja prefixed)", () => {
     expect(localePath("ja")).toBe("/ja");
-    expect(localePath("en")).toBe("/en");
-    expect(localePath("en", "/ja")).toBe("/en");
+    expect(localePath("en")).toBe("/");
+    expect(localePath("en", "/ja")).toBe("/");
+    expect(localePath("ja", "/")).toBe("/ja");
     expect(localePath("ja", "/en")).toBe("/ja");
   });
 
   it("resolves locale from pathname", () => {
     expect(resolveLocaleFromPathname("/ja")).toBe("ja");
+    expect(resolveLocaleFromPathname("/")).toBe("en");
     expect(resolveLocaleFromPathname("/en")).toBe("en");
-    expect(resolveLocaleFromPathname("/")).toBeNull();
   });
 
   it("detects locale from country headers", () => {
