@@ -125,7 +125,7 @@ export default function Home() {
         <div className="mx-auto flex w-full max-w-5xl items-start justify-between gap-4 px-4 py-4 sm:px-6 sm:py-5">
           <div>
             <h1 className="text-[1.6875rem] font-bold tracking-tight text-black sm:text-[2.025rem]">
-              ミューレコ
+              {t("brand.name")}
             </h1>
             <p className="mt-1 text-sm text-neutral-600 sm:text-base">
               {t("brand.tagline")}

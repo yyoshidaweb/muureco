@@ -1,7 +1,13 @@
 import type { Metadata } from "next";
 import { Noto_Sans_JP } from "next/font/google";
 import { notFound } from "next/navigation";
-import { LocaleProvider, LOCALES, isLocale, type Locale } from "@/lib/i18n";
+import {
+  LocaleProvider,
+  LOCALES,
+  isLocale,
+  translate,
+  type Locale,
+} from "@/lib/i18n";
 import "../globals.css";
 
 const notoSansJp = Noto_Sans_JP({
@@ -10,14 +16,26 @@ const notoSansJp = Noto_Sans_JP({
   weight: ["400", "500", "700"],
 });
 
-export const metadata: Metadata = {
-  title: "ミューレコ",
-  description:
-    "好きなアーティストから、あなたの音楽性を診断し、おすすめアーティストを表示します。",
+const descriptions: Record<Locale, string> = {
+  ja: "好きなアーティストから、あなたの音楽性を診断し、おすすめアーティストを表示します。",
+  en: "Diagnose your musical taste from artists you love and discover recommendations.",
 };
 
 export function generateStaticParams() {
   return LOCALES.map((locale) => ({ locale }));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale: localeParam } = await params;
+  const locale: Locale = isLocale(localeParam) ? localeParam : "ja";
+  return {
+    title: translate(locale, "brand.name"),
+    description: descriptions[locale],
+  };
 }
 
 export default async function LocaleLayout({

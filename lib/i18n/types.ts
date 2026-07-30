@@ -6,6 +6,7 @@ export type Locale = (typeof LOCALES)[number];
 export const DEFAULT_LOCALE: Locale = "en";
 
 export type TranslationKey =
+  | "brand.name"
   | "brand.tagline"
   | "section.favoriteArtists"
   | "section.recommendedArtists"

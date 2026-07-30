@@ -1,6 +1,7 @@
 import type { Dictionary, Locale } from "./types";
 
 const ja: Dictionary = {
+  "brand.name": "ミューレコ",
   "brand.tagline": "あなたの「好き」から次の出会いを。",
   "section.favoriteArtists": "好きなアーティスト",
   "section.recommendedArtists": "おすすめアーティスト",
@@ -30,6 +31,7 @@ const ja: Dictionary = {
 };
 
 const en: Dictionary = {
+  "brand.name": "muureco",
   "brand.tagline": "From what you love to your next discovery.",
   "section.favoriteArtists": "Favorite artists",
   "section.recommendedArtists": "Recommended artists",
