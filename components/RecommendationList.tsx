@@ -1,5 +1,8 @@
+"use client";
+
 import type { DiagnosisTag, Recommendation } from "@/lib/diagnose";
 import { DiagnosisResult } from "@/components/DiagnosisResult";
+import { useLocale } from "@/lib/i18n";
 
 type RecommendationListProps = {
   recommendations: Recommendation[] | null;
@@ -30,12 +33,14 @@ export function RecommendationList({
   tags,
   isLoading,
 }: RecommendationListProps) {
+  const { t, lastfmUrl } = useLocale();
+
   return (
     <section className="flex h-full min-h-[240px] flex-col md:min-h-0">
       <div className="flex flex-1 flex-col gap-8">
         {isLoading && (
           <p className="text-sm text-neutral-500" aria-live="polite">
-            考え中...
+            {t("result.thinking")}
           </p>
         )}
 
@@ -43,14 +48,14 @@ export function RecommendationList({
           <>
             {recommendations.length === 0 ? (
               <p className="text-sm text-neutral-500">
-                おすすめアーティストが見つかりませんでした
+                {t("result.noRecommendations")}
               </p>
             ) : (
               <ul className="flex flex-col gap-2">
                 {recommendations.map((rec) => (
                   <li key={rec.mbid ?? rec.name}>
                     <a
-                      href={rec.url}
+                      href={lastfmUrl(rec.url)}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="block rounded-md border border-neutral-300 bg-white px-4 py-3 text-black transition-colors hover:bg-neutral-50"
@@ -61,7 +66,7 @@ export function RecommendationList({
                           <span className="truncate">{rec.name}</span>
                         </span>
                         <span className="shrink-0 text-sm text-neutral-500">
-                          Last.fm ↗
+                          {t("link.lastfm")}
                         </span>
                       </span>
                     </a>
