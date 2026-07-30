@@ -91,8 +91,9 @@ npm run deploy
 |--------|------|
 | `CLOUDFLARE_API_TOKEN` | Workers デプロイ用APIトークン（[作成手順](https://developers.cloudflare.com/fundamentals/api/get-started/create-token/)） |
 | `CLOUDFLARE_ACCOUNT_ID` | CloudflareアカウントID（`npx wrangler whoami` で確認） |
+| `LASTFM_API_KEY` | デプロイ時の `wrangler` 検証用（本番ランタイムは Cloudflare 側のシークレットを使用） |
 
-APIトークンには最低限 **Account** の **Workers Scripts: Edit** 権限が必要です。`LASTFM_API_KEY` は Worker のシークレットとして Cloudflare 側に設定済みであること（デプロイでは上書きしません）。
+APIトークンには最低限 **Account** の **Workers Scripts: Edit** 権限が必要です。デプロイ workflow は **Node.js 22** で実行します（Wrangler 4.x の要件）。
 
 ### 本番での注意
 
