@@ -88,6 +88,12 @@ describe("locale helpers", () => {
     expect(localePath("en", "/ja")).toBe("/");
     expect(localePath("ja", "/")).toBe("/ja");
     expect(localePath("ja", "/en")).toBe("/ja");
+    expect(localePath("en", "/terms")).toBe("/terms");
+    expect(localePath("ja", "/terms")).toBe("/ja/terms");
+    expect(localePath("en", "/privacy")).toBe("/privacy");
+    expect(localePath("ja", "/privacy")).toBe("/ja/privacy");
+    expect(localePath("en", "/ja/terms")).toBe("/terms");
+    expect(localePath("ja", "/en/privacy")).toBe("/ja/privacy");
   });
 
   it("resolves locale from pathname", () => {
