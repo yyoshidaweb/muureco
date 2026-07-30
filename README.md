@@ -6,6 +6,8 @@
 
 ユーザーが入力したアーティストをもとに、Last.fm API からタグ情報を集計して音楽性を診断し、類似アーティストをおすすめとして表示します。
 
+**公開URL**: [https://muureco.yyoshidaweb.workers.dev](https://muureco.yyoshidaweb.workers.dev)
+
 ## 技術スタック
 
 | レイヤ | 選定 |
@@ -78,6 +80,8 @@ npm run deploy
 ```
 
 初回デプロイ後、Wrangler の出力に `*.workers.dev` の公開URLが表示されます。
+
+`workers.dev` のURLは `{Worker名}.{アカウントのサブドメイン}.workers.dev` 形式です（本番は `muureco.yyoshidaweb.workers.dev`）。アカウントのサブドメインは [Workers & Pages](https://dash.cloudflare.com/?to=/:account/workers-and-pages) の **Your subdomain** → **Change** から変更できます（設定済みの場合はAPIからは変更できません）。
 
 ### 本番での注意
 
