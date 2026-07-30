@@ -16,11 +16,17 @@ type RawTag = {
   count?: string;
 };
 
+type RawImage = {
+  size: string;
+  "#text": string;
+};
+
 type RawSimilarArtist = {
   name: string;
   mbid?: string;
   match: string;
   url: string;
+  image?: RawImage[];
 };
 
 type LastfmErrorResponse = {
@@ -80,12 +86,36 @@ function mapTag(raw: RawTag): LastfmTag {
   };
 }
 
+const IMAGE_SIZE_PRIORITY = [
+  "large",
+  "medium",
+  "extralarge",
+  "mega",
+  "small",
+] as const;
+
+function pickImageUrl(images: RawImage[] | undefined): string | undefined {
+  if (!images?.length) {
+    return undefined;
+  }
+
+  for (const size of IMAGE_SIZE_PRIORITY) {
+    const found = images.find((img) => img.size === size && img["#text"]);
+    if (found) {
+      return found["#text"];
+    }
+  }
+
+  return images.find((img) => img["#text"])?.["#text"] || undefined;
+}
+
 function mapSimilarArtist(raw: RawSimilarArtist): LastfmSimilarArtist {
   return {
     name: raw.name,
     mbid: raw.mbid || undefined,
     match: Number(raw.match),
     url: raw.url,
+    imageUrl: pickImageUrl(raw.image),
   };
 }
 
