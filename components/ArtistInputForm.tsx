@@ -6,6 +6,7 @@ import {
   type ArtistSuggestion,
 } from "@/components/ArtistSuggestField";
 import { MAX_ARTISTS } from "@/lib/diagnose";
+import { useLocale } from "@/lib/i18n";
 
 type ArtistField = {
   query: string;
@@ -80,6 +81,7 @@ export function ArtistInputForm({
   onArtistsChange,
   error,
 }: ArtistInputFormProps) {
+  const { t, lastfmUrl } = useLocale();
   const [fields, setFields] = useState<ArtistField[]>([
     { query: "", selected: null, selectedUrl: null },
   ]);
@@ -153,23 +155,23 @@ export function ArtistInputForm({
                 onQueryChange={(query) => updateQuery(index, query)}
                 onSelect={(artist) => selectArtist(index, artist)}
                 excludedNames={excludedNames}
-                aria-label={`アーティスト名 ${index + 1}`}
+                aria-label={t("form.artistLabel", { n: index + 1 })}
               />
               {field.selectedUrl && (
                 <a
-                  href={field.selectedUrl}
+                  href={lastfmUrl(field.selectedUrl)}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex shrink-0 items-center px-1 text-sm text-neutral-500 hover:underline"
                 >
-                  Last.fm ↗
+                  {t("link.lastfm")}
                 </a>
               )}
               {(fields.length > 1 || field.selected !== null) && (
                 <button
                   type="button"
                   onClick={() => removeArtist(index)}
-                  aria-label={`アーティスト ${index + 1} を削除`}
+                  aria-label={t("form.removeArtist", { n: index + 1 })}
                   className="flex shrink-0 cursor-pointer items-center justify-center px-2 text-black hover:text-neutral-500"
                 >
                   <CloseIcon />
@@ -185,7 +187,7 @@ export function ArtistInputForm({
               type="button"
               onClick={addArtist}
               disabled={!canAdd}
-              aria-label="アーティストを追加"
+              aria-label={t("form.addArtist")}
               className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-black bg-white text-black hover:bg-neutral-100 disabled:cursor-not-allowed disabled:border-neutral-300 disabled:text-neutral-400 disabled:hover:bg-white"
             >
               <AddIcon />
@@ -196,7 +198,7 @@ export function ArtistInputForm({
 
       {duplicateIndex !== null && (
         <p className="text-sm text-red-600" role="alert">
-          同じアーティスト名を重複して指定できません
+          {t("form.duplicateArtist")}
         </p>
       )}
 

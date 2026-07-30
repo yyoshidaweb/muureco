@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useId, useRef, useState } from "react";
+import { useLocale } from "@/lib/i18n";
 
 export type ArtistSuggestion = {
   name: string;
@@ -35,6 +36,7 @@ export function ArtistSuggestField({
   disabled = false,
   "aria-label": ariaLabel,
 }: ArtistSuggestFieldProps) {
+  const { t } = useLocale();
   const listboxId = useId();
   const containerRef = useRef<HTMLDivElement>(null);
   const [searchState, setSearchState] = useState<SearchState>({ status: "idle" });
@@ -186,7 +188,7 @@ export function ArtistSuggestField({
         }}
         onKeyDown={handleKeyDown}
         disabled={disabled}
-        placeholder="アーティスト名"
+        placeholder={t("form.artistPlaceholder")}
         aria-label={ariaLabel}
         aria-autocomplete="list"
         aria-expanded={showList}
@@ -203,10 +205,12 @@ export function ArtistSuggestField({
           className="absolute z-10 mt-1 max-h-60 w-full overflow-auto border border-neutral-300 bg-white"
         >
           {isSearching && visibleSuggestions.length === 0 ? (
-            <li className="px-3 py-2 text-sm text-neutral-500">検索中…</li>
+            <li className="px-3 py-2 text-sm text-neutral-500">
+              {t("suggest.searching")}
+            </li>
           ) : visibleSuggestions.length === 0 ? (
             <li className="px-3 py-2 text-sm text-neutral-500">
-              該当するアーティストが見つかりません
+              {t("suggest.noResults")}
             </li>
           ) : (
             visibleSuggestions.map((suggestion, index) => (
