@@ -5,7 +5,7 @@ import { ArtistInputForm } from "@/components/ArtistInputForm";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { RecommendationList } from "@/components/RecommendationList";
 import type { DiagnoseResult } from "@/lib/diagnose";
-import { useLocale } from "@/lib/i18n";
+import { localePath, useLocale } from "@/lib/i18n";
 
 type DiagnoseErrorBody = {
   error?: string;
@@ -19,7 +19,7 @@ type UiError =
   | { kind: "diagnoseFailed" };
 
 export default function Home() {
-  const { t, lastfmUrl } = useLocale();
+  const { locale, t, lastfmUrl } = useLocale();
   const [artists, setArtists] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<UiError | null>(null);
@@ -189,6 +189,20 @@ export default function Home() {
             </a>
             {t("footer.unofficial")}
           </p>
+          <div className="mt-1 flex flex-wrap gap-x-4 gap-y-1">
+            <a
+              href={localePath(locale, "/terms")}
+              className="underline hover:text-black"
+            >
+              {t("link.terms")}
+            </a>
+            <a
+              href={localePath(locale, "/privacy")}
+              className="underline hover:text-black"
+            >
+              {t("link.privacy")}
+            </a>
+          </div>
         </div>
       </footer>
     </div>
