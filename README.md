@@ -13,7 +13,7 @@
 | フロント | Next.js（App Router）+ TypeScript + Tailwind CSS |
 | バックエンド | Next.js Route Handler（BFF） |
 | 外部 API | [Last.fm API](https://www.last.fm/api) |
-| デプロイ | Cloudflare（Workers / Pages + OpenNext）想定 |
+| デプロイ | Cloudflare Workers（[@opennextjs/cloudflare](https://opennext.js.org/cloudflare)） |
 
 ## 開発環境のセットアップ
 
@@ -40,6 +40,13 @@ LASTFM_API_KEY=your_api_key
 
 API キーは [Last.fm API アカウント作成](https://www.last.fm/api/account/create) から取得できます。`api_key` は BFF 経由でのみ使用し、クライアントには露出しません。
 
+Workers ランタイムでのローカルプレビュー用には、`.dev.vars.example` を `.dev.vars` にコピーして同じキーを設定します。
+
+```bash
+cp .dev.vars.example .dev.vars
+# .dev.vars の LASTFM_API_KEY を編集
+```
+
 ### 開発サーバーの起動
 
 ```bash
@@ -48,14 +55,46 @@ npm run dev
 
 [http://localhost:3001](http://localhost:3001) を開いて確認します（他プロジェクトとのポート競合を避けるため、本プロジェクトは3001番を使用します）。
 
+## Cloudflareへのデプロイ
+
+前提: Cloudflareアカウントがあり、ローカルで `npx wrangler login` 済みであること。
+
+### 本番シークレット
+
+```bash
+npx wrangler secret put LASTFM_API_KEY
+```
+
+値はプロンプト入力で設定し、Issue・PR・コミットには書かないでください。
+
+### ビルド・プレビュー・デプロイ
+
+```bash
+# Workers ランタイムでのローカルプレビュー（本番相当）
+npm run preview
+
+# 本番デプロイ
+npm run deploy
+```
+
+初回デプロイ後、Wrangler の出力に `*.workers.dev` の公開URLが表示されます。
+
+### 本番での注意
+
+- `LASTFM_API_KEY` は Cloudflare のシークレットとしてのみ保持し、クライアントバンドルには含めません
+- `/api/debug/lastfm` は本番（`NODE_ENV=production`）では 404 を返します
+
 ## スクリプト
 
 | コマンド | 説明 |
 |---------|------|
-| `npm run dev` | 開発サーバーを起動 |
-| `npm run build` | 本番ビルド |
-| `npm run start` | 本番サーバーを起動 |
+| `npm run dev` | 開発サーバーを起動（ポート3001） |
+| `npm run build` | Next.js 本番ビルド |
+| `npm run preview` | OpenNext ビルド後、Workers ランタイムでローカルプレビュー |
+| `npm run deploy` | OpenNext ビルド後、Cloudflare Workers へデプロイ |
+| `npm run start` | Next.js 本番サーバーを起動 |
 | `npm run lint` | ESLint を実行 |
+| `npm run test` / `npm run test:ci` | Vitest を実行 |
 
 ## 開発フロー
 
