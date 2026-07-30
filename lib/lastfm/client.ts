@@ -16,17 +16,11 @@ type RawTag = {
   count?: string;
 };
 
-type RawImage = {
-  size: string;
-  "#text": string;
-};
-
 type RawSimilarArtist = {
   name: string;
   mbid?: string;
   match: string;
   url: string;
-  image?: RawImage[];
 };
 
 type LastfmErrorResponse = {
@@ -86,46 +80,12 @@ function mapTag(raw: RawTag): LastfmTag {
   };
 }
 
-const IMAGE_SIZE_PRIORITY = [
-  "large",
-  "medium",
-  "extralarge",
-  "mega",
-  "small",
-] as const;
-
-/** Last.fm API returns this star placeholder for all artist images (ToS; real art not provided). */
-const LASTFM_PLACEHOLDER_IMAGE_HASH = "2a96cbd8b46e442fc41c2b86b821562f";
-
-function isUsableImageUrl(url: string): boolean {
-  return Boolean(url) && !url.includes(LASTFM_PLACEHOLDER_IMAGE_HASH);
-}
-
-function pickImageUrl(images: RawImage[] | undefined): string | undefined {
-  if (!images?.length) {
-    return undefined;
-  }
-
-  for (const size of IMAGE_SIZE_PRIORITY) {
-    const found = images.find(
-      (img) => img.size === size && isUsableImageUrl(img["#text"]),
-    );
-    if (found) {
-      return found["#text"];
-    }
-  }
-
-  const fallback = images.find((img) => isUsableImageUrl(img["#text"]));
-  return fallback?.["#text"];
-}
-
 function mapSimilarArtist(raw: RawSimilarArtist): LastfmSimilarArtist {
   return {
     name: raw.name,
     mbid: raw.mbid || undefined,
     match: Number(raw.match),
     url: raw.url,
-    imageUrl: pickImageUrl(raw.image),
   };
 }
 

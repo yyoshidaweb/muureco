@@ -51,7 +51,6 @@ describe("diagnose", () => {
           match: 0.8,
           url: "https://www.last.fm/music/Muse",
           mbid: "muse-mbid",
-          imageUrl: "https://lastfm.freetls.fastly.net/i/u/174s/muse.jpg",
         },
         {
           name: "Radiohead",
@@ -70,8 +69,6 @@ describe("diagnose", () => {
           name: "Portishead",
           match: 0.7,
           url: "https://www.last.fm/music/Portishead",
-          imageUrl:
-            "https://lastfm.freetls.fastly.net/i/u/174s/portishead.jpg",
         },
       ]);
 
@@ -101,13 +98,11 @@ describe("diagnose", () => {
         score: 2.8,
         url: "https://www.last.fm/music/Muse",
         mbid: "muse-mbid",
-        imageUrl: "https://lastfm.freetls.fastly.net/i/u/174s/muse.jpg",
       },
       {
         name: "Portishead",
         score: 0.7,
         url: "https://www.last.fm/music/Portishead",
-        imageUrl: "https://lastfm.freetls.fastly.net/i/u/174s/portishead.jpg",
       },
     ]);
 

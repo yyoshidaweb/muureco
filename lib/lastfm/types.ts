@@ -16,5 +16,4 @@ export type LastfmSimilarArtist = {
   mbid?: string;
   match: number;
   url: string;
-  imageUrl?: string;
 };

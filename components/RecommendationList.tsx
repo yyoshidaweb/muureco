@@ -7,20 +7,7 @@ type RecommendationListProps = {
   isLoading: boolean;
 };
 
-function ArtistImage({ imageUrl }: { imageUrl?: string }) {
-  if (imageUrl) {
-    return (
-      // eslint-disable-next-line @next/next/no-img-element -- Last.fm CDN URL; next/image remote config not used
-      <img
-        src={imageUrl}
-        alt=""
-        width={40}
-        height={40}
-        className="size-10 shrink-0 rounded object-cover"
-      />
-    );
-  }
-
+function ArtistPlaceholder() {
   return (
     <span
       className="flex size-10 shrink-0 items-center justify-center rounded bg-neutral-200 text-neutral-500"
@@ -70,7 +57,7 @@ export function RecommendationList({
                     >
                       <span className="flex items-center justify-between gap-3">
                         <span className="flex min-w-0 items-center gap-3">
-                          <ArtistImage imageUrl={rec.imageUrl} />
+                          <ArtistPlaceholder />
                           <span className="truncate">{rec.name}</span>
                         </span>
                         <span className="shrink-0 text-sm text-neutral-500">

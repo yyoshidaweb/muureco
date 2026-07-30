@@ -119,17 +119,6 @@ describe("getSimilarArtists", () => {
               mbid: "123",
               match: "0.85",
               url: "https://www.last.fm/music/Muse",
-              image: [
-                {
-                  size: "small",
-                  "#text": "https://lastfm.freetls.fastly.net/i/u/34s/muse.jpg",
-                },
-                {
-                  size: "large",
-                  "#text":
-                    "https://lastfm.freetls.fastly.net/i/u/174s/muse.jpg",
-                },
-              ],
             },
           ],
         },
@@ -144,64 +133,8 @@ describe("getSimilarArtists", () => {
         mbid: "123",
         match: 0.85,
         url: "https://www.last.fm/music/Muse",
-        imageUrl: "https://lastfm.freetls.fastly.net/i/u/174s/muse.jpg",
       },
     ]);
-  });
-
-  it("omits imageUrl when image array is empty or blank", async () => {
-    mockFetch.mockResolvedValue({
-      ok: true,
-      json: async () => ({
-        similarartists: {
-          artist: [
-            {
-              name: "Muse",
-              match: "0.5",
-              url: "https://www.last.fm/music/Muse",
-              image: [{ size: "large", "#text": "" }],
-            },
-          ],
-        },
-      }),
-    });
-
-    const artists = await getSimilarArtists("Radiohead");
-
-    expect(artists[0]).toEqual({
-      name: "Muse",
-      match: 0.5,
-      url: "https://www.last.fm/music/Muse",
-      imageUrl: undefined,
-    });
-  });
-
-  it("omits imageUrl when Last.fm returns the default star placeholder", async () => {
-    mockFetch.mockResolvedValue({
-      ok: true,
-      json: async () => ({
-        similarartists: {
-          artist: [
-            {
-              name: "Muse",
-              match: "0.5",
-              url: "https://www.last.fm/music/Muse",
-              image: [
-                {
-                  size: "large",
-                  "#text":
-                    "https://lastfm.freetls.fastly.net/i/u/174s/2a96cbd8b46e442fc41c2b86b821562f.png",
-                },
-              ],
-            },
-          ],
-        },
-      }),
-    });
-
-    const artists = await getSimilarArtists("Radiohead");
-
-    expect(artists[0]?.imageUrl).toBeUndefined();
   });
 });
 
