@@ -7,7 +7,7 @@ type RecommendationListProps = {
   isLoading: boolean;
 };
 
-function ArtistImage({ name, imageUrl }: { name: string; imageUrl?: string }) {
+function ArtistImage({ imageUrl }: { imageUrl?: string }) {
   if (imageUrl) {
     return (
       // eslint-disable-next-line @next/next/no-img-element -- Last.fm CDN URL; next/image remote config not used
@@ -23,10 +23,17 @@ function ArtistImage({ name, imageUrl }: { name: string; imageUrl?: string }) {
 
   return (
     <span
-      className="flex size-10 shrink-0 items-center justify-center rounded bg-neutral-200 text-sm font-medium text-neutral-500"
+      className="flex size-10 shrink-0 items-center justify-center rounded bg-neutral-200 text-neutral-500"
       aria-hidden
     >
-      {name.trim().charAt(0).toUpperCase() || "?"}
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="currentColor"
+        className="size-5"
+      >
+        <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v1c0 .55.45 1 1 1h14c.55 0 1-.45 1-1v-1c0-2.66-5.33-4-8-4z" />
+      </svg>
     </span>
   );
 }
@@ -63,10 +70,7 @@ export function RecommendationList({
                     >
                       <span className="flex items-center justify-between gap-3">
                         <span className="flex min-w-0 items-center gap-3">
-                          <ArtistImage
-                            name={rec.name}
-                            imageUrl={rec.imageUrl}
-                          />
+                          <ArtistImage imageUrl={rec.imageUrl} />
                           <span className="truncate">{rec.name}</span>
                         </span>
                         <span className="shrink-0 text-sm text-neutral-500">
