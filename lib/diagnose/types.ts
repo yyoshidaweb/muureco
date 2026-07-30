@@ -9,6 +9,7 @@ export type Recommendation = {
   score: number;
   url: string;
   mbid?: string;
+  imageUrl?: string;
 };
 
 export type DiagnoseResult = {

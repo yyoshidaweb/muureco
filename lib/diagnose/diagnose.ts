@@ -52,6 +52,7 @@ function buildRecommendations(
     match: number;
     url: string;
     mbid?: string;
+    imageUrl?: string;
   }[][],
   excludedNames: Set<string>,
 ): Recommendation[] {
@@ -62,6 +63,7 @@ function buildRecommendations(
       score: number;
       url: string;
       mbid?: string;
+      imageUrl?: string;
       seedCount: number;
     }
   >();
@@ -77,12 +79,16 @@ function buildRecommendations(
       if (existing) {
         existing.score += artist.match;
         existing.seedCount += 1;
+        if (!existing.imageUrl && artist.imageUrl) {
+          existing.imageUrl = artist.imageUrl;
+        }
       } else {
         entries.set(key, {
           name: artist.name,
           score: artist.match,
           url: artist.url,
           mbid: artist.mbid,
+          imageUrl: artist.imageUrl,
           seedCount: 1,
         });
       }
@@ -90,11 +96,12 @@ function buildRecommendations(
   }
 
   return [...entries.values()]
-    .map(({ name, score, url, mbid, seedCount }) => ({
+    .map(({ name, score, url, mbid, imageUrl, seedCount }) => ({
       name,
       score: score * seedCount,
       url,
       mbid,
+      imageUrl,
     }))
     .sort((a, b) => b.score - a.score)
     .slice(0, RECOMMENDATION_LIMIT);
