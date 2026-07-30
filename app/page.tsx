@@ -126,7 +126,7 @@ export default function Home() {
         <div className="flex flex-1 flex-col gap-[1ch] md:min-h-[360px] md:flex-row">
           <div className="flex flex-1 flex-col gap-2">
             <h2 className="text-lg font-medium text-black">好きなアーティスト</h2>
-            <div className="flex flex-1 flex-col border border-neutral-200 bg-white p-4 sm:p-6">
+            <div className="flex flex-1 flex-col rounded-md border border-neutral-200 bg-white p-4 sm:p-6">
               <ArtistInputForm
                 onArtistsChange={handleArtistsChange}
                 error={error}
@@ -138,7 +138,7 @@ export default function Home() {
             <h2 className="text-lg font-medium text-black">
               おすすめアーティスト
             </h2>
-            <div className="flex flex-1 flex-col border border-neutral-200 bg-neutral-100 p-4 sm:p-6">
+            <div className="flex flex-1 flex-col rounded-md border border-neutral-200 bg-neutral-100 p-4 sm:p-6">
               <RecommendationList
                 recommendations={result?.recommendations ?? null}
                 tags={result?.diagnosis ?? null}
