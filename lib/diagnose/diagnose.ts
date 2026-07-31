@@ -119,7 +119,6 @@ async function withSpotifyArtist(
       ...recommendation,
       spotifyId: artist.id,
       ...(artist.imageUrl ? { imageUrl: artist.imageUrl } : {}),
-      ...(artist.topTrackId ? { spotifyTrackId: artist.topTrackId } : {}),
     };
   } catch {
     // Spotify 側の失敗で診断全体を止めず、Spotify 由来の情報なしで返す。

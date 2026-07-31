@@ -69,11 +69,6 @@ export function RecommendationList({
                   const isOpen =
                     spotifyId != null && spotifyId === openPreviewId;
                   const panelId = `spotify-preview-${spotifyId}`;
-                  // 代表曲が取れたときは1曲だけを、取れなかったときは
-                  // アーティストの埋め込みを出す。
-                  const embedPath = rec.spotifyTrackId
-                    ? `track/${rec.spotifyTrackId}`
-                    : `artist/${spotifyId}`;
 
                   return (
                     <li
@@ -125,7 +120,7 @@ export function RecommendationList({
                             title={t("preview.playerTitle", {
                               artist: rec.name,
                             })}
-                            src={`https://open.spotify.com/embed/${embedPath}`}
+                            src={`https://open.spotify.com/embed/artist/${spotifyId}`}
                             width="100%"
                             height={152}
                             loading="lazy"

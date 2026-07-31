@@ -18,17 +18,9 @@ type RawArtist = {
   images?: RawImage[];
 };
 
-type RawTrack = {
-  id: string;
-  artists?: { id: string }[];
-};
-
 type SearchResponse = {
   artists?: {
     items?: RawArtist[];
-  };
-  tracks?: {
-    items?: RawTrack[];
   };
 };
 
@@ -100,25 +92,11 @@ function pickImageUrl(images: RawImage[] | undefined): string | undefined {
   return images?.[images.length - 1]?.url;
 }
 
-function pickTopTrackId(
-  tracks: RawTrack[] | undefined,
-  artistId: string,
-): string | undefined {
-  // 曲名がアーティスト名と同じ別アーティストの曲が上位に来ることがあるため、
-  // 参加アーティストに当該アーティストを含む曲だけを候補にする。
-  return tracks?.find((track) => track.artists?.some((a) => a.id === artistId))
-    ?.id;
-}
-
-function mapArtist(
-  raw: RawArtist,
-  tracks: RawTrack[] | undefined,
-): SpotifyArtist {
+function mapArtist(raw: RawArtist): SpotifyArtist {
   return {
     id: raw.id,
     name: raw.name,
     imageUrl: pickImageUrl(raw.images),
-    topTrackId: pickTopTrackId(tracks, raw.id),
   };
 }
 
@@ -147,19 +125,15 @@ async function callApi<T>(
   return response.json();
 }
 
-// アーティストは先頭の1件しか使わないが、代表曲は別アーティストの曲を読み飛ばす
-// 余地が要るため、数件まとめて取得する。
-const SEARCH_LIMIT = "5";
-
 export async function searchArtist(
   name: string,
 ): Promise<SpotifyArtist | null> {
   const data = await callApi<SearchResponse>("search", {
     q: name,
-    type: "artist,track",
-    limit: SEARCH_LIMIT,
+    type: "artist",
+    limit: "1",
   });
 
   const top = data.artists?.items?.[0];
-  return top ? mapArtist(top, data.tracks?.items) : null;
+  return top ? mapArtist(top) : null;
 }

@@ -9,7 +9,6 @@ export type Recommendation = {
   mbid?: string;
   imageUrl?: string;
   spotifyId?: string;
-  spotifyTrackId?: string;
 };
 
 export type DiagnoseResult = {
