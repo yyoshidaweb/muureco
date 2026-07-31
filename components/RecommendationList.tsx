@@ -106,7 +106,8 @@ export function RecommendationList({
                               setOpenPreviewId(isOpen ? null : spotifyId)
                             }
                             aria-expanded={isOpen}
-                            aria-controls={panelId}
+                            // 閉じている間はプレイヤーを描画しないため、参照先も持たせない。
+                            aria-controls={isOpen ? panelId : undefined}
                             aria-label={t("preview.toggleLabel", {
                               artist: rec.name,
                             })}
