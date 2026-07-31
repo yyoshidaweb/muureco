@@ -1,16 +1,16 @@
 "use client";
 
 import { useEffect, useId, useRef } from "react";
-import { LegalDocument } from "@/components/LegalDocument";
+import { DocumentBody } from "@/components/DocumentBody";
+import type { ContentDocument } from "@/lib/content/types";
 import { useLocale } from "@/lib/i18n";
-import type { LegalDocument as LegalDocumentModel } from "@/lib/legal/content";
 
-type LegalModalProps = {
-  legalDocument: LegalDocumentModel;
+type DocumentModalProps = {
+  document: ContentDocument;
   onClose: () => void;
 };
 
-export function LegalModal({ legalDocument, onClose }: LegalModalProps) {
+export function DocumentModal({ document, onClose }: DocumentModalProps) {
   const { t } = useLocale();
   const titleId = useId();
   const closeButtonRef = useRef<HTMLButtonElement>(null);
@@ -59,7 +59,7 @@ export function LegalModal({ legalDocument, onClose }: LegalModalProps) {
         </div>
 
         <div className="overflow-y-auto">
-          <LegalDocument document={legalDocument} titleId={titleId} />
+          <DocumentBody document={document} titleId={titleId} />
         </div>
       </div>
     </div>

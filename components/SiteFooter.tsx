@@ -2,15 +2,15 @@
 
 import { Suspense, useCallback } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { LegalModal } from "@/components/LegalModal";
+import { DocumentModal } from "@/components/DocumentModal";
 import { useLocale } from "@/lib/i18n";
 import { privacyContent, termsContent } from "@/lib/legal/content";
 
 const LEGAL_QUERY = "legal";
 
-type LegalModalKind = "terms" | "privacy";
+type LegalKind = "terms" | "privacy";
 
-function parseLegalQuery(value: string | null): LegalModalKind | null {
+function parseLegalQuery(value: string | null): LegalKind | null {
   if (value === "terms" || value === "privacy") {
     return value;
   }
@@ -25,7 +25,7 @@ function SiteFooterContent() {
   const openModal = parseLegalQuery(searchParams.get(LEGAL_QUERY));
 
   const setLegalQuery = useCallback(
-    (kind: LegalModalKind | null) => {
+    (kind: LegalKind | null) => {
       const params = new URLSearchParams(searchParams.toString());
       if (kind) {
         params.set(LEGAL_QUERY, kind);
@@ -94,8 +94,8 @@ function SiteFooterContent() {
       </footer>
 
       {legalDocument ? (
-        <LegalModal
-          legalDocument={legalDocument}
+        <DocumentModal
+          document={legalDocument}
           onClose={() => setLegalQuery(null)}
         />
       ) : null}

@@ -1,10 +1,10 @@
-import type { LegalDocument as LegalDocumentModel } from "@/lib/legal/content";
+import type { ContentDocument } from "@/lib/content/types";
 
-export function LegalDocument({
+export function DocumentBody({
   document,
   titleId,
 }: {
-  document: LegalDocumentModel;
+  document: ContentDocument;
   titleId?: string;
 }) {
   return (

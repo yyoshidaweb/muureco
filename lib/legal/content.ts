@@ -1,26 +1,10 @@
+import type { ContentDocument } from "@/lib/content/types";
 import type { Locale } from "@/lib/i18n";
-
-export type LegalBlock =
-  | { type: "paragraph"; text: string }
-  | { type: "list"; items: string[] }
-  | { type: "link"; label: string; href: string };
-
-export type LegalSection = {
-  heading: string;
-  blocks: LegalBlock[];
-};
-
-export type LegalDocument = {
-  title: string;
-  preamble: string[];
-  sections: LegalSection[];
-  closing: string[];
-};
 
 const CONTACT_URL =
   "https://docs.google.com/forms/d/e/1FAIpQLSc8eKryKffl-fMdxtvVjxsXrXvU1WnwbDtRVMA5tw3hghR9AQ/viewform?usp=header";
 
-export const termsContent: Record<Locale, LegalDocument> = {
+export const termsContent: Record<Locale, ContentDocument> = {
   ja: {
     title: "利用規約",
     preamble: [
@@ -469,7 +453,7 @@ export const termsContent: Record<Locale, LegalDocument> = {
   },
 };
 
-export const privacyContent: Record<Locale, LegalDocument> = {
+export const privacyContent: Record<Locale, ContentDocument> = {
   ja: {
     title: "プライバシーポリシー",
     preamble: [
