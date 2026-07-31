@@ -3,15 +3,26 @@
 import { Suspense, useCallback } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { DocumentModal } from "@/components/DocumentModal";
+import { algorithmContent } from "@/lib/algorithm/content";
 import { useLocale } from "@/lib/i18n";
 import { privacyContent, termsContent } from "@/lib/legal/content";
 
 const LEGAL_QUERY = "legal";
+const ABOUT_QUERY = "about";
 
 type LegalKind = "terms" | "privacy";
+type AboutKind = "algorithm";
+type ModalKind = LegalKind | AboutKind;
 
 function parseLegalQuery(value: string | null): LegalKind | null {
   if (value === "terms" || value === "privacy") {
+    return value;
+  }
+  return null;
+}
+
+function parseAboutQuery(value: string | null): AboutKind | null {
+  if (value === "algorithm") {
     return value;
   }
   return null;
@@ -22,15 +33,18 @@ function SiteFooterContent() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const openModal = parseLegalQuery(searchParams.get(LEGAL_QUERY));
+  const openLegal = parseLegalQuery(searchParams.get(LEGAL_QUERY));
+  const openAbout = parseAboutQuery(searchParams.get(ABOUT_QUERY));
 
-  const setLegalQuery = useCallback(
-    (kind: LegalKind | null) => {
+  const setModalQuery = useCallback(
+    (kind: ModalKind | null) => {
       const params = new URLSearchParams(searchParams.toString());
-      if (kind) {
+      params.delete(LEGAL_QUERY);
+      params.delete(ABOUT_QUERY);
+      if (kind === "algorithm") {
+        params.set(ABOUT_QUERY, kind);
+      } else if (kind) {
         params.set(LEGAL_QUERY, kind);
-      } else {
-        params.delete(LEGAL_QUERY);
       }
       const query = params.toString();
       router.replace(query ? `${pathname}?${query}` : pathname, {
@@ -40,12 +54,14 @@ function SiteFooterContent() {
     [pathname, router, searchParams],
   );
 
-  const legalDocument =
-    openModal === "terms"
+  const openDocument =
+    openLegal === "terms"
       ? termsContent[locale]
-      : openModal === "privacy"
+      : openLegal === "privacy"
         ? privacyContent[locale]
-        : null;
+        : openAbout === "algorithm"
+          ? algorithmContent[locale]
+          : null;
 
   return (
     <>
@@ -77,14 +93,21 @@ function SiteFooterContent() {
           <div className="mt-1 flex flex-wrap gap-x-4 gap-y-1">
             <button
               type="button"
-              onClick={() => setLegalQuery("terms")}
+              onClick={() => setModalQuery("algorithm")}
+              className="cursor-pointer underline hover:text-black"
+            >
+              {t("link.algorithm")}
+            </button>
+            <button
+              type="button"
+              onClick={() => setModalQuery("terms")}
               className="cursor-pointer underline hover:text-black"
             >
               {t("link.terms")}
             </button>
             <button
               type="button"
-              onClick={() => setLegalQuery("privacy")}
+              onClick={() => setModalQuery("privacy")}
               className="cursor-pointer underline hover:text-black"
             >
               {t("link.privacy")}
@@ -93,10 +116,10 @@ function SiteFooterContent() {
         </div>
       </footer>
 
-      {legalDocument ? (
+      {openDocument ? (
         <DocumentModal
-          document={legalDocument}
-          onClose={() => setLegalQuery(null)}
+          document={openDocument}
+          onClose={() => setModalQuery(null)}
         />
       ) : null}
     </>

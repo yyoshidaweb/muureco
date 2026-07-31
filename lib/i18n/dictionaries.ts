@@ -30,6 +30,7 @@ const ja: Dictionary = {
   "link.lastfm": "Last.fm ↗",
   "link.terms": "利用規約",
   "link.privacy": "プライバシーポリシー",
+  "link.algorithm": "おすすめアルゴリズムについて",
   "modal.close": "閉じる",
 };
 
@@ -62,6 +63,7 @@ const en: Dictionary = {
   "link.lastfm": "Last.fm ↗",
   "link.terms": "Terms of Service",
   "link.privacy": "Privacy Policy",
+  "link.algorithm": "How recommendations work",
   "modal.close": "Close",
 };
 
