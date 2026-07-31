@@ -1,6 +1,11 @@
 "use client";
 
-import { LOCALES, useLocale, type Locale, type TranslationKey } from "@/lib/i18n";
+import {
+  LOCALES,
+  useLocale,
+  type Locale,
+  type TranslationKey,
+} from "@/lib/i18n";
 
 const LOCALE_LABEL_KEYS: Record<Locale, TranslationKey> = {
   ja: "language.ja",

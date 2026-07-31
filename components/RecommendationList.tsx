@@ -35,7 +35,7 @@ export function RecommendationList({
   tags,
   isLoading,
 }: RecommendationListProps) {
-  const { t, lastfmUrl } = useLocale();
+  const { t } = useLocale();
   // 開いているプレイヤーは常に1件だけにして、同時再生を防ぐ。
   const [openPreviewId, setOpenPreviewId] = useState<string | null>(null);
   const [shownRecommendations, setShownRecommendations] =
@@ -75,7 +75,7 @@ export function RecommendationList({
                       key={rec.mbid ?? rec.name}
                       className="overflow-hidden rounded-md border border-neutral-300 bg-white text-black"
                     >
-                      <div className="relative flex items-center gap-3 px-4 py-3 transition-colors hover:bg-neutral-50">
+                      <div className="flex items-center gap-3 px-4 py-3">
                         {rec.imageUrl ? (
                           <Image
                             src={rec.imageUrl}
@@ -90,15 +90,9 @@ export function RecommendationList({
                         ) : (
                           <ArtistPlaceholder />
                         )}
-                        <a
-                          href={lastfmUrl(rec.url)}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          // 疑似要素を行全体に広げてリンク範囲とし、その上に試聴ボタンを重ねる。
-                          className="min-w-0 flex-1 truncate after:absolute after:inset-0"
-                        >
+                        <span className="min-w-0 flex-1 truncate">
                           {rec.name}
-                        </a>
+                        </span>
                         {spotifyId && (
                           <button
                             type="button"
@@ -111,14 +105,11 @@ export function RecommendationList({
                             aria-label={t("preview.toggleLabel", {
                               artist: rec.name,
                             })}
-                            className="relative shrink-0 rounded border border-neutral-300 px-2 py-1 text-sm text-neutral-600 transition-colors hover:bg-neutral-100"
+                            className="shrink-0 cursor-pointer rounded border border-neutral-300 px-2 py-1 text-sm text-neutral-600 transition-colors hover:bg-neutral-100"
                           >
                             {isOpen ? t("preview.close") : t("preview.open")}
                           </button>
                         )}
-                        <span className="shrink-0 text-sm text-neutral-500">
-                          {t("link.lastfm")}
-                        </span>
                       </div>
                       {isOpen && (
                         <div

@@ -11,9 +11,9 @@ import { translate } from "./translate";
 
 describe("localizeLastfmUrl", () => {
   it("adds /ja prefix for Japanese artist pages", () => {
-    expect(
-      localizeLastfmUrl("https://www.last.fm/music/Radiohead", "ja"),
-    ).toBe("https://www.last.fm/ja/music/Radiohead");
+    expect(localizeLastfmUrl("https://www.last.fm/music/Radiohead", "ja")).toBe(
+      "https://www.last.fm/ja/music/Radiohead",
+    );
   });
 
   it("adds /ja prefix for Japanese tag pages", () => {
@@ -23,9 +23,9 @@ describe("localizeLastfmUrl", () => {
   });
 
   it("keeps English URLs without a language prefix", () => {
-    expect(
-      localizeLastfmUrl("https://www.last.fm/music/Radiohead", "en"),
-    ).toBe("https://www.last.fm/music/Radiohead");
+    expect(localizeLastfmUrl("https://www.last.fm/music/Radiohead", "en")).toBe(
+      "https://www.last.fm/music/Radiohead",
+    );
   });
 
   it("strips an existing language prefix when switching to English", () => {
@@ -103,12 +103,12 @@ describe("locale helpers", () => {
   });
 
   it("detects locale from country headers", () => {
-    expect(
-      detectLocaleFromHeaders(new Headers({ "cf-ipcountry": "JP" })),
-    ).toBe("ja");
-    expect(
-      detectLocaleFromHeaders(new Headers({ "cf-ipcountry": "US" })),
-    ).toBe("en");
+    expect(detectLocaleFromHeaders(new Headers({ "cf-ipcountry": "JP" }))).toBe(
+      "ja",
+    );
+    expect(detectLocaleFromHeaders(new Headers({ "cf-ipcountry": "US" }))).toBe(
+      "en",
+    );
     expect(
       detectLocaleFromHeaders(new Headers({ "x-vercel-ip-country": "JP" })),
     ).toBe("ja");

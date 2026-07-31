@@ -27,10 +27,7 @@ export function localizeLastfmUrl(url: string, locale: Locale): string {
     return url;
   }
 
-  if (
-    parsed.hostname !== "www.last.fm" &&
-    parsed.hostname !== "last.fm"
-  ) {
+  if (parsed.hostname !== "www.last.fm" && parsed.hostname !== "last.fm") {
     return url;
   }
 

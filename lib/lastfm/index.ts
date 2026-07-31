@@ -1,8 +1,4 @@
-export {
-  getArtistTopTags,
-  getSimilarArtists,
-  searchArtist,
-} from "./client";
+export { getArtistTopTags, getSimilarArtists, searchArtist } from "./client";
 export type {
   GetArtistTopTagsOptions,
   GetSimilarArtistsOptions,

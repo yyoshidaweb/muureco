@@ -1,9 +1,5 @@
 import { NextResponse } from "next/server";
-import {
-  LastfmApiError,
-  LastfmConfigError,
-  searchArtist,
-} from "@/lib/lastfm";
+import { LastfmApiError, LastfmConfigError, searchArtist } from "@/lib/lastfm";
 
 const SUGGEST_LIMIT = 10;
 
@@ -21,7 +17,6 @@ export async function GET(request: Request) {
       artists: artists.map((artist) => ({
         name: artist.name,
         mbid: artist.mbid || undefined,
-        url: artist.url,
       })),
     });
   } catch (error) {

@@ -89,34 +89,20 @@ describe("diagnose", () => {
     const result = await diagnose(["Radiohead", "Bjork"]);
 
     expect(result.diagnosis).toEqual([
-      {
-        name: "rock",
-        score: 160,
-        url: "https://www.last.fm/tag/rock",
-      },
-      {
-        name: "alternative",
-        score: 80,
-        url: "https://www.last.fm/tag/alternative",
-      },
-      {
-        name: "electronic",
-        score: 40,
-        url: "https://www.last.fm/tag/electronic",
-      },
+      { name: "rock", score: 160 },
+      { name: "alternative", score: 80 },
+      { name: "electronic", score: 40 },
     ]);
 
     expect(result.recommendations).toEqual([
       {
         name: "Muse",
         score: 2.8,
-        url: "https://www.last.fm/music/Muse",
         mbid: "muse-mbid",
       },
       {
         name: "Portishead",
         score: 0.7,
-        url: "https://www.last.fm/music/Portishead",
       },
     ]);
 
@@ -167,13 +153,7 @@ describe("diagnose", () => {
       mbid: undefined,
     });
 
-    expect(result.recommendations).toEqual([
-      {
-        name: "Muse",
-        score: 0.9,
-        url: "https://www.last.fm/music/Muse",
-      },
-    ]);
+    expect(result.recommendations).toEqual([{ name: "Muse", score: 0.9 }]);
   });
 
   it("throws ArtistNotFoundError when search returns no results", async () => {
@@ -219,7 +199,6 @@ describe("diagnose recommendation Spotify data", () => {
       {
         name: "Muse",
         score: 0.9,
-        url: "https://www.last.fm/music/Muse",
         imageUrl: "https://i.scdn.co/image/muse",
         spotifyId: "muse-id",
       },
@@ -239,7 +218,6 @@ describe("diagnose recommendation Spotify data", () => {
       {
         name: "Muse",
         score: 0.9,
-        url: "https://www.last.fm/music/Muse",
         spotifyId: "muse-id",
       },
     ]);
@@ -295,12 +273,6 @@ describe("diagnose recommendation Spotify data", () => {
 
     const result = await diagnose(["Radiohead"]);
 
-    expect(result.recommendations).toEqual([
-      {
-        name: "Muse",
-        score: 0.9,
-        url: "https://www.last.fm/music/Muse",
-      },
-    ]);
+    expect(result.recommendations).toEqual([{ name: "Muse", score: 0.9 }]);
   });
 });
