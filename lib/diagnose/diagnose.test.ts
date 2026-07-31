@@ -217,6 +217,35 @@ describe("diagnose recommendation images", () => {
     ]);
   });
 
+  it("accepts a romanized Spotify name for a Japanese artist", async () => {
+    mockSearchArtist.mockResolvedValueOnce([
+      {
+        name: "サカナクション",
+        mbid: "",
+        url: "https://www.last.fm/music/%E3%82%B5%E3%82%AB%E3%83%8A%E3%82%AF%E3%82%B7%E3%83%A7%E3%83%B3",
+      },
+    ]);
+    mockGetArtistTopTags.mockResolvedValueOnce([]);
+    mockGetSimilarArtists.mockResolvedValueOnce([
+      {
+        name: "米津玄師",
+        match: 0.9,
+        url: "https://www.last.fm/music/%E7%B1%B3%E6%B4%A5%E7%8E%84%E5%B8%AB",
+      },
+    ]);
+    mockSearchSpotifyArtist.mockResolvedValueOnce({
+      id: "yonezu-id",
+      name: "Kenshi Yonezu",
+      imageUrl: "https://i.scdn.co/image/yonezu",
+    });
+
+    const result = await diagnose(["サカナクション"]);
+
+    expect(result.recommendations[0]?.imageUrl).toBe(
+      "https://i.scdn.co/image/yonezu",
+    );
+  });
+
   it("omits the image URL when the Spotify artist name does not match", async () => {
     mockSingleRecommendation();
     mockSearchSpotifyArtist.mockResolvedValueOnce({

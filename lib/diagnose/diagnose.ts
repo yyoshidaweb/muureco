@@ -101,14 +101,24 @@ function buildRecommendations(
     .slice(0, RECOMMENDATION_LIMIT);
 }
 
+/** ひらがな・カタカナ・漢字（半角カナを含む）。 */
+const JAPANESE_PATTERN = /[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff\uff66-\uff9f]/;
+
 async function withImageUrl(
   recommendation: Recommendation,
 ): Promise<Recommendation> {
   try {
     const artist = await searchSpotifyArtist(recommendation.name);
 
+    if (!artist?.imageUrl) {
+      return recommendation;
+    }
+
+    // Last.fm が日本語表記、Spotify がローマ字表記を返すことが多く、日本語名では
+    // 文字列が一致しない。表記体系が揃うラテン文字名のときだけ、別アーティストの
+    // 画像を拾わないよう名前の一致を求める。
     if (
-      !artist?.imageUrl ||
+      !JAPANESE_PATTERN.test(recommendation.name) &&
       normalizeName(artist.name) !== normalizeName(recommendation.name)
     ) {
       return recommendation;
