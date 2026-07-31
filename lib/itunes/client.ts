@@ -1,0 +1,122 @@
+import { ItunesApiError } from "./errors";
+import type { ItunesArtist, ItunesTrack } from "./types";
+
+const BASE_URL = "https://itunes.apple.com/";
+// 日本のストアを見る。アーティスト名は国に関わらず正規表記で返る一方、曲名は
+// 日本語表記で返るため、再生中の表示に使う曲名の質が上がる。
+const COUNTRY = "JP";
+// 表記の揺れで先頭に別のアーティストが来ることがあるため、候補を数件取る。
+const ARTIST_SEARCH_LIMIT = "5";
+// lookup の limit はアーティストごとに効く。試聴に使うのは1曲だけ。
+const TRACK_LOOKUP_LIMIT = "1";
+// 上限超過は 429 ではなく 403 で返る。残量を知るヘッダーはない。
+const RATE_LIMIT_STATUS = 403;
+// 上限は約20回/分。当たったあとはこの時間だけ呼び出しを止める。
+const RATE_LIMIT_COOLDOWN_MS = 60_000;
+
+let rateLimitedUntil = 0;
+
+type RawResult = {
+  wrapperType?: string;
+  artistId?: number;
+  artistName?: string;
+  trackName?: string;
+  previewUrl?: string;
+};
+
+type ApiResponse = {
+  results?: RawResult[];
+};
+
+async function callApi<T>(
+  path: string,
+  params: Record<string, string>,
+): Promise<T> {
+  if (Date.now() < rateLimitedUntil) {
+    throw new ItunesApiError(
+      RATE_LIMIT_STATUS,
+      "Skipped iTunes Search API request while rate limited",
+    );
+  }
+
+  const url = new URL(path, BASE_URL);
+  url.searchParams.set("country", COUNTRY);
+
+  for (const [key, value] of Object.entries(params)) {
+    url.searchParams.set(key, value);
+  }
+
+  const response = await fetch(url);
+
+  if (response.status === RATE_LIMIT_STATUS) {
+    rateLimitedUntil = Date.now() + RATE_LIMIT_COOLDOWN_MS;
+  }
+
+  if (!response.ok) {
+    throw new ItunesApiError(
+      response.status,
+      `iTunes Search API request failed with HTTP ${response.status}`,
+    );
+  }
+
+  // Content-Type が text/javascript で返ることがあるため、テキストとして受ける。
+  return JSON.parse(await response.text()) as T;
+}
+
+/** 名前に一致しうるアーティストの候補を、関連度の高い順に返す。 */
+export async function searchArtists(name: string): Promise<ItunesArtist[]> {
+  const data = await callApi<ApiResponse>("search", {
+    term: name,
+    entity: "musicArtist",
+    limit: ARTIST_SEARCH_LIMIT,
+  });
+
+  return (data.results ?? []).flatMap((raw) =>
+    raw.artistId !== undefined && raw.artistName !== undefined
+      ? [{ id: raw.artistId, name: raw.artistName }]
+      : [],
+  );
+}
+
+/**
+ * 複数アーティストの試聴用の曲をまとめて取得する。lookup は ID をカンマ区切りで
+ * 受け付けるため、アーティストが何組でもリクエストは1回で済む。
+ */
+export async function lookupTracks(
+  artistIds: number[],
+): Promise<Map<number, ItunesTrack>> {
+  const tracks = new Map<number, ItunesTrack>();
+
+  if (artistIds.length === 0) {
+    return tracks;
+  }
+
+  const data = await callApi<ApiResponse>("lookup", {
+    id: artistIds.join(","),
+    entity: "song",
+    limit: TRACK_LOOKUP_LIMIT,
+  });
+
+  for (const raw of data.results ?? []) {
+    if (raw.wrapperType !== "track") {
+      continue;
+    }
+    if (
+      raw.artistId === undefined ||
+      raw.trackName === undefined ||
+      raw.previewUrl === undefined
+    ) {
+      continue;
+    }
+    if (tracks.has(raw.artistId)) {
+      continue;
+    }
+
+    tracks.set(raw.artistId, {
+      name: raw.trackName,
+      previewUrl: raw.previewUrl,
+    });
+  }
+
+  return tracks;
+}
