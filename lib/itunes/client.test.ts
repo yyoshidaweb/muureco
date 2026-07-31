@@ -99,7 +99,10 @@ describe("lookupTracks", () => {
       [1, { name: "Madness", previewUrl: "https://audio.example/madness.m4a" }],
       [
         2,
-        { name: "Glory Box", previewUrl: "https://audio.example/glory-box.m4a" },
+        {
+          name: "Glory Box",
+          previewUrl: "https://audio.example/glory-box.m4a",
+        },
       ],
     ]);
   });

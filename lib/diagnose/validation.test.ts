@@ -4,16 +4,15 @@ import { parseDiagnoseRequest } from "./validation";
 
 describe("parseDiagnoseRequest", () => {
   it("returns trimmed artist names from a valid request", () => {
-    expect(parseDiagnoseRequest({ artists: [" Radiohead ", "Bjork"] })).toEqual(
-      ["Radiohead", "Bjork"],
-    );
+    expect(parseDiagnoseRequest({ artists: [" Radiohead ", "Bjork"] })).toEqual([
+      "Radiohead",
+      "Bjork",
+    ]);
   });
 
   it("rejects non-object bodies", () => {
     expect(() => parseDiagnoseRequest(null)).toThrow(DiagnoseValidationError);
-    expect(() => parseDiagnoseRequest("invalid")).toThrow(
-      DiagnoseValidationError,
-    );
+    expect(() => parseDiagnoseRequest("invalid")).toThrow(DiagnoseValidationError);
   });
 
   it("rejects when artists is not an array", () => {
