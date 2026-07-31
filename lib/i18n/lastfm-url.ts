@@ -16,10 +16,15 @@ const LASTFM_LANG_PREFIXES = new Set([
 ]);
 
 /**
- * Rewrite a Last.fm URL for the given UI locale.
- * Japanese uses `/ja/...`; English uses the default (no language prefix).
+ * Normalize a Last.fm URL to the default (English) path.
+ *
+ * Do not add locale prefixes such as `/ja/`. Last.fm currently returns HTTP 502
+ * for Japanese artist pages (`/ja/music/...`), so linking to localized paths
+ * breaks outbound navigation from Muureco.
+ *
+ * The `locale` argument is kept for call-site compatibility but is unused.
  */
-export function localizeLastfmUrl(url: string, locale: Locale): string {
+export function localizeLastfmUrl(url: string, _locale: Locale): string {
   let parsed: URL;
   try {
     parsed = new URL(url);
@@ -41,18 +46,7 @@ export function localizeLastfmUrl(url: string, locale: Locale): string {
     segments.shift();
   }
 
-  if (locale === "ja") {
-    segments.unshift("ja");
-  }
-
   parsed.pathname = segments.length > 0 ? `/${segments.join("/")}` : "/";
-
-  // Preserve trailing slash for the localized homepage only.
-  if (segments.length === 1 && locale === "ja" && url.endsWith("/")) {
-    parsed.pathname = "/ja/";
-  } else if (segments.length === 0) {
-    parsed.pathname = "/";
-  }
 
   return parsed.toString();
 }

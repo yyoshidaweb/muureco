@@ -10,15 +10,15 @@ import { localizeLastfmUrl } from "./lastfm-url";
 import { translate } from "./translate";
 
 describe("localizeLastfmUrl", () => {
-  it("adds /ja prefix for Japanese artist pages", () => {
+  it("keeps English artist URLs for Japanese locale (avoids Last.fm /ja/music 502)", () => {
     expect(
       localizeLastfmUrl("https://www.last.fm/music/Radiohead", "ja"),
-    ).toBe("https://www.last.fm/ja/music/Radiohead");
+    ).toBe("https://www.last.fm/music/Radiohead");
   });
 
-  it("adds /ja prefix for Japanese tag pages", () => {
+  it("keeps English tag URLs for Japanese locale", () => {
     expect(localizeLastfmUrl("https://www.last.fm/tag/rock", "ja")).toBe(
-      "https://www.last.fm/ja/tag/rock",
+      "https://www.last.fm/tag/rock",
     );
   });
 
@@ -28,23 +28,29 @@ describe("localizeLastfmUrl", () => {
     ).toBe("https://www.last.fm/music/Radiohead");
   });
 
-  it("strips an existing language prefix when switching to English", () => {
+  it("strips an existing language prefix", () => {
     expect(
       localizeLastfmUrl("https://www.last.fm/ja/music/Radiohead", "en"),
     ).toBe("https://www.last.fm/music/Radiohead");
+    expect(
+      localizeLastfmUrl("https://www.last.fm/ja/music/Radiohead", "ja"),
+    ).toBe("https://www.last.fm/music/Radiohead");
   });
 
-  it("replaces an existing language prefix when switching to Japanese", () => {
+  it("strips non-Japanese language prefixes", () => {
     expect(
       localizeLastfmUrl("https://www.last.fm/fr/music/Radiohead", "ja"),
-    ).toBe("https://www.last.fm/ja/music/Radiohead");
+    ).toBe("https://www.last.fm/music/Radiohead");
   });
 
-  it("localizes the Last.fm homepage", () => {
+  it("normalizes the Last.fm homepage to the default path", () => {
     expect(localizeLastfmUrl("https://www.last.fm/", "ja")).toBe(
-      "https://www.last.fm/ja/",
+      "https://www.last.fm/",
     );
     expect(localizeLastfmUrl("https://www.last.fm/", "en")).toBe(
+      "https://www.last.fm/",
+    );
+    expect(localizeLastfmUrl("https://www.last.fm/ja/", "ja")).toBe(
       "https://www.last.fm/",
     );
   });
