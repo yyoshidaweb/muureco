@@ -4,6 +4,7 @@ import {
   searchArtist,
 } from "@/lib/lastfm";
 import type { LastfmArtist } from "@/lib/lastfm";
+import { searchArtist as searchSpotifyArtist } from "@/lib/spotify";
 import { ArtistNotFoundError } from "./errors";
 import type { DiagnoseResult, DiagnosisTag, Recommendation } from "./types";
 
@@ -100,6 +101,26 @@ function buildRecommendations(
     .slice(0, RECOMMENDATION_LIMIT);
 }
 
+async function withImageUrl(
+  recommendation: Recommendation,
+): Promise<Recommendation> {
+  try {
+    const artist = await searchSpotifyArtist(recommendation.name);
+
+    if (
+      !artist?.imageUrl ||
+      normalizeName(artist.name) !== normalizeName(recommendation.name)
+    ) {
+      return recommendation;
+    }
+
+    return { ...recommendation, imageUrl: artist.imageUrl };
+  } catch {
+    // Spotify 側の失敗で診断全体を止めず、画像なしで返す。
+    return recommendation;
+  }
+}
+
 export async function diagnose(artistNames: string[]): Promise<DiagnoseResult> {
   const resolved = await Promise.all(artistNames.map(resolveArtist));
 
@@ -121,11 +142,13 @@ export async function diagnose(artistNames: string[]): Promise<DiagnoseResult> {
     }),
   );
 
+  const recommendations = buildRecommendations(
+    artistData.map((d) => d.similar),
+    excludedNames,
+  );
+
   return {
     diagnosis: buildDiagnosis(artistData.map((d) => d.tags)),
-    recommendations: buildRecommendations(
-      artistData.map((d) => d.similar),
-      excludedNames,
-    ),
+    recommendations: await Promise.all(recommendations.map(withImageUrl)),
   };
 }
