@@ -35,7 +35,7 @@ export const termsContent: Record<Locale, LegalDocument> = {
             items: [
               "本規約は、ユーザーと運営者との間の本サービスの利用に関わる一切の関係に適用されるものとします。",
               "運営者は本サービスに関し、本規約のほか、ご利用にあたってのルール等、各種の定め（以下、「個別規定」といいます。）をすることがあります。これら個別規定はその名称のいかんに関わらず、本規約の一部を構成するものとします。",
-              "本規約の規定が前条の個別規定の規定と矛盾する場合には、個別規定において特段の定めなき限り、個別規定の規定が優先されるものとします。",
+              "本規約の規定が個別規定の規定と矛盾する場合には、個別規定において特段の定めなき限り、個別規定の規定が優先されるものとします。",
             ],
           },
         ],
@@ -71,7 +71,7 @@ export const termsContent: Record<Locale, LegalDocument> = {
           {
             type: "list",
             items: [
-              "ユーザーが本サービスに入力したアーティスト名その他の情報および診断結果は、本サービスの提供（診断処理およびおすすめ表示）のためにのみ、一時的に使用します。",
+              "ユーザーが本サービスに入力したアーティスト名その他の情報および診断結果は、本サービスの提供（診断処理およびおすすめアーティスト表示）のためにのみ、一時的に使用します。",
               "運営者は、前項の入力データおよび診断結果を、データベースその他の永続的な保存先に保持しません。処理完了後、運営者はこれらを保持しません。",
             ],
           },
@@ -294,7 +294,7 @@ export const termsContent: Record<Locale, LegalDocument> = {
           {
             type: "list",
             items: [
-              "Artist names and other information entered by Users, as well as diagnosis results, are used only temporarily to provide the Service (diagnosis processing and recommendation display).",
+              "Artist names and other information entered by Users, as well as diagnosis results, are used only temporarily to provide the Service (diagnosis processing and display of recommended artists).",
               "The Operator does not retain such input data or diagnosis results in databases or any other persistent storage. After processing is completed, the Operator does not keep them.",
             ],
           },
@@ -319,8 +319,8 @@ export const termsContent: Record<Locale, LegalDocument> = {
               "Impersonating other Users",
               "Directly or indirectly providing benefits to antisocial forces in connection with the Operator's services",
               "Infringing the intellectual property rights, portrait rights, privacy, honor, or other rights or interests of the Operator, other Users, or third parties",
-              "Transmitting through the Service content that is excessively violent, sexually explicit, discriminatory, that encourages suicide, self-harm, or drug abuse, or that is otherwise antisocial and offensive to others",
-              "Acts for commercial purposes such as solicitation or advertising (except those approved by the Operator), harassment or defamation, acts intended to cause disadvantage, damage, or discomfort to the Operator, other Users, or third parties, or other use of the Service for purposes other than those intended",
+              "Transmitting through the Service content that is excessively violent, sexually explicit, or discriminatory; content that induces or promotes suicide, self-harm, or drug abuse; or other antisocial content that causes discomfort to others",
+              "Acts for business, promotional, advertising, solicitation, or other commercial purposes (except those approved by the Operator); acts for the purpose of harassment or defamation; acts intended to cause disadvantage, damage, or discomfort to the Operator, other Users, or third parties; or other use of the Service for purposes different from those intended for the Service",
               "Religious activities or solicitation for religious organizations",
               "Any other acts the Operator deems inappropriate",
             ],
@@ -389,8 +389,8 @@ export const termsContent: Record<Locale, LegalDocument> = {
             type: "list",
             items: [
               "The Operator makes no express or implied warranty that the Service is free from defects in fact or in law (including defects related to safety, reliability, accuracy, completeness, effectiveness, fitness for a particular purpose, or security, as well as errors, bugs, and infringement of rights).",
-              "Except in cases of willful misconduct or gross negligence by the Operator, the Operator shall bear no liability for any damage incurred by Users arising from the Service. However, if the contract between the Operator and the User regarding the Service (including these Terms) constitutes a consumer contract under the Consumer Contract Act, this disclaimer shall not apply.",
-              "Even in the case of the preceding proviso, the Operator shall bear no liability for special damages arising from non-performance or tort due to the Operator's negligence (excluding gross negligence), including damages that were or could have been foreseen. Compensation for damages arising from such negligence shall be limited to the amount of fees received from the User for the month in which the damage occurred.",
+              "Except in cases of willful misconduct or gross negligence by the Operator, the Operator shall bear no liability for any damage incurred by Users arising from the Service. However, if the contract between the Operator and the User regarding the Service (including these Terms) constitutes a consumer contract under Japan's Consumer Contract Act, this disclaimer shall not apply.",
+              "Even in the case of the preceding proviso, the Operator shall bear no liability for damages arising from special circumstances among damages incurred by Users due to non-performance or tort based on the Operator's negligence (excluding gross negligence) (including cases where the Operator or the User foresaw or could have foreseen the occurrence of the damage). In addition, compensation for damages incurred by Users due to non-performance or tort based on the Operator's negligence (excluding gross negligence) shall be limited to the amount of fees received from the User in the month in which such damage occurred.",
               "The Operator shall bear no liability for any transactions, communications, or disputes between Users and other Users or third parties in connection with the Service.",
             ],
           },
@@ -662,7 +662,7 @@ export const privacyContent: Record<Locale, LegalDocument> = {
         blocks: [
           {
             type: "paragraph",
-            text: '"Personal Information" means personal information as defined under the Act on the Protection of Personal Information, namely information relating to a living individual that can identify a specific individual by name, date of birth, address, telephone number, contact information, or other descriptions contained in such information, as well as data relating to appearance, fingerprints, voiceprints, and information that can identify a specific individual by itself, such as the insurer number on a health insurance card (personally identifiable information).',
+            text: '"Personal Information" means personal information as defined under Japan\'s Act on the Protection of Personal Information, namely information relating to a living individual that can identify a specific individual by name, date of birth, address, telephone number, contact information, or other descriptions contained in such information, as well as data relating to appearance, fingerprints, voiceprints, and information that can identify a specific individual by itself, such as the insurer number on a health insurance card (personally identifiable information).',
           },
         ],
       },
@@ -698,7 +698,7 @@ export const privacyContent: Record<Locale, LegalDocument> = {
           },
           {
             type: "paragraph",
-            text: "Artist names entered by Users are used only temporarily for diagnosis processing and recommendation display, and are not used for analytics, advertising, or sales purposes.",
+            text: "Artist names entered by Users are used only temporarily for diagnosis processing and display of recommended artists, and are not used for analytics, advertising, or sales purposes.",
           },
         ],
       },
@@ -731,7 +731,7 @@ export const privacyContent: Record<Locale, LegalDocument> = {
         blocks: [
           {
             type: "paragraph",
-            text: "Except in the following cases, the Operator shall not provide Personal Information to third parties without the prior consent of the User. However, this does not apply where permitted by the Act on the Protection of Personal Information or other laws and regulations.",
+            text: "Except in the following cases, the Operator shall not provide Personal Information to third parties without the prior consent of the User. However, this does not apply where permitted by Japan's Act on the Protection of Personal Information or other laws and regulations.",
           },
           {
             type: "list",
@@ -798,7 +798,7 @@ export const privacyContent: Record<Locale, LegalDocument> = {
               'If an individual requests suspension of use or erasure of Personal Information ("Suspension of Use, etc.") on the grounds that the Personal Information is being handled beyond the scope of the purposes of use, or was obtained by wrongful means, the Operator shall conduct the necessary investigation without delay.',
               "Based on the results of the investigation under the preceding paragraph, if the Operator determines that it is necessary to respond to the request, the Operator shall perform the Suspension of Use, etc. of such Personal Information without delay.",
               "If the Operator performs Suspension of Use, etc. pursuant to the preceding paragraph, or decides not to perform Suspension of Use, etc., the Operator shall notify the individual of that fact without delay.",
-              "Notwithstanding the preceding two paragraphs, if Suspension of Use, etc. would involve substantial cost or is otherwise difficult, and alternative measures necessary to protect the User's rights and interests can be taken, the Operator shall take such alternative measures.",
+              "Notwithstanding the preceding two items, if Suspension of Use, etc. would involve substantial cost or is otherwise difficult, and alternative measures necessary to protect the User's rights and interests can be taken, the Operator shall take such alternative measures.",
             ],
           },
         ],
