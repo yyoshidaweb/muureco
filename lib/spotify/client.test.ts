@@ -14,13 +14,17 @@ function tokenResponse(expiresIn = 3600) {
   };
 }
 
-function searchResponse(images: { url: string }[] = []) {
+function searchResponse(
+  images: { url: string }[] = [],
+  tracks: { id: string; artists?: { id: string }[] }[] = [],
+) {
   return {
     ok: true,
     json: async () => ({
       artists: {
         items: [{ id: "artist-id", name: "Muse", images }],
       },
+      tracks: { items: tracks },
     }),
   };
 }
@@ -44,10 +48,13 @@ describe("searchArtist", () => {
     mockFetch
       .mockResolvedValueOnce(tokenResponse())
       .mockResolvedValueOnce(
-        searchResponse([
-          { url: "https://i.scdn.co/image/large" },
-          { url: "https://i.scdn.co/image/small" },
-        ]),
+        searchResponse(
+          [
+            { url: "https://i.scdn.co/image/large" },
+            { url: "https://i.scdn.co/image/small" },
+          ],
+          [{ id: "track-id", artists: [{ id: "artist-id" }] }],
+        ),
       );
 
     const { searchArtist } = await loadClient();
@@ -58,6 +65,7 @@ describe("searchArtist", () => {
       name: "Muse",
       // サムネイル用途なので最小の画像を選ぶ。
       imageUrl: "https://i.scdn.co/image/small",
+      topTrackId: "track-id",
     });
 
     expect(mockFetch).toHaveBeenNthCalledWith(
@@ -73,7 +81,7 @@ describe("searchArtist", () => {
     expect(mockFetch).toHaveBeenNthCalledWith(
       2,
       expect.objectContaining({
-        href: "https://api.spotify.com/v1/search?q=Muse&type=artist&limit=1",
+        href: "https://api.spotify.com/v1/search?q=Muse&type=artist%2Ctrack&limit=5",
       }),
       expect.objectContaining({
         headers: { Authorization: "Bearer test-token" },
@@ -101,6 +109,40 @@ describe("searchArtist", () => {
     const artist = await searchArtist("Muse");
 
     expect(artist?.imageUrl).toBeUndefined();
+  });
+
+  it("skips tracks by other artists when picking the top track", async () => {
+    mockFetch.mockResolvedValueOnce(tokenResponse()).mockResolvedValueOnce(
+      searchResponse(
+        [],
+        [
+          // 曲名がアーティスト名と同じ、別アーティストの曲。
+          { id: "other-track-id", artists: [{ id: "other-artist-id" }] },
+          { id: "track-id", artists: [{ id: "artist-id" }] },
+        ],
+      ),
+    );
+
+    const { searchArtist } = await loadClient();
+    const artist = await searchArtist("Muse");
+
+    expect(artist?.topTrackId).toBe("track-id");
+  });
+
+  it("omits topTrackId when no track belongs to the artist", async () => {
+    mockFetch
+      .mockResolvedValueOnce(tokenResponse())
+      .mockResolvedValueOnce(
+        searchResponse(
+          [],
+          [{ id: "other-track-id", artists: [{ id: "other" }] }],
+        ),
+      );
+
+    const { searchArtist } = await loadClient();
+    const artist = await searchArtist("Muse");
+
+    expect(artist?.topTrackId).toBeUndefined();
   });
 });
 

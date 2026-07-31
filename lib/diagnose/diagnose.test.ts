@@ -176,12 +176,13 @@ describe("diagnose recommendation Spotify data", () => {
     ]);
   }
 
-  it("attaches the Spotify image URL and artist ID to a recommendation", async () => {
+  it("attaches the Spotify image URL, artist ID and track ID to a recommendation", async () => {
     mockSingleRecommendation();
     mockSearchSpotifyArtist.mockResolvedValueOnce({
       id: "muse-id",
       name: "Muse",
       imageUrl: "https://i.scdn.co/image/muse",
+      topTrackId: "hysteria-id",
     });
 
     const result = await diagnose(["Radiohead"]);
@@ -193,11 +194,12 @@ describe("diagnose recommendation Spotify data", () => {
         score: 0.9,
         imageUrl: "https://i.scdn.co/image/muse",
         spotifyId: "muse-id",
+        spotifyTrackId: "hysteria-id",
       },
     ]);
   });
 
-  it("attaches the artist ID even when the Spotify artist has no image", async () => {
+  it("attaches the artist ID even when the Spotify artist has no image or track", async () => {
     mockSingleRecommendation();
     mockSearchSpotifyArtist.mockResolvedValueOnce({
       id: "muse-id",
