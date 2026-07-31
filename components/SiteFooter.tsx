@@ -1,19 +1,44 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { Suspense, useCallback } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { LegalModal } from "@/components/LegalModal";
 import { useLocale } from "@/lib/i18n";
 import { privacyContent, termsContent } from "@/lib/legal/content";
 
-type LegalModalKind = "terms" | "privacy" | null;
+const LEGAL_QUERY = "legal";
 
-export function SiteFooter() {
+type LegalModalKind = "terms" | "privacy";
+
+function parseLegalQuery(value: string | null): LegalModalKind | null {
+  if (value === "terms" || value === "privacy") {
+    return value;
+  }
+  return null;
+}
+
+function SiteFooterContent() {
   const { locale, t, lastfmUrl } = useLocale();
-  const [openModal, setOpenModal] = useState<LegalModalKind>(null);
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const openModal = parseLegalQuery(searchParams.get(LEGAL_QUERY));
 
-  const closeModal = useCallback(() => {
-    setOpenModal(null);
-  }, []);
+  const setLegalQuery = useCallback(
+    (kind: LegalModalKind | null) => {
+      const params = new URLSearchParams(searchParams.toString());
+      if (kind) {
+        params.set(LEGAL_QUERY, kind);
+      } else {
+        params.delete(LEGAL_QUERY);
+      }
+      const query = params.toString();
+      router.replace(query ? `${pathname}?${query}` : pathname, {
+        scroll: false,
+      });
+    },
+    [pathname, router, searchParams],
+  );
 
   const legalDocument =
     openModal === "terms"
@@ -32,7 +57,7 @@ export function SiteFooter() {
               href="https://piku.page/@yyoshidaweb"
               target="_blank"
               rel="noopener noreferrer"
-              className="underline hover:text-black"
+              className="cursor-pointer underline hover:text-black"
             >
               @yyoshidaweb
             </a>
@@ -43,7 +68,7 @@ export function SiteFooter() {
               href={lastfmUrl("https://www.last.fm/")}
               target="_blank"
               rel="noopener noreferrer"
-              className="underline hover:text-black"
+              className="cursor-pointer underline hover:text-black"
             >
               Last.fm
             </a>
@@ -52,15 +77,15 @@ export function SiteFooter() {
           <div className="mt-1 flex flex-wrap gap-x-4 gap-y-1">
             <button
               type="button"
-              onClick={() => setOpenModal("terms")}
-              className="underline hover:text-black"
+              onClick={() => setLegalQuery("terms")}
+              className="cursor-pointer underline hover:text-black"
             >
               {t("link.terms")}
             </button>
             <button
               type="button"
-              onClick={() => setOpenModal("privacy")}
-              className="underline hover:text-black"
+              onClick={() => setLegalQuery("privacy")}
+              className="cursor-pointer underline hover:text-black"
             >
               {t("link.privacy")}
             </button>
@@ -69,8 +94,19 @@ export function SiteFooter() {
       </footer>
 
       {legalDocument ? (
-        <LegalModal legalDocument={legalDocument} onClose={closeModal} />
+        <LegalModal
+          legalDocument={legalDocument}
+          onClose={() => setLegalQuery(null)}
+        />
       ) : null}
     </>
+  );
+}
+
+export function SiteFooter() {
+  return (
+    <Suspense fallback={null}>
+      <SiteFooterContent />
+    </Suspense>
   );
 }
