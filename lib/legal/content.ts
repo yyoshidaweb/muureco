@@ -17,13 +17,14 @@ export type LegalDocument = {
   closing: string[];
 };
 
-const CONTACT_URL = "https://piku.page/@yyoshidaweb";
+const CONTACT_URL =
+  "https://docs.google.com/forms/d/e/1FAIpQLSc8eKryKffl-fMdxtvVjxsXrXvU1WnwbDtRVMA5tw3hghR9AQ/viewform?usp=header";
 
 export const termsContent: Record<Locale, LegalDocument> = {
   ja: {
     title: "利用規約",
     preamble: [
-      "この利用規約（以下、「本規約」といいます。）は、Yuma Yoshida（以下、「運営者」といいます。）がこのウェブサイト上で提供するサービス「ミューレコ」（以下、「本サービス」といいます。）の利用条件を定めるものです。本サービスをご利用になる皆さま（以下、「ユーザー」といいます。）には、本規約に従って、本サービスをご利用いただきます。",
+      "この利用規約（以下、「本規約」といいます。）は、Yuma Yoshida（以下、「運営者」といいます。）がこのウェブサイト上で提供するサービス（以下、「本サービス」といいます。）の利用条件を定めるものです。本サービスをご利用になる皆さま（以下、「ユーザー」といいます。）には、本規約に従って、本サービスをご利用いただきます。",
     ],
     sections: [
       {
@@ -246,7 +247,7 @@ export const termsContent: Record<Locale, LegalDocument> = {
   en: {
     title: "Terms of Service",
     preamble: [
-      'These Terms of Service ("Terms") set forth the terms and conditions for use of the service "Muureco" (the "Service") provided on this website by Yuma Yoshida (the "Operator"). All users of the Service ("Users") shall use the Service in accordance with these Terms.',
+      'These Terms of Service ("Terms") set forth the terms and conditions for use of the service (the "Service") provided on this website by Yuma Yoshida (the "Operator"). All users of the Service ("Users") shall use the Service in accordance with these Terms.',
     ],
     sections: [
       {
@@ -472,7 +473,7 @@ export const privacyContent: Record<Locale, LegalDocument> = {
   ja: {
     title: "プライバシーポリシー",
     preamble: [
-      "Yuma Yoshida（以下、「運営者」といいます。）は、本ウェブサイト上で提供するサービス「ミューレコ」（以下、「本サービス」といいます。）における、ユーザーの個人情報の取扱いについて、以下のとおりプライバシーポリシー（以下、「本ポリシー」といいます。）を定めます。",
+      "Yuma Yoshida（以下、「運営者」といいます。）は、本ウェブサイト上で提供するサービス（以下、「本サービス」といいます。）における、ユーザーの個人情報の取扱いについて、以下のとおりプライバシーポリシー（以下、「本ポリシー」といいます。）を定めます。",
     ],
     sections: [
       {
@@ -653,7 +654,7 @@ export const privacyContent: Record<Locale, LegalDocument> = {
   en: {
     title: "Privacy Policy",
     preamble: [
-      'Yuma Yoshida (the "Operator") establishes this Privacy Policy (the "Policy") regarding the handling of Users\' personal information in connection with the service "Muureco" (the "Service") provided on this website.',
+      'Yuma Yoshida (the "Operator") establishes this Privacy Policy (the "Policy") regarding the handling of Users\' personal information in connection with the service (the "Service") provided on this website.',
     ],
     sections: [
       {
