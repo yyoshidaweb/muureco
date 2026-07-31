@@ -6,7 +6,7 @@
   "compatibility_date": "2026-07-29",
   "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
   "secrets": {
-    "required": ["LASTFM_API_KEY"]
+    "required": ["LASTFM_API_KEY", "SPOTIFY_CLIENT_ID", "SPOTIFY_CLIENT_SECRET"]
   },
   "assets": {
     "directory": ".open-next/assets",

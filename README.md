@@ -4,7 +4,7 @@
 
 ## 概要
 
-ユーザーが入力したアーティストをもとに、Last.fm API からタグ情報を集計して音楽性を診断し、類似アーティストをおすすめとして表示します。
+ユーザーが入力したアーティストをもとに、Last.fm API からタグ情報を集計して音楽性を診断し、類似アーティストをおすすめとして表示します。おすすめアーティストの画像は Spotify Web API から取得します。
 
 **公開URL**: [https://muureco.yyoshidaweb.workers.dev](https://muureco.yyoshidaweb.workers.dev)
 
@@ -14,7 +14,7 @@
 |--------|------|
 | フロント | Next.js（App Router）+ TypeScript + Tailwind CSS |
 | バックエンド | Next.js Route Handler（BFF） |
-| 外部 API | [Last.fm API](https://www.last.fm/api) |
+| 外部 API | [Last.fm API](https://www.last.fm/api)、[Spotify Web API](https://developer.spotify.com/documentation/web-api)（アーティスト画像） |
 | デプロイ | Cloudflare Workers（[@opennextjs/cloudflare](https://opennext.js.org/cloudflare)） |
 
 ## 開発環境のセットアップ
@@ -38,15 +38,19 @@ npm install
 
 ```bash
 LASTFM_API_KEY=your_api_key
+SPOTIFY_CLIENT_ID=your_client_id
+SPOTIFY_CLIENT_SECRET=your_client_secret
 ```
 
-API キーは [Last.fm API アカウント作成](https://www.last.fm/api/account/create) から取得できます。`api_key` は BFF 経由でのみ使用し、クライアントには露出しません。
+API キーは [Last.fm API アカウント作成](https://www.last.fm/api/account/create) から取得できます。Spotify のクライアント ID・シークレットは [Spotify Developer Dashboard](https://developer.spotify.com/dashboard) でアプリを作成すると取得できます（サーバー間の Client Credentials フローのみ使用するため、リダイレクト URI は実際には使われません。入力必須なので `http://127.0.0.1:3001/callback` を登録します）。いずれも BFF 経由でのみ使用し、クライアントには露出しません。
 
-Workers ランタイムでのローカルプレビュー用には、`.dev.vars.example` を `.dev.vars` にコピーして同じキーを設定します。
+Spotify の値が未設定でも診断は動作し、おすすめアーティストの画像がプレースホルダになります。
+
+Workers ランタイムでのローカルプレビュー用には、`.dev.vars.example` を `.dev.vars` にコピーして同じ値を設定します。
 
 ```bash
 cp .dev.vars.example .dev.vars
-# .dev.vars の LASTFM_API_KEY を編集
+# .dev.vars の各値を編集
 ```
 
 ### 開発サーバーの起動
@@ -65,6 +69,8 @@ npm run dev
 
 ```bash
 npx wrangler secret put LASTFM_API_KEY
+npx wrangler secret put SPOTIFY_CLIENT_ID
+npx wrangler secret put SPOTIFY_CLIENT_SECRET
 ```
 
 値はプロンプト入力で設定し、Issue・PR・コミットには書かないでください。
@@ -92,12 +98,14 @@ npm run deploy
 | `CLOUDFLARE_API_TOKEN` | Workers デプロイ用APIトークン（[作成手順](https://developers.cloudflare.com/fundamentals/api/get-started/create-token/)） |
 | `CLOUDFLARE_ACCOUNT_ID` | CloudflareアカウントID（`npx wrangler whoami` で確認） |
 | `LASTFM_API_KEY` | デプロイ時の `wrangler` 検証用（本番ランタイムは Cloudflare 側のシークレットを使用） |
+| `SPOTIFY_CLIENT_ID` | 同上 |
+| `SPOTIFY_CLIENT_SECRET` | 同上 |
 
 APIトークンには最低限 **Account** の **Workers Scripts: Edit** 権限が必要です。デプロイ workflow は **Node.js 22** で実行します（Wrangler 4.x の要件）。
 
 ### 本番での注意
 
-- `LASTFM_API_KEY` は Cloudflare のシークレットとしてのみ保持し、クライアントバンドルには含めません
+- `LASTFM_API_KEY` と Spotify のクライアント ID・シークレットは Cloudflare のシークレットとしてのみ保持し、クライアントバンドルには含めません
 
 ## スクリプト
 
@@ -129,3 +137,5 @@ APIトークンには最低限 **Account** の **Workers Scripts: Edit** 権限�
 開発：[@yyoshidaweb](https://piku.page/@yyoshidaweb)
 
 データ提供元：[Last.fm](https://www.last.fm/)（非公式・非提携。API を利用しています）
+
+アーティスト画像提供元：[Spotify](https://www.spotify.com/)（非公式・非提携。Web API を利用しています）
