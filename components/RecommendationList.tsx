@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { useState } from "react";
 import type { DiagnosisTag, Recommendation } from "@/lib/diagnose";
 import { DiagnosisResult } from "@/components/DiagnosisResult";
 import { useLocale } from "@/lib/i18n";
@@ -35,6 +36,16 @@ export function RecommendationList({
   isLoading,
 }: RecommendationListProps) {
   const { t, lastfmUrl } = useLocale();
+  // 開いているプレイヤーは常に1件だけにして、同時再生を防ぐ。
+  const [openPreviewId, setOpenPreviewId] = useState<string | null>(null);
+  const [shownRecommendations, setShownRecommendations] =
+    useState(recommendations);
+
+  // 診断をやり直したときに、前回開いていたプレイヤーを引き継がない。
+  if (shownRecommendations !== recommendations) {
+    setShownRecommendations(recommendations);
+    setOpenPreviewId(null);
+  }
 
   return (
     <section className="flex h-full min-h-[240px] flex-col md:min-h-0">
@@ -53,39 +64,82 @@ export function RecommendationList({
               </p>
             ) : (
               <ul className="flex flex-col gap-2">
-                {recommendations.map((rec) => (
-                  <li key={rec.mbid ?? rec.name}>
-                    <a
-                      href={lastfmUrl(rec.url)}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="block rounded-md border border-neutral-300 bg-white px-4 py-3 text-black transition-colors hover:bg-neutral-50"
+                {recommendations.map((rec) => {
+                  const spotifyId = rec.spotifyId;
+                  const isOpen =
+                    spotifyId != null && spotifyId === openPreviewId;
+                  const panelId = `spotify-preview-${spotifyId}`;
+
+                  return (
+                    <li
+                      key={rec.mbid ?? rec.name}
+                      className="overflow-hidden rounded-md border border-neutral-300 bg-white text-black"
                     >
-                      <span className="flex items-center justify-between gap-3">
-                        <span className="flex min-w-0 items-center gap-3">
-                          {rec.imageUrl ? (
-                            <Image
-                              src={rec.imageUrl}
-                              alt=""
-                              width={40}
-                              height={40}
-                              // Spotify から取得するのは表示サイズに近い最小画像のため、
-                              // 追加の最適化は行わずそのまま配信する。
-                              unoptimized
-                              className="size-10 shrink-0 rounded object-cover"
-                            />
-                          ) : (
-                            <ArtistPlaceholder />
-                          )}
-                          <span className="truncate">{rec.name}</span>
-                        </span>
+                      <div className="relative flex items-center gap-3 px-4 py-3 transition-colors hover:bg-neutral-50">
+                        {rec.imageUrl ? (
+                          <Image
+                            src={rec.imageUrl}
+                            alt=""
+                            width={40}
+                            height={40}
+                            // Spotify から取得するのは表示サイズに近い最小画像のため、
+                            // 追加の最適化は行わずそのまま配信する。
+                            unoptimized
+                            className="size-10 shrink-0 rounded object-cover"
+                          />
+                        ) : (
+                          <ArtistPlaceholder />
+                        )}
+                        <a
+                          href={lastfmUrl(rec.url)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          // 疑似要素を行全体に広げてリンク範囲とし、その上に試聴ボタンを重ねる。
+                          className="min-w-0 flex-1 truncate after:absolute after:inset-0"
+                        >
+                          {rec.name}
+                        </a>
+                        {spotifyId && (
+                          <button
+                            type="button"
+                            onClick={() =>
+                              setOpenPreviewId(isOpen ? null : spotifyId)
+                            }
+                            aria-expanded={isOpen}
+                            aria-controls={panelId}
+                            aria-label={t("preview.toggleLabel", {
+                              artist: rec.name,
+                            })}
+                            className="relative shrink-0 rounded border border-neutral-300 px-2 py-1 text-sm text-neutral-600 transition-colors hover:bg-neutral-100"
+                          >
+                            {isOpen ? t("preview.close") : t("preview.open")}
+                          </button>
+                        )}
                         <span className="shrink-0 text-sm text-neutral-500">
                           {t("link.lastfm")}
                         </span>
-                      </span>
-                    </a>
-                  </li>
-                ))}
+                      </div>
+                      {isOpen && (
+                        <div
+                          id={panelId}
+                          className="border-t border-neutral-200 p-3"
+                        >
+                          <iframe
+                            title={t("preview.playerTitle", {
+                              artist: rec.name,
+                            })}
+                            src={`https://open.spotify.com/embed/artist/${spotifyId}`}
+                            width="100%"
+                            height={152}
+                            loading="lazy"
+                            allow="clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+                            className="w-full rounded-xl border-0"
+                          />
+                        </div>
+                      )}
+                    </li>
+                  );
+                })}
               </ul>
             )}
 
