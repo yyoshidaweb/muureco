@@ -55,7 +55,9 @@ export default function Home() {
         });
 
         const body = (await response.json().catch(() => null)) as
-          DiagnoseResult | DiagnoseErrorBody | null;
+          | DiagnoseResult
+          | DiagnoseErrorBody
+          | null;
 
         if (!response.ok) {
           if (response.status === 400) {

@@ -38,9 +38,7 @@ export function ArtistSuggestField({
   const { t } = useLocale();
   const listboxId = useId();
   const containerRef = useRef<HTMLDivElement>(null);
-  const [searchState, setSearchState] = useState<SearchState>({
-    status: "idle",
-  });
+  const [searchState, setSearchState] = useState<SearchState>({ status: "idle" });
   const [isOpen, setIsOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(-1);
 

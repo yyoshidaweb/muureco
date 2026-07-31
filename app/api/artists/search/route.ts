@@ -1,5 +1,9 @@
 import { NextResponse } from "next/server";
-import { LastfmApiError, LastfmConfigError, searchArtist } from "@/lib/lastfm";
+import {
+  LastfmApiError,
+  LastfmConfigError,
+  searchArtist,
+} from "@/lib/lastfm";
 
 const SUGGEST_LIMIT = 10;
 

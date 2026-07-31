@@ -42,7 +42,9 @@ export function parseDiagnoseRequest(body: unknown): string[] {
 
     const trimmed = item.trim();
     if (!trimmed) {
-      throw new DiagnoseValidationError("空のアーティスト名は指定できません");
+      throw new DiagnoseValidationError(
+        "空のアーティスト名は指定できません",
+      );
     }
 
     const normalized = trimmed.toLowerCase();

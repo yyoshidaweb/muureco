@@ -43,19 +43,11 @@ describe("diagnose", () => {
     mockGetArtistTopTags
       .mockResolvedValueOnce([
         { name: "rock", url: "https://www.last.fm/tag/rock", count: 100 },
-        {
-          name: "alternative",
-          url: "https://www.last.fm/tag/alternative",
-          count: 80,
-        },
+        { name: "alternative", url: "https://www.last.fm/tag/alternative", count: 80 },
       ])
       .mockResolvedValueOnce([
         { name: "rock", url: "https://www.last.fm/tag/rock", count: 60 },
-        {
-          name: "electronic",
-          url: "https://www.last.fm/tag/electronic",
-          count: 40,
-        },
+        { name: "electronic", url: "https://www.last.fm/tag/electronic", count: 40 },
       ]);
 
     mockGetSimilarArtists

@@ -369,8 +369,7 @@ export const termsContent: Record<Locale, ContentDocument> = {
         ],
       },
       {
-        heading:
-          "Article 9 (Disclaimer of Warranties and Limitation of Liability)",
+        heading: "Article 9 (Disclaimer of Warranties and Limitation of Liability)",
         blocks: [
           {
             type: "list",
@@ -431,8 +430,7 @@ export const termsContent: Record<Locale, ContentDocument> = {
         ],
       },
       {
-        heading:
-          "Article 14 (Prohibition of Assignment of Rights and Obligations)",
+        heading: "Article 14 (Prohibition of Assignment of Rights and Obligations)",
         blocks: [
           {
             type: "paragraph",
@@ -701,8 +699,7 @@ export const privacyContent: Record<Locale, ContentDocument> = {
         ],
       },
       {
-        heading:
-          "Article 3 (Purposes of Collecting and Using Personal Information)",
+        heading: "Article 3 (Purposes of Collecting and Using Personal Information)",
         blocks: [
           {
             type: "paragraph",
@@ -782,8 +779,7 @@ export const privacyContent: Record<Locale, ContentDocument> = {
         ],
       },
       {
-        heading:
-          "Article 7 (Provision of Personal Information to Third Parties)",
+        heading: "Article 7 (Provision of Personal Information to Third Parties)",
         blocks: [
           {
             type: "paragraph",

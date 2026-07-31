@@ -1,5 +1,9 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { getArtistTopTags, getSimilarArtists, searchArtist } from "./client";
+import {
+  getArtistTopTags,
+  getSimilarArtists,
+  searchArtist,
+} from "./client";
 import { LastfmConfigError } from "./errors";
 
 const mockFetch = vi.fn();
