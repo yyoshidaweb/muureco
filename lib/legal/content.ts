@@ -4,6 +4,8 @@ import type { Locale } from "@/lib/i18n";
 const CONTACT_URL =
   "https://docs.google.com/forms/d/e/1FAIpQLSc8eKryKffl-fMdxtvVjxsXrXvU1WnwbDtRVMA5tw3hghR9AQ/viewform?usp=header";
 
+const SPOTIFY_PRIVACY_URL = "https://www.spotify.com/legal/privacy-policy/";
+
 export const termsContent: Record<Locale, ContentDocument> = {
   ja: {
     title: "利用規約",
@@ -367,7 +369,8 @@ export const termsContent: Record<Locale, ContentDocument> = {
         ],
       },
       {
-        heading: "Article 9 (Disclaimer of Warranties and Limitation of Liability)",
+        heading:
+          "Article 9 (Disclaimer of Warranties and Limitation of Liability)",
         blocks: [
           {
             type: "list",
@@ -428,7 +431,8 @@ export const termsContent: Record<Locale, ContentDocument> = {
         ],
       },
       {
-        heading: "Article 14 (Prohibition of Assignment of Rights and Obligations)",
+        heading:
+          "Article 14 (Prohibition of Assignment of Rights and Obligations)",
         blocks: [
           {
             type: "paragraph",
@@ -518,7 +522,40 @@ export const privacyContent: Record<Locale, ContentDocument> = {
         ],
       },
       {
-        heading: "第5条（利用目的の変更）",
+        heading: "第5条（外部サービスとの通信）",
+        blocks: [
+          {
+            type: "paragraph",
+            text: "本サービスは、以下の機能において、ユーザーのブラウザからSpotify AB（以下、「Spotify」といいます。）のサーバーに対して直接通信を行います。",
+          },
+          {
+            type: "list",
+            items: [
+              "おすすめアーティストの画像表示。画像はSpotifyの配信サーバーから読み込まれます。",
+              "おすすめアーティストの試聴。ユーザーが試聴ボタンを押した場合にのみ、Spotifyの埋め込みプレイヤーを読み込みます。",
+            ],
+          },
+          {
+            type: "paragraph",
+            text: "前項の通信の際には、ユーザーのIPアドレス、ユーザーエージェント、参照元URLその他の情報がSpotifyに送信されます。また、埋め込みプレイヤーの読み込み時には、Spotifyによりクッキーその他の識別子が設定される場合があります。",
+          },
+          {
+            type: "paragraph",
+            text: "前項の情報の取扱いは、Spotifyのプライバシーポリシーに従います。運営者は、Spotifyが取得する情報の内容および利用について関与せず、これらの情報を受領しません。",
+          },
+          {
+            type: "link",
+            label: "Spotifyプライバシーポリシー",
+            href: SPOTIFY_PRIVACY_URL,
+          },
+          {
+            type: "paragraph",
+            text: "本サービスはSpotifyの公式サービスではなく、Spotifyとは一切の関係がありません。",
+          },
+        ],
+      },
+      {
+        heading: "第6条（利用目的の変更）",
         blocks: [
           {
             type: "list",
@@ -530,7 +567,7 @@ export const privacyContent: Record<Locale, ContentDocument> = {
         ],
       },
       {
-        heading: "第6条（個人情報の第三者提供）",
+        heading: "第7条（個人情報の第三者提供）",
         blocks: [
           {
             type: "paragraph",
@@ -559,7 +596,7 @@ export const privacyContent: Record<Locale, ContentDocument> = {
         ],
       },
       {
-        heading: "第7条（個人情報の開示）",
+        heading: "第8条（個人情報の開示）",
         blocks: [
           {
             type: "paragraph",
@@ -580,7 +617,7 @@ export const privacyContent: Record<Locale, ContentDocument> = {
         ],
       },
       {
-        heading: "第8条（個人情報の訂正および削除）",
+        heading: "第9条（個人情報の訂正および削除）",
         blocks: [
           {
             type: "list",
@@ -593,7 +630,7 @@ export const privacyContent: Record<Locale, ContentDocument> = {
         ],
       },
       {
-        heading: "第9条（個人情報の利用停止等）",
+        heading: "第10条（個人情報の利用停止等）",
         blocks: [
           {
             type: "list",
@@ -607,7 +644,7 @@ export const privacyContent: Record<Locale, ContentDocument> = {
         ],
       },
       {
-        heading: "第10条（プライバシーポリシーの変更）",
+        heading: "第11条（プライバシーポリシーの変更）",
         blocks: [
           {
             type: "list",
@@ -619,7 +656,7 @@ export const privacyContent: Record<Locale, ContentDocument> = {
         ],
       },
       {
-        heading: "第11条（お問い合わせ窓口）",
+        heading: "第12条（お問い合わせ窓口）",
         blocks: [
           {
             type: "paragraph",
@@ -664,7 +701,8 @@ export const privacyContent: Record<Locale, ContentDocument> = {
         ],
       },
       {
-        heading: "Article 3 (Purposes of Collecting and Using Personal Information)",
+        heading:
+          "Article 3 (Purposes of Collecting and Using Personal Information)",
         blocks: [
           {
             type: "paragraph",
@@ -699,7 +737,40 @@ export const privacyContent: Record<Locale, ContentDocument> = {
         ],
       },
       {
-        heading: "Article 5 (Changes to Purposes of Use)",
+        heading: "Article 5 (Communication with External Services)",
+        blocks: [
+          {
+            type: "paragraph",
+            text: 'For the following features, the Service communicates directly from the User\'s browser to servers operated by Spotify AB ("Spotify"):',
+          },
+          {
+            type: "list",
+            items: [
+              "Display of recommended artist images. Images are loaded from Spotify's content delivery servers.",
+              "Preview of recommended artists. Spotify's embedded player is loaded only when the User presses the preview button.",
+            ],
+          },
+          {
+            type: "paragraph",
+            text: "During such communication, the User's IP address, user agent, referring URL, and other information are sent to Spotify. In addition, Spotify may set cookies or other identifiers when the embedded player is loaded.",
+          },
+          {
+            type: "paragraph",
+            text: "The handling of such information is governed by Spotify's privacy policy. The Operator is not involved in, and does not receive, the information that Spotify obtains or how it is used.",
+          },
+          {
+            type: "link",
+            label: "Spotify Privacy Policy",
+            href: SPOTIFY_PRIVACY_URL,
+          },
+          {
+            type: "paragraph",
+            text: "The Service is not an official Spotify service and has no relationship with Spotify.",
+          },
+        ],
+      },
+      {
+        heading: "Article 6 (Changes to Purposes of Use)",
         blocks: [
           {
             type: "list",
@@ -711,7 +782,8 @@ export const privacyContent: Record<Locale, ContentDocument> = {
         ],
       },
       {
-        heading: "Article 6 (Provision of Personal Information to Third Parties)",
+        heading:
+          "Article 7 (Provision of Personal Information to Third Parties)",
         blocks: [
           {
             type: "paragraph",
@@ -740,7 +812,7 @@ export const privacyContent: Record<Locale, ContentDocument> = {
         ],
       },
       {
-        heading: "Article 7 (Disclosure of Personal Information)",
+        heading: "Article 8 (Disclosure of Personal Information)",
         blocks: [
           {
             type: "paragraph",
@@ -761,7 +833,7 @@ export const privacyContent: Record<Locale, ContentDocument> = {
         ],
       },
       {
-        heading: "Article 8 (Correction and Deletion of Personal Information)",
+        heading: "Article 9 (Correction and Deletion of Personal Information)",
         blocks: [
           {
             type: "list",
@@ -774,7 +846,7 @@ export const privacyContent: Record<Locale, ContentDocument> = {
         ],
       },
       {
-        heading: "Article 9 (Suspension of Use of Personal Information)",
+        heading: "Article 10 (Suspension of Use of Personal Information)",
         blocks: [
           {
             type: "list",
@@ -788,7 +860,7 @@ export const privacyContent: Record<Locale, ContentDocument> = {
         ],
       },
       {
-        heading: "Article 10 (Changes to the Privacy Policy)",
+        heading: "Article 11 (Changes to the Privacy Policy)",
         blocks: [
           {
             type: "list",
@@ -800,7 +872,7 @@ export const privacyContent: Record<Locale, ContentDocument> = {
         ],
       },
       {
-        heading: "Article 11 (Contact)",
+        heading: "Article 12 (Contact)",
         blocks: [
           {
             type: "paragraph",
