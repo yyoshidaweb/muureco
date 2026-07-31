@@ -90,6 +90,18 @@ function SiteFooterContent() {
             </a>
             {t("footer.unofficial")}
           </p>
+          <p>
+            {t("footer.imageProvider")}
+            <a
+              href="https://www.spotify.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="cursor-pointer underline hover:text-black"
+            >
+              Spotify
+            </a>
+            {t("footer.unofficial")}
+          </p>
           <div className="mt-1 flex flex-wrap gap-x-4 gap-y-1">
             <button
               type="button"
