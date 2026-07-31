@@ -66,11 +66,13 @@ export function DocumentBody({
         ))}
       </div>
 
-      <div className="mt-10 space-y-1 text-sm leading-7 text-neutral-700 sm:text-base">
-        {document.closing.map((line) => (
-          <p key={line}>{line}</p>
-        ))}
-      </div>
+      {document.closing.length > 0 ? (
+        <div className="mt-10 space-y-1 text-sm leading-7 text-neutral-700 sm:text-base">
+          {document.closing.map((line) => (
+            <p key={line}>{line}</p>
+          ))}
+        </div>
+      ) : null}
     </div>
   );
 }

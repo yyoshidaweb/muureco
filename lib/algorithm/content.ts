@@ -5,7 +5,7 @@ export const algorithmContent: Record<Locale, ContentDocument> = {
   ja: {
     title: "おすすめアルゴリズムについて",
     preamble: [
-      "ミューレコは、あなたが入力した好きなアーティストをもとに音楽性を診断し、おすすめのアーティストとジャンルを表示します。このページでは、その結果がどのように決まるのかを、専門的な知識がなくても分かるように説明します。",
+      "ミューレコは、あなたが入力した好きなアーティストをもとに音楽性を診断し、おすすめのアーティストとジャンルを表示します。このページでは、その結果がどのように決まるのかを説明します。",
     ],
     sections: [
       {
@@ -114,12 +114,12 @@ export const algorithmContent: Record<Locale, ContentDocument> = {
         ],
       },
     ],
-    closing: ["最終更新日：2026年7月31日"],
+    closing: [],
   },
   en: {
     title: "How recommendations work",
     preamble: [
-      "Muureco reads the artists you enter, works out the musical character they share, and shows you recommended artists and genres. This page explains how those results are decided, in plain language and without assuming any technical knowledge.",
+      "Muureco reads the artists you enter, works out the musical character they share, and shows you recommended artists and genres. This page explains how those results are decided.",
     ],
     sections: [
       {
@@ -228,6 +228,6 @@ export const algorithmContent: Record<Locale, ContentDocument> = {
         ],
       },
     ],
-    closing: ["Last updated: July 31, 2026"],
+    closing: [],
   },
 };
