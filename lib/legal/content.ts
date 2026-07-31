@@ -4,6 +4,8 @@ import type { Locale } from "@/lib/i18n";
 const CONTACT_URL =
   "https://docs.google.com/forms/d/e/1FAIpQLSc8eKryKffl-fMdxtvVjxsXrXvU1WnwbDtRVMA5tw3hghR9AQ/viewform?usp=header";
 
+const APPLE_PRIVACY_URL = "https://www.apple.com/legal/privacy/";
+
 export const termsContent: Record<Locale, ContentDocument> = {
   ja: {
     title: "利用規約",
@@ -607,7 +609,28 @@ export const privacyContent: Record<Locale, ContentDocument> = {
         ],
       },
       {
-        heading: "第10条（プライバシーポリシーの変更）",
+        heading: "第10条（外部サービスとの通信）",
+        blocks: [
+          {
+            type: "paragraph",
+            text: "本サービスは、おすすめアーティストの試聴音源をApple Inc.（以下、「Apple」といいます。）の提供するiTunes Search APIから取得し、音源そのものはAppleのサーバーから配信されます。",
+          },
+          {
+            type: "list",
+            items: [
+              "ユーザーが試聴を再生したときは、ユーザーの端末からAppleのサーバーへ直接通信が行われ、IPアドレスおよびブラウザの情報がAppleに送信されます。これらの情報を運営者が取得または保持することはありません。",
+              "Appleにおける情報の取り扱いについては、Appleのプライバシーポリシーをご確認ください。",
+            ],
+          },
+          {
+            type: "link",
+            label: "Appleのプライバシーポリシー",
+            href: APPLE_PRIVACY_URL,
+          },
+        ],
+      },
+      {
+        heading: "第11条（プライバシーポリシーの変更）",
         blocks: [
           {
             type: "list",
@@ -619,7 +642,7 @@ export const privacyContent: Record<Locale, ContentDocument> = {
         ],
       },
       {
-        heading: "第11条（お問い合わせ窓口）",
+        heading: "第12条（お問い合わせ窓口）",
         blocks: [
           {
             type: "paragraph",
@@ -788,7 +811,28 @@ export const privacyContent: Record<Locale, ContentDocument> = {
         ],
       },
       {
-        heading: "Article 10 (Changes to the Privacy Policy)",
+        heading: "Article 10 (Communication with External Services)",
+        blocks: [
+          {
+            type: "paragraph",
+            text: 'The Service obtains audio previews for recommended artists from the iTunes Search API provided by Apple Inc. ("Apple"), and the audio itself is delivered from Apple\'s servers.',
+          },
+          {
+            type: "list",
+            items: [
+              "When a User plays a preview, the User's device communicates directly with Apple's servers, and the User's IP address and browser information are sent to Apple. The Operator neither obtains nor retains such information.",
+              "For how Apple handles such information, please refer to Apple's privacy policy.",
+            ],
+          },
+          {
+            type: "link",
+            label: "Apple's Privacy Policy",
+            href: APPLE_PRIVACY_URL,
+          },
+        ],
+      },
+      {
+        heading: "Article 11 (Changes to the Privacy Policy)",
         blocks: [
           {
             type: "list",
@@ -800,7 +844,7 @@ export const privacyContent: Record<Locale, ContentDocument> = {
         ],
       },
       {
-        heading: "Article 11 (Contact)",
+        heading: "Article 12 (Contact)",
         blocks: [
           {
             type: "paragraph",
