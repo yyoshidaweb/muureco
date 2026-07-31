@@ -17,8 +17,9 @@ export function parseLocale(value: unknown): Locale | null {
  * English has no prefix (`/`); Japanese uses `/ja`.
  */
 export function localePath(locale: Locale, pathname = ""): string {
-  const rest =
-    pathname.replace(/^\/(ja|en)(?=\/|$)/, "").replace(/\/$/, "") || "";
+  const rest = pathname
+    .replace(/^\/(ja|en)(?=\/|$)/, "")
+    .replace(/^\/+|\/+$/g, "");
   const suffix = rest ? `/${rest}` : "";
 
   if (locale === "en") {

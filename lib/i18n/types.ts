@@ -31,6 +31,9 @@ export type TranslationKey =
   | "language.label"
   | "language.ja"
   | "language.en"
-  | "link.lastfm";
+  | "link.lastfm"
+  | "link.terms"
+  | "link.privacy"
+  | "modal.close";
 
 export type Dictionary = Record<TranslationKey, string>;

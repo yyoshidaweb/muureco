@@ -28,6 +28,9 @@ const ja: Dictionary = {
   "language.ja": "日本語",
   "language.en": "English",
   "link.lastfm": "Last.fm ↗",
+  "link.terms": "利用規約",
+  "link.privacy": "プライバシーポリシー",
+  "modal.close": "閉じる",
 };
 
 const en: Dictionary = {
@@ -57,6 +60,9 @@ const en: Dictionary = {
   "language.ja": "日本語",
   "language.en": "English",
   "link.lastfm": "Last.fm ↗",
+  "link.terms": "Terms of Service",
+  "link.privacy": "Privacy Policy",
+  "modal.close": "Close",
 };
 
 export const dictionaries: Record<Locale, Dictionary> = { ja, en };

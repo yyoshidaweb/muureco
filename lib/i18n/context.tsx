@@ -2,12 +2,13 @@
 
 import {
   createContext,
+  Suspense,
   useCallback,
   useContext,
   useMemo,
   type ReactNode,
 } from "react";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { localizeLastfmUrl } from "./lastfm-url";
 import { localePath, writeLocaleCookie } from "./locale";
 import { translate, type TranslateParams } from "./translate";
@@ -22,7 +23,7 @@ type LocaleContextValue = {
 
 const LocaleContext = createContext<LocaleContextValue | null>(null);
 
-export function LocaleProvider({
+function LocaleProviderInner({
   locale,
   children,
 }: {
@@ -31,14 +32,17 @@ export function LocaleProvider({
 }) {
   const router = useRouter();
   const pathname = usePathname();
+  const searchParams = useSearchParams();
 
   const setLocale = useCallback(
     (next: Locale) => {
       if (next === locale) return;
       writeLocaleCookie(next);
-      router.push(localePath(next, pathname));
+      const query = searchParams.toString();
+      const nextPath = localePath(next, pathname);
+      router.push(query ? `${nextPath}?${query}` : nextPath);
     },
-    [locale, pathname, router],
+    [locale, pathname, router, searchParams],
   );
 
   const t = useCallback(
@@ -59,6 +63,20 @@ export function LocaleProvider({
 
   return (
     <LocaleContext.Provider value={value}>{children}</LocaleContext.Provider>
+  );
+}
+
+export function LocaleProvider({
+  locale,
+  children,
+}: {
+  locale: Locale;
+  children: ReactNode;
+}) {
+  return (
+    <Suspense fallback={null}>
+      <LocaleProviderInner locale={locale}>{children}</LocaleProviderInner>
+    </Suspense>
   );
 }
 
