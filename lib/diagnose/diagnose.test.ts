@@ -5,6 +5,7 @@ import { ArtistNotFoundError } from "./errors";
 const mockSearchArtist = vi.fn();
 const mockGetArtistTopTags = vi.fn();
 const mockGetSimilarArtists = vi.fn();
+const mockSearchSpotifyArtist = vi.fn();
 
 vi.mock("@/lib/lastfm", () => ({
   searchArtist: (...args: unknown[]) => mockSearchArtist(...args),
@@ -12,8 +13,13 @@ vi.mock("@/lib/lastfm", () => ({
   getSimilarArtists: (...args: unknown[]) => mockGetSimilarArtists(...args),
 }));
 
+vi.mock("@/lib/spotify", () => ({
+  searchArtist: (...args: unknown[]) => mockSearchSpotifyArtist(...args),
+}));
+
 beforeEach(() => {
   vi.clearAllMocks();
+  mockSearchSpotifyArtist.mockResolvedValue(null);
 });
 
 describe("diagnose", () => {
@@ -168,5 +174,103 @@ describe("diagnose", () => {
     await expect(diagnose(["Unknown Artist"])).rejects.toThrow(
       ArtistNotFoundError,
     );
+  });
+});
+
+describe("diagnose recommendation images", () => {
+  function mockSingleRecommendation() {
+    mockSearchArtist.mockResolvedValueOnce([
+      {
+        name: "Radiohead",
+        mbid: "",
+        url: "https://www.last.fm/music/Radiohead",
+      },
+    ]);
+    mockGetArtistTopTags.mockResolvedValueOnce([]);
+    mockGetSimilarArtists.mockResolvedValueOnce([
+      {
+        name: "Muse",
+        match: 0.9,
+        url: "https://www.last.fm/music/Muse",
+      },
+    ]);
+  }
+
+  it("attaches the Spotify image URL to a recommendation", async () => {
+    mockSingleRecommendation();
+    mockSearchSpotifyArtist.mockResolvedValueOnce({
+      id: "muse-id",
+      name: "Muse",
+      imageUrl: "https://i.scdn.co/image/muse",
+    });
+
+    const result = await diagnose(["Radiohead"]);
+
+    expect(mockSearchSpotifyArtist).toHaveBeenCalledWith("Muse");
+    expect(result.recommendations).toEqual([
+      {
+        name: "Muse",
+        score: 0.9,
+        url: "https://www.last.fm/music/Muse",
+        imageUrl: "https://i.scdn.co/image/muse",
+      },
+    ]);
+  });
+
+  it("accepts a romanized Spotify name for a Japanese artist", async () => {
+    mockSearchArtist.mockResolvedValueOnce([
+      {
+        name: "サカナクション",
+        mbid: "",
+        url: "https://www.last.fm/music/%E3%82%B5%E3%82%AB%E3%83%8A%E3%82%AF%E3%82%B7%E3%83%A7%E3%83%B3",
+      },
+    ]);
+    mockGetArtistTopTags.mockResolvedValueOnce([]);
+    mockGetSimilarArtists.mockResolvedValueOnce([
+      {
+        name: "米津玄師",
+        match: 0.9,
+        url: "https://www.last.fm/music/%E7%B1%B3%E6%B4%A5%E7%8E%84%E5%B8%AB",
+      },
+    ]);
+    mockSearchSpotifyArtist.mockResolvedValueOnce({
+      id: "yonezu-id",
+      name: "Kenshi Yonezu",
+      imageUrl: "https://i.scdn.co/image/yonezu",
+    });
+
+    const result = await diagnose(["サカナクション"]);
+
+    expect(result.recommendations[0]?.imageUrl).toBe(
+      "https://i.scdn.co/image/yonezu",
+    );
+  });
+
+  it("omits the image URL when the Spotify artist name does not match", async () => {
+    mockSingleRecommendation();
+    mockSearchSpotifyArtist.mockResolvedValueOnce({
+      id: "tribute-id",
+      name: "Muse Tribute Band",
+      imageUrl: "https://i.scdn.co/image/tribute",
+    });
+
+    const result = await diagnose(["Radiohead"]);
+
+    expect(result.recommendations[0]?.imageUrl).toBeUndefined();
+  });
+
+  it("keeps the diagnosis successful when Spotify fails", async () => {
+    mockSingleRecommendation();
+    mockSearchSpotifyArtist.mockRejectedValueOnce(new Error("Spotify is down"));
+
+    const result = await diagnose(["Radiohead"]);
+
+    expect(result.recommendations).toEqual([
+      {
+        name: "Muse",
+        score: 0.9,
+        url: "https://www.last.fm/music/Muse",
+      },
+    ]);
   });
 });

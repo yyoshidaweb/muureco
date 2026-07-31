@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import type { DiagnosisTag, Recommendation } from "@/lib/diagnose";
 import { DiagnosisResult } from "@/components/DiagnosisResult";
 import { useLocale } from "@/lib/i18n";
@@ -62,7 +63,20 @@ export function RecommendationList({
                     >
                       <span className="flex items-center justify-between gap-3">
                         <span className="flex min-w-0 items-center gap-3">
-                          <ArtistPlaceholder />
+                          {rec.imageUrl ? (
+                            <Image
+                              src={rec.imageUrl}
+                              alt=""
+                              width={40}
+                              height={40}
+                              // Spotify から取得するのは表示サイズに近い最小画像のため、
+                              // 追加の最適化は行わずそのまま配信する。
+                              unoptimized
+                              className="size-10 shrink-0 rounded object-cover"
+                            />
+                          ) : (
+                            <ArtistPlaceholder />
+                          )}
                           <span className="truncate">{rec.name}</span>
                         </span>
                         <span className="shrink-0 text-sm text-neutral-500">

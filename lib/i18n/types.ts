@@ -27,6 +27,7 @@ export type TranslationKey =
   | "error.diagnoseFailed"
   | "footer.developedBy"
   | "footer.dataProvider"
+  | "footer.imageProvider"
   | "footer.unofficial"
   | "language.label"
   | "language.ja"
