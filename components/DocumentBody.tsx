@@ -1,10 +1,10 @@
-import type { LegalDocument as LegalDocumentModel } from "@/lib/legal/content";
+import type { ContentDocument } from "@/lib/content/types";
 
-export function LegalDocument({
+export function DocumentBody({
   document,
   titleId,
 }: {
-  document: LegalDocumentModel;
+  document: ContentDocument;
   titleId?: string;
 }) {
   return (
@@ -66,11 +66,13 @@ export function LegalDocument({
         ))}
       </div>
 
-      <div className="mt-10 space-y-1 text-sm leading-7 text-neutral-700 sm:text-base">
-        {document.closing.map((line) => (
-          <p key={line}>{line}</p>
-        ))}
-      </div>
+      {document.closing.length > 0 ? (
+        <div className="mt-10 space-y-1 text-sm leading-7 text-neutral-700 sm:text-base">
+          {document.closing.map((line) => (
+            <p key={line}>{line}</p>
+          ))}
+        </div>
+      ) : null}
     </div>
   );
 }
