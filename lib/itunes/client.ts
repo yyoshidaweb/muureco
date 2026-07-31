@@ -7,8 +7,9 @@ const BASE_URL = "https://itunes.apple.com/";
 const COUNTRY = "JP";
 // 表記の揺れで先頭に別のアーティストが来ることがあるため、候補を数件取る。
 const ARTIST_SEARCH_LIMIT = "5";
-// lookup の limit はアーティストごとに効く。試聴に使うのは1曲だけ。
-const TRACK_LOOKUP_LIMIT = "1";
+// lookup の limit はアーティストごとに効く。試聴に使うのは1曲だけだが、割り当て
+// られた曲が共演者名義で返ることがあるため、数曲取って自分名義のものを選ぶ。
+const TRACK_LOOKUP_LIMIT = "3";
 // 上限超過は 429 ではなく 403 で返る。残量を知るヘッダーはない。
 const RATE_LIMIT_STATUS = 403;
 // 上限は約20回/分。当たったあとはこの時間だけ呼び出しを止める。

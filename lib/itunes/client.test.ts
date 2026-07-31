@@ -92,7 +92,7 @@ describe("lookupTracks", () => {
     expect(mockFetch).toHaveBeenCalledTimes(1);
     expect(mockFetch).toHaveBeenCalledWith(
       expect.objectContaining({
-        href: "https://itunes.apple.com/lookup?country=JP&id=1%2C2&entity=song&limit=1",
+        href: "https://itunes.apple.com/lookup?country=JP&id=1%2C2&entity=song&limit=3",
       }),
     );
     expect([...tracks]).toEqual([
