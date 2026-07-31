@@ -91,7 +91,7 @@ function SiteFooterContent() {
             {t("footer.unofficial")}
           </p>
           <p>
-            {t("footer.imageProvider")}
+            {t("footer.spotifyProvider")}
             <a
               href="https://www.spotify.com/"
               target="_blank"

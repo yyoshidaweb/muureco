@@ -14,7 +14,7 @@
 |--------|------|
 | フロント | Next.js（App Router）+ TypeScript + Tailwind CSS |
 | バックエンド | Next.js Route Handler（BFF） |
-| 外部 API | [Last.fm API](https://www.last.fm/api)、[Spotify Web API](https://developer.spotify.com/documentation/web-api)（アーティスト画像） |
+| 外部 API | [Last.fm API](https://www.last.fm/api)、[Spotify Web API](https://developer.spotify.com/documentation/web-api)（アーティスト画像）、[Spotify Embeds](https://developer.spotify.com/documentation/embeds)（試聴） |
 | デプロイ | Cloudflare Workers（[@opennextjs/cloudflare](https://opennext.js.org/cloudflare)） |
 
 ## 開発環境のセットアップ
@@ -138,4 +138,4 @@ APIトークンには最低限 **Account** の **Workers Scripts: Edit** 権限�
 
 データ提供元：[Last.fm](https://www.last.fm/)（非公式・非提携。API を利用しています）
 
-アーティスト画像提供元：[Spotify](https://www.spotify.com/)（非公式・非提携。Web API を利用しています）
+アーティスト画像・試聴提供元：[Spotify](https://www.spotify.com/)（非公式・非提携。Web API と埋め込みプレイヤーを利用しています）
