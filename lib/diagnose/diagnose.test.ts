@@ -212,8 +212,10 @@ describe("diagnose recommendation previews", () => {
       {
         name: "Muse",
         score: 0.9,
-        previewUrl: "https://audio.example/madness.m4a",
-        trackName: "Madness",
+        preview: {
+          url: "https://audio.example/madness.m4a",
+          trackName: "Madness",
+        },
       },
     ]);
   });
@@ -272,9 +274,10 @@ describe("diagnose recommendation previews", () => {
 
     const result = await diagnose(["サカナクション"]);
 
-    expect(result.recommendations[0]?.previewUrl).toBe(
-      "https://audio.example/lemon.m4a",
-    );
+    expect(result.recommendations[0]?.preview).toEqual({
+      url: "https://audio.example/lemon.m4a",
+      trackName: "Lemon",
+    });
   });
 
   it("omits the preview when the artist name does not match", async () => {
@@ -286,7 +289,7 @@ describe("diagnose recommendation previews", () => {
     const result = await diagnose(["Radiohead"]);
 
     expect(mockLookupTracks).toHaveBeenCalledWith([]);
-    expect(result.recommendations[0]?.previewUrl).toBeUndefined();
+    expect(result.recommendations[0]?.preview).toBeUndefined();
   });
 
   it("omits the preview when the artist has no playable track", async () => {
@@ -295,7 +298,7 @@ describe("diagnose recommendation previews", () => {
 
     const result = await diagnose(["Radiohead"]);
 
-    expect(result.recommendations[0]?.previewUrl).toBeUndefined();
+    expect(result.recommendations[0]?.preview).toBeUndefined();
   });
 
   it("keeps the diagnosis successful and logs when iTunes fails", async () => {

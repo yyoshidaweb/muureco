@@ -164,8 +164,7 @@ async function withPreviews(
 
     return {
       ...recommendation,
-      previewUrl: track.previewUrl,
-      trackName: track.name,
+      preview: { url: track.previewUrl, trackName: track.name },
     };
   });
 }

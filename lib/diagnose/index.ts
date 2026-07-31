@@ -6,4 +6,5 @@ export type {
   DiagnoseResult,
   DiagnosisTag,
   Recommendation,
+  RecommendationPreview,
 } from "./types";

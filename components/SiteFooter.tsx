@@ -91,14 +91,14 @@ function SiteFooterContent() {
             {t("footer.unofficial")}
           </p>
           <p>
-            {t("footer.imageProvider")}
+            {t("footer.previewProvider")}
             <a
-              href="https://www.spotify.com/"
+              href="https://www.apple.com/apple-music/"
               target="_blank"
               rel="noopener noreferrer"
               className="cursor-pointer underline hover:text-black"
             >
-              Spotify
+              Apple Music
             </a>
             {t("footer.unofficial")}
           </p>
