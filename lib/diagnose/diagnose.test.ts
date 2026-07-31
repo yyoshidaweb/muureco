@@ -177,7 +177,7 @@ describe("diagnose", () => {
   });
 });
 
-describe("diagnose recommendation images", () => {
+describe("diagnose recommendation Spotify data", () => {
   function mockSingleRecommendation() {
     mockSearchArtist.mockResolvedValueOnce([
       {
@@ -196,7 +196,7 @@ describe("diagnose recommendation images", () => {
     ]);
   }
 
-  it("attaches the Spotify image URL to a recommendation", async () => {
+  it("attaches the Spotify image URL and artist ID to a recommendation", async () => {
     mockSingleRecommendation();
     mockSearchSpotifyArtist.mockResolvedValueOnce({
       id: "muse-id",
@@ -213,6 +213,26 @@ describe("diagnose recommendation images", () => {
         score: 0.9,
         url: "https://www.last.fm/music/Muse",
         imageUrl: "https://i.scdn.co/image/muse",
+        spotifyId: "muse-id",
+      },
+    ]);
+  });
+
+  it("attaches the artist ID even when the Spotify artist has no image", async () => {
+    mockSingleRecommendation();
+    mockSearchSpotifyArtist.mockResolvedValueOnce({
+      id: "muse-id",
+      name: "Muse",
+    });
+
+    const result = await diagnose(["Radiohead"]);
+
+    expect(result.recommendations).toEqual([
+      {
+        name: "Muse",
+        score: 0.9,
+        url: "https://www.last.fm/music/Muse",
+        spotifyId: "muse-id",
       },
     ]);
   });
@@ -244,9 +264,10 @@ describe("diagnose recommendation images", () => {
     expect(result.recommendations[0]?.imageUrl).toBe(
       "https://i.scdn.co/image/yonezu",
     );
+    expect(result.recommendations[0]?.spotifyId).toBe("yonezu-id");
   });
 
-  it("omits the image URL when the Spotify artist name does not match", async () => {
+  it("omits the Spotify data when the artist name does not match", async () => {
     mockSingleRecommendation();
     mockSearchSpotifyArtist.mockResolvedValueOnce({
       id: "tribute-id",
@@ -257,6 +278,7 @@ describe("diagnose recommendation images", () => {
     const result = await diagnose(["Radiohead"]);
 
     expect(result.recommendations[0]?.imageUrl).toBeUndefined();
+    expect(result.recommendations[0]?.spotifyId).toBeUndefined();
   });
 
   it("keeps the diagnosis successful when Spotify fails", async () => {

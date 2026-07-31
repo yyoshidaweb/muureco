@@ -104,19 +104,19 @@ function buildRecommendations(
 /** ひらがな・カタカナ・漢字（半角カナを含む）。 */
 const JAPANESE_PATTERN = /[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff\uff66-\uff9f]/;
 
-async function withImageUrl(
+async function withSpotifyArtist(
   recommendation: Recommendation,
 ): Promise<Recommendation> {
   try {
     const artist = await searchSpotifyArtist(recommendation.name);
 
-    if (!artist?.imageUrl) {
+    if (!artist) {
       return recommendation;
     }
 
     // Last.fm が日本語表記、Spotify がローマ字表記を返すことが多く、日本語名では
-    // 文字列が一致しない。表記体系が揃うラテン文字名のときだけ、別アーティストの
-    // 画像を拾わないよう名前の一致を求める。
+    // 文字列が一致しない。表記体系が揃うラテン文字名のときだけ、別アーティストを
+    // 拾わないよう名前の一致を求める。
     if (
       !JAPANESE_PATTERN.test(recommendation.name) &&
       normalizeName(artist.name) !== normalizeName(recommendation.name)
@@ -124,9 +124,13 @@ async function withImageUrl(
       return recommendation;
     }
 
-    return { ...recommendation, imageUrl: artist.imageUrl };
+    return {
+      ...recommendation,
+      spotifyId: artist.id,
+      ...(artist.imageUrl ? { imageUrl: artist.imageUrl } : {}),
+    };
   } catch {
-    // Spotify 側の失敗で診断全体を止めず、画像なしで返す。
+    // Spotify 側の失敗で診断全体を止めず、Spotify 由来の情報なしで返す。
     return recommendation;
   }
 }
@@ -159,6 +163,6 @@ export async function diagnose(artistNames: string[]): Promise<DiagnoseResult> {
 
   return {
     diagnosis: buildDiagnosis(artistData.map((d) => d.tags)),
-    recommendations: await Promise.all(recommendations.map(withImageUrl)),
+    recommendations: await Promise.all(recommendations.map(withSpotifyArtist)),
   };
 }

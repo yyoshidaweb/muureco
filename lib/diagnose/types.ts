@@ -10,6 +10,7 @@ export type Recommendation = {
   url: string;
   mbid?: string;
   imageUrl?: string;
+  spotifyId?: string;
 };
 
 export type DiagnoseResult = {
