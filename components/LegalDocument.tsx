@@ -1,9 +1,17 @@
 import type { LegalDocument as LegalDocumentModel } from "@/lib/legal/content";
 
-export function LegalDocument({ document }: { document: LegalDocumentModel }) {
+export function LegalDocument({
+  document,
+  titleId,
+}: {
+  document: LegalDocumentModel;
+  titleId?: string;
+}) {
   return (
-    <main className="mx-auto w-full max-w-3xl px-4 py-8 sm:px-6 sm:py-12">
-      <h1 className="text-3xl font-bold text-black">{document.title}</h1>
+    <div className="mx-auto w-full max-w-3xl px-4 py-8 sm:px-6 sm:py-12">
+      <h1 id={titleId} className="text-3xl font-bold text-black">
+        {document.title}
+      </h1>
 
       <div className="mt-6 space-y-3 text-sm leading-7 text-neutral-700 sm:text-base">
         {document.preamble.map((paragraph) => (
@@ -63,6 +71,6 @@ export function LegalDocument({ document }: { document: LegalDocumentModel }) {
           <p key={line}>{line}</p>
         ))}
       </div>
-    </main>
+    </div>
   );
 }
