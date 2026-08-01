@@ -125,9 +125,12 @@ export function RecommendationList({
                   return (
                     <li key={rec.mbid ?? rec.name}>
                       <div className="rounded-md border border-neutral-300 bg-white text-black">
-                        <div className="flex items-center justify-between gap-3 px-4 py-3">
+                        <div className="flex items-center px-4 py-3">
                           <span className="truncate">{rec.name}</span>
-                          {rec.preview && (
+                        </div>
+
+                        {rec.preview && (
+                          <div className="flex items-center gap-2 border-t border-neutral-200 px-4 py-2 text-xs text-neutral-500">
                             <button
                               type="button"
                               onClick={() => void togglePreview(rec)}
@@ -137,28 +140,23 @@ export function RecommendationList({
                                   : "preview.playLabel",
                                 { artist: rec.name },
                               )}
-                              className="flex shrink-0 cursor-pointer items-center gap-1 text-sm text-neutral-500 transition-colors hover:text-black"
+                              className="shrink-0 cursor-pointer transition-colors hover:text-black"
                             >
                               {isPlaying ? (
                                 <StopCircleIcon />
                               ) : (
                                 <PlayCircleIcon />
                               )}
-                              {t(isPlaying ? "preview.stop" : "preview.play")}
                             </button>
-                          )}
-                        </div>
-
-                        {rec.preview && (
-                          <div className="flex items-center justify-between gap-3 border-t border-neutral-200 px-4 py-2 text-xs text-neutral-500">
-                            <span className="truncate" aria-live="polite">
+                            <span className="truncate text-sm">
+                              {rec.preview.trackName}
+                            </span>
+                            <span className="shrink-0" aria-live="polite">
                               {hasFailed
                                 ? t("preview.failed")
                                 : isPlaying
-                                  ? t("preview.playing", {
-                                      track: rec.preview.trackName,
-                                    })
-                                  : rec.preview.trackName}
+                                  ? t("preview.playing")
+                                  : t("preview.label")}
                             </span>
                             {/* 試聴音源の近くにストアへの導線を置くことが利用条項の条件。 */}
                             <a
@@ -168,7 +166,7 @@ export function RecommendationList({
                               aria-label={t("preview.storeLabel", {
                                 track: rec.preview.trackName,
                               })}
-                              className="shrink-0"
+                              className="ml-auto shrink-0"
                             >
                               {/* eslint-disable-next-line @next/next/no-img-element -- 加工禁止のバッジなので next/image で変換しない */}
                               <img
