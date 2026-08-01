@@ -3,6 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 import type { DiagnosisTag, Recommendation } from "@/lib/diagnose";
 import { DiagnosisResult } from "@/components/DiagnosisResult";
+import { fetchPreviews } from "@/lib/itunes";
+import type { ArtistPreview } from "@/lib/itunes";
 import { useLocale } from "@/lib/i18n";
 
 type RecommendationListProps = {
@@ -56,6 +58,9 @@ export function RecommendationList({
   const requestedName = useRef<string | null>(null);
   const [playingName, setPlayingName] = useState<string | null>(null);
   const [failedName, setFailedName] = useState<string | null>(null);
+  const [previews, setPreviews] = useState<Map<string, ArtistPreview>>(
+    new Map(),
+  );
   const [shownRecommendations, setShownRecommendations] =
     useState(recommendations);
 
@@ -64,20 +69,37 @@ export function RecommendationList({
     setShownRecommendations(recommendations);
     setPlayingName(null);
     setFailedName(null);
+    setPreviews(new Map());
   }
 
   useEffect(() => {
     // 表示を戻すだけでは音が鳴り続けるため、要素も止める。
     audioRef.current?.pause();
-  }, [recommendations]);
 
-  async function togglePreview(recommendation: Recommendation) {
-    const audio = audioRef.current;
-    if (!audio || !recommendation.preview) {
+    if (!recommendations || recommendations.length === 0) {
       return;
     }
 
-    if (playingName === recommendation.name) {
+    // 上限がIP単位で効くため、サーバーではなくブラウザから取得する。
+    let isCurrent = true;
+    void fetchPreviews(recommendations.map((rec) => rec.name)).then((next) => {
+      if (isCurrent) {
+        setPreviews(next);
+      }
+    });
+
+    return () => {
+      isCurrent = false;
+    };
+  }, [recommendations]);
+
+  async function togglePreview(name: string, preview: ArtistPreview) {
+    const audio = audioRef.current;
+    if (!audio) {
+      return;
+    }
+
+    if (playingName === name) {
       // 一時停止ではなく停止として扱い、次の再生は曲の頭から始める。
       audio.pause();
       audio.currentTime = 0;
@@ -85,17 +107,17 @@ export function RecommendationList({
       return;
     }
 
-    requestedName.current = recommendation.name;
+    requestedName.current = name;
     setFailedName(null);
     // 同じ要素を使い回すことで、別の行を再生すると前の再生が必ず止まる。
-    audio.src = recommendation.preview.url;
+    audio.src = preview.url;
 
     try {
       await audio.play();
-      setPlayingName(recommendation.name);
+      setPlayingName(name);
     } catch {
       setPlayingName(null);
-      setFailedName(recommendation.name);
+      setFailedName(name);
     }
   }
 
@@ -117,6 +139,7 @@ export function RecommendationList({
             ) : (
               <ul className="flex flex-col gap-2">
                 {recommendations.map((rec) => {
+                  const preview = previews.get(rec.name);
                   const isPlaying = playingName === rec.name;
                   const hasFailed = failedName === rec.name;
 
@@ -127,12 +150,14 @@ export function RecommendationList({
                           <span className="truncate">{rec.name}</span>
                         </div>
 
-                        {rec.preview && (
+                        {preview && (
                           <div className="mt-1 flex flex-col gap-2 text-xs text-neutral-500">
                             <div className="flex items-center gap-2">
                               <button
                                 type="button"
-                                onClick={() => void togglePreview(rec)}
+                                onClick={() =>
+                                  void togglePreview(rec.name, preview)
+                                }
                                 aria-label={t(
                                   isPlaying
                                     ? "preview.stopLabel"
@@ -153,7 +178,7 @@ export function RecommendationList({
                               >
                                 {hasFailed
                                   ? t("preview.failed")
-                                  : rec.preview.trackName}
+                                  : preview.trackName}
                               </span>
                               {!hasFailed && (
                                 <span className="shrink-0 rounded-full bg-neutral-100 px-2 py-0.5 text-neutral-600">
@@ -164,11 +189,11 @@ export function RecommendationList({
 
                             {/* 試聴音源の近くにストアへの導線を置くことが利用条項の条件。 */}
                             <a
-                              href={rec.preview.storeUrl}
+                              href={preview.storeUrl}
                               target="_blank"
                               rel="noopener noreferrer"
                               aria-label={t("preview.storeLabel", {
-                                track: rec.preview.trackName,
+                                track: preview.trackName,
                               })}
                               className="self-end"
                             >

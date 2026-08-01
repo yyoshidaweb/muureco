@@ -175,19 +175,19 @@ describe("error handling", () => {
     );
   });
 
-  it("stops calling the API after the rate limit is hit", async () => {
-    mockFetch.mockResolvedValueOnce({ ok: false, status: 403 });
+  it.each([403, 429])("stops calling the API after HTTP %i", async (status) => {
+    mockFetch.mockResolvedValueOnce({ ok: false, status });
 
     const { lookupTracks, searchArtists } = await loadClient();
 
     await expect(searchArtists("Muse")).rejects.toEqual(
-      expect.objectContaining({ name: "ItunesApiError", status: 403 }),
+      expect.objectContaining({ name: "ItunesApiError", status }),
     );
     await expect(searchArtists("Portishead")).rejects.toEqual(
-      expect.objectContaining({ name: "ItunesApiError", status: 403 }),
+      expect.objectContaining({ name: "ItunesApiError", status: 429 }),
     );
     await expect(lookupTracks([1])).rejects.toEqual(
-      expect.objectContaining({ name: "ItunesApiError", status: 403 }),
+      expect.objectContaining({ name: "ItunesApiError", status: 429 }),
     );
 
     expect(mockFetch).toHaveBeenCalledTimes(1);

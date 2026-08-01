@@ -14,7 +14,7 @@
 |--------|------|
 | フロント | Next.js（App Router）+ TypeScript + Tailwind CSS |
 | バックエンド | Next.js Route Handler（BFF） |
-| 外部 API | [Last.fm API](https://www.last.fm/api)、[iTunes Search API](https://performance-partners.apple.com/search-api)（試聴音源） |
+| 外部 API | [Last.fm API](https://www.last.fm/api)（BFF 経由）、[iTunes Search API](https://performance-partners.apple.com/search-api)（試聴音源。ブラウザから直接） |
 | デプロイ | Cloudflare Workers（[@opennextjs/cloudflare](https://opennext.js.org/cloudflare)） |
 
 ## 開発環境のセットアップ
@@ -42,7 +42,7 @@ LASTFM_API_KEY=your_api_key
 
 API キーは [Last.fm API アカウント作成](https://www.last.fm/api/account/create) から取得できます。BFF 経由でのみ使用し、クライアントには露出しません。
 
-iTunes Search API は認証不要のため設定は要りません。ただし呼び出し回数の上限（およそ 20 回/分）があり、上限に達している間は試聴ボタンが表示されません。
+iTunes Search API は認証不要のため設定は要りません。ただし呼び出し回数の上限（およそ 20 回/分）が IP 単位で効きます。Cloudflare Workers の外向き通信は他の Worker と IP を共有していて常に上限を超えているため、この API はブラウザから直接呼び出します。上限に達している間は試聴ボタンが表示されません。
 
 Workers ランタイムでのローカルプレビュー用には、`.dev.vars.example` を `.dev.vars` にコピーして同じ値を設定します。
 

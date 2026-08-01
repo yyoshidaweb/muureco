@@ -613,12 +613,12 @@ export const privacyContent: Record<Locale, ContentDocument> = {
         blocks: [
           {
             type: "paragraph",
-            text: "本サービスは、おすすめアーティストの試聴音源をApple Inc.（以下、「Apple」といいます。）の提供するiTunes Search APIから取得し、音源そのものはAppleのサーバーから配信されます。",
+            text: "本サービスは、おすすめアーティストの試聴音源をApple Inc.（以下、「Apple」といいます。）の提供するiTunes Search APIから取得し、音源そのものはAppleのサーバーから配信されます。この取得はユーザーのブラウザから直接行われます。",
           },
           {
             type: "list",
             items: [
-              "ユーザーが試聴を再生したときは、ユーザーの端末からAppleのサーバーへ直接通信が行われ、IPアドレスおよびブラウザの情報がAppleに送信されます。これらの情報を運営者が取得または保持することはありません。",
+              "おすすめアーティストが表示されるときおよび試聴を再生したときは、ユーザーの端末からAppleのサーバーへ直接通信が行われ、アーティスト名・IPアドレスおよびブラウザの情報がAppleに送信されます。これらの情報を運営者が取得または保持することはありません。",
               "Appleにおける情報の取り扱いについては、Appleのプライバシーポリシーをご確認ください。",
             ],
           },
@@ -815,12 +815,12 @@ export const privacyContent: Record<Locale, ContentDocument> = {
         blocks: [
           {
             type: "paragraph",
-            text: 'The Service obtains audio previews for recommended artists from the iTunes Search API provided by Apple Inc. ("Apple"), and the audio itself is delivered from Apple\'s servers.',
+            text: 'The Service obtains audio previews for recommended artists from the iTunes Search API provided by Apple Inc. ("Apple"), and the audio itself is delivered from Apple\'s servers. These previews are obtained directly from the User\'s browser.',
           },
           {
             type: "list",
             items: [
-              "When a User plays a preview, the User's device communicates directly with Apple's servers, and the User's IP address and browser information are sent to Apple. The Operator neither obtains nor retains such information.",
+              "When recommended artists are displayed and when a User plays a preview, the User's device communicates directly with Apple's servers, and artist names, the User's IP address, and browser information are sent to Apple. The Operator neither obtains nor retains such information.",
               "For how Apple handles such information, please refer to Apple's privacy policy.",
             ],
           },
