@@ -193,6 +193,37 @@ describe("error handling", () => {
     expect(mockFetch).toHaveBeenCalledTimes(1);
   });
 
+  it("retries with a different cache key when the request itself fails", async () => {
+    // CORSヘッダーを欠いたキャッシュに当たると、ステータスを読めないまま失敗する。
+    mockFetch
+      .mockRejectedValueOnce(new TypeError("Failed to fetch"))
+      .mockResolvedValueOnce(
+        jsonResponse({
+          results: [{ wrapperType: "artist", artistId: 1, artistName: "Muse" }],
+        }),
+      );
+
+    const { searchArtists } = await loadClient();
+
+    expect(await searchArtists("Muse")).toEqual([{ id: 1, name: "Muse" }]);
+    expect(mockFetch).toHaveBeenCalledTimes(2);
+
+    const [first, second] = mockFetch.mock.calls.map(([url]) => url as URL);
+    expect(first.searchParams.has("cb")).toBe(false);
+    expect(second.searchParams.get("cb")).toMatch(/^[a-z0-9]+$/);
+  });
+
+  it("does not retry when the API answers with an error status", async () => {
+    mockFetch.mockResolvedValueOnce({ ok: false, status: 500 });
+
+    const { searchArtists } = await loadClient();
+
+    await expect(searchArtists("Muse")).rejects.toEqual(
+      expect.objectContaining({ status: 500 }),
+    );
+    expect(mockFetch).toHaveBeenCalledTimes(1);
+  });
+
   it("calls the API again once the cooldown has passed", async () => {
     vi.useFakeTimers();
 
