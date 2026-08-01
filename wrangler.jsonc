@@ -5,7 +5,14 @@
   "main": ".open-next/worker.js",
   "compatibility_date": "2026-07-29",
   "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "workers_dev": false,
   "preview_urls": true,
+  "routes": [
+    {
+      "pattern": "muureco.com",
+      "custom_domain": true
+    }
+  ],
   "secrets": {
     "required": ["LASTFM_API_KEY"]
   },
