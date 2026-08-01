@@ -124,13 +124,13 @@ export function RecommendationList({
 
                   return (
                     <li key={rec.mbid ?? rec.name}>
-                      <div className="rounded-md border border-neutral-300 bg-white text-black">
-                        <div className="flex items-center px-4 py-3">
+                      <div className="rounded-md border border-neutral-300 bg-white px-4 py-3 text-black">
+                        <div className="flex items-center">
                           <span className="truncate">{rec.name}</span>
                         </div>
 
                         {rec.preview && (
-                          <div className="flex flex-col gap-2 border-t border-neutral-200 px-4 py-2 text-xs text-neutral-500">
+                          <div className="mt-1 flex flex-col gap-2 text-xs text-neutral-500">
                             <div className="flex items-center gap-2">
                               <button
                                 type="button"
