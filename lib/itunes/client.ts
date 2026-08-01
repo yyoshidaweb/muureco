@@ -16,6 +16,13 @@ const RATE_LIMIT_STATUSES = new Set([403, 429]);
 const RATE_LIMIT_STATUS = 429;
 // 上限は約20回/分。当たったあとはこの時間だけ呼び出しを止める。
 const RATE_LIMIT_COOLDOWN_MS = 60_000;
+/**
+ * Apple は Origin 付きのリクエストにだけ CORS ヘッダーを返すが、CDN が
+ * Vary: Origin を守らないため、Origin なしのリクエストが作ったキャッシュが
+ * ブラウザにも返り、そのURLは最大24時間 fetch 自体が失敗する。キャッシュキーを
+ * 変えると取り直せるため、失敗したときだけ付ける。
+ */
+const CACHE_BUSTER_PARAM = "cb";
 
 let rateLimitedUntil = 0;
 
@@ -50,7 +57,17 @@ async function callApi<T>(
     url.searchParams.set(key, value);
   }
 
-  const response = await fetch(url);
+  let response: Response;
+  try {
+    response = await fetch(url);
+  } catch {
+    const retryUrl = new URL(url);
+    retryUrl.searchParams.set(
+      CACHE_BUSTER_PARAM,
+      Math.random().toString(36).slice(2),
+    );
+    response = await fetch(retryUrl);
+  }
 
   if (RATE_LIMIT_STATUSES.has(response.status)) {
     rateLimitedUntil = Date.now() + RATE_LIMIT_COOLDOWN_MS;
