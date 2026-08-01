@@ -35,6 +35,7 @@ export type TranslationKey =
   | "footer.previewCredit"
   | "footer.appleTrademark"
   | "footer.unofficial"
+  | "footer.otherServices"
   | "language.label"
   | "language.ja"
   | "language.en"

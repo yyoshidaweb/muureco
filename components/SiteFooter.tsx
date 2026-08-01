@@ -68,17 +68,6 @@ function SiteFooterContent() {
       <footer className="border-t border-neutral-200">
         <div className="mx-auto flex w-full max-w-5xl flex-col gap-1 px-4 py-6 text-sm text-neutral-500 sm:px-6">
           <p>
-            {t("footer.developedBy")}
-            <a
-              href="https://piku.page/@yyoshidaweb"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="cursor-pointer underline hover:text-black"
-            >
-              @yyoshidaweb
-            </a>
-          </p>
-          <p>
             {t("footer.dataProvider")}
             <a
               href={lastfmUrl("https://www.last.fm/")}
@@ -118,6 +107,32 @@ function SiteFooterContent() {
             >
               {t("link.privacy")}
             </button>
+          </div>
+          <p className="mt-1">
+            {t("footer.developedBy")}
+            <a
+              href="https://piku.page/@yyoshidaweb"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="cursor-pointer underline hover:text-black"
+            >
+              @yyoshidaweb
+            </a>
+          </p>
+          <div className="mt-1">
+            <p>{t("footer.otherServices")}</p>
+            <ul className="mt-1 list-disc pl-5">
+              <li>
+                <a
+                  href="https://minnanotimetable.com/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="cursor-pointer underline hover:text-black"
+                >
+                  みんなのタイムテーブル
+                </a>
+              </li>
+            </ul>
           </div>
         </div>
       </footer>
