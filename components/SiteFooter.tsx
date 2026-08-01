@@ -90,18 +90,12 @@ function SiteFooterContent() {
             </a>
             {t("footer.unofficial")}
           </p>
+          {/* 試聴音源には Apple 指定の文言を添えることが利用条項の条件。 */}
           <p>
-            {t("footer.imageProvider")}
-            <a
-              href="https://www.spotify.com/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="cursor-pointer underline hover:text-black"
-            >
-              Spotify
-            </a>
+            {t("footer.previewCredit")}
             {t("footer.unofficial")}
           </p>
+          <p>{t("footer.appleTrademark")}</p>
           <div className="mt-1 flex flex-wrap gap-x-4 gap-y-1">
             <button
               type="button"

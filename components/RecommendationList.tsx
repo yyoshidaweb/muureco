@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import { useEffect, useRef, useState } from "react";
 import type { DiagnosisTag, Recommendation } from "@/lib/diagnose";
 import { DiagnosisResult } from "@/components/DiagnosisResult";
 import { useLocale } from "@/lib/i18n";
@@ -11,21 +11,37 @@ type RecommendationListProps = {
   isLoading: boolean;
 };
 
-function ArtistPlaceholder() {
+/**
+ * Apple 配布の小サイズバッジ。一覧に添える用途で用意されているもので、翻訳対象の
+ * 文字を含まないため言語共通。加工・自作は禁止されているため配布物をそのまま置く。
+ */
+const APPLE_MUSIC_BADGE = {
+  src: "/apple-music-badge.svg",
+  // 配布物と同じ寸法。ガイドラインの下限は高さ12px。
+  width: 78,
+  height: 16,
+};
+
+/** Google Material Icons の play_circle。 */
+function PlayCircleIcon() {
   return (
-    <span
-      className="flex size-10 shrink-0 items-center justify-center rounded bg-neutral-200 text-neutral-500"
-      aria-hidden
-    >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 24 24"
-        fill="currentColor"
-        className="size-5"
-      >
-        <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v1c0 .55.45 1 1 1h14c.55 0 1-.45 1-1v-1c0-2.66-5.33-4-8-4z" />
-      </svg>
-    </span>
+    <svg viewBox="0 0 24 24" fill="currentColor" className="size-6" aria-hidden>
+      <path d="M12,2C6.48,2,2,6.48,2,12s4.48,10,10,10s10-4.48,10-10S17.52,2,12,2z M9.5,14.67V9.33c0-0.79,0.88-1.27,1.54-0.84l4.15,2.67c0.61,0.39,0.61,1.29,0,1.68l-4.15,2.67C10.38,15.94,9.5,15.46,9.5,14.67z" />
+    </svg>
+  );
+}
+
+/** Google Material Icons の stop_circle。 */
+function StopCircleIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" className="size-6" aria-hidden>
+      {/* 円と四角が同じ巻き方向のため、四角を抜くには evenodd が必要。 */}
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M9,16h6c0.55,0,1-0.45,1-1V9c0-0.55-0.45-1-1-1H9C8.45,8,8,8.45,8,9v6C8,15.55,8.45,16,9,16z M12,2C6.48,2,2,6.48,2,12s4.48,10,10,10s10-4.48,10-10S17.52,2,12,2L12,2z"
+      />
+    </svg>
   );
 }
 
@@ -34,7 +50,54 @@ export function RecommendationList({
   tags,
   isLoading,
 }: RecommendationListProps) {
-  const { t, lastfmUrl } = useLocale();
+  const { t } = useLocale();
+  const audioRef = useRef<HTMLAudioElement>(null);
+  // audio 要素の error はどの行の失敗か持たないため、要求した行を覚えておく。
+  const requestedName = useRef<string | null>(null);
+  const [playingName, setPlayingName] = useState<string | null>(null);
+  const [failedName, setFailedName] = useState<string | null>(null);
+  const [shownRecommendations, setShownRecommendations] =
+    useState(recommendations);
+
+  if (shownRecommendations !== recommendations) {
+    // 診断をやり直したら、前回の再生表示を持ち越さない。
+    setShownRecommendations(recommendations);
+    setPlayingName(null);
+    setFailedName(null);
+  }
+
+  useEffect(() => {
+    // 表示を戻すだけでは音が鳴り続けるため、要素も止める。
+    audioRef.current?.pause();
+  }, [recommendations]);
+
+  async function togglePreview(recommendation: Recommendation) {
+    const audio = audioRef.current;
+    if (!audio || !recommendation.preview) {
+      return;
+    }
+
+    if (playingName === recommendation.name) {
+      // 一時停止ではなく停止として扱い、次の再生は曲の頭から始める。
+      audio.pause();
+      audio.currentTime = 0;
+      setPlayingName(null);
+      return;
+    }
+
+    requestedName.current = recommendation.name;
+    setFailedName(null);
+    // 同じ要素を使い回すことで、別の行を再生すると前の再生が必ず止まる。
+    audio.src = recommendation.preview.url;
+
+    try {
+      await audio.play();
+      setPlayingName(recommendation.name);
+    } catch {
+      setPlayingName(null);
+      setFailedName(recommendation.name);
+    }
+  }
 
   return (
     <section className="flex h-full min-h-[240px] flex-col md:min-h-0">
@@ -53,39 +116,76 @@ export function RecommendationList({
               </p>
             ) : (
               <ul className="flex flex-col gap-2">
-                {recommendations.map((rec) => (
-                  <li key={rec.mbid ?? rec.name}>
-                    <a
-                      href={lastfmUrl(rec.url)}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="block rounded-md border border-neutral-300 bg-white px-4 py-3 text-black transition-colors hover:bg-neutral-50"
-                    >
-                      <span className="flex items-center justify-between gap-3">
-                        <span className="flex min-w-0 items-center gap-3">
-                          {rec.imageUrl ? (
-                            <Image
-                              src={rec.imageUrl}
-                              alt=""
-                              width={40}
-                              height={40}
-                              // Spotify から取得するのは表示サイズに近い最小画像のため、
-                              // 追加の最適化は行わずそのまま配信する。
-                              unoptimized
-                              className="size-10 shrink-0 rounded object-cover"
-                            />
-                          ) : (
-                            <ArtistPlaceholder />
-                          )}
+                {recommendations.map((rec) => {
+                  const isPlaying = playingName === rec.name;
+                  const hasFailed = failedName === rec.name;
+
+                  return (
+                    <li key={rec.mbid ?? rec.name}>
+                      <div className="rounded-md border border-neutral-300 bg-white px-4 py-3 text-black">
+                        <div className="flex items-center">
                           <span className="truncate">{rec.name}</span>
-                        </span>
-                        <span className="shrink-0 text-sm text-neutral-500">
-                          {t("link.lastfm")}
-                        </span>
-                      </span>
-                    </a>
-                  </li>
-                ))}
+                        </div>
+
+                        {rec.preview && (
+                          <div className="mt-1 flex flex-col gap-2 text-xs text-neutral-500">
+                            <div className="flex items-center gap-2">
+                              <button
+                                type="button"
+                                onClick={() => void togglePreview(rec)}
+                                aria-label={t(
+                                  isPlaying
+                                    ? "preview.stopLabel"
+                                    : "preview.playLabel",
+                                  { artist: rec.name },
+                                )}
+                                className="shrink-0 cursor-pointer transition-colors hover:text-black"
+                              >
+                                {isPlaying ? (
+                                  <StopCircleIcon />
+                                ) : (
+                                  <PlayCircleIcon />
+                                )}
+                              </button>
+                              <span
+                                className="truncate text-sm"
+                                aria-live="polite"
+                              >
+                                {hasFailed
+                                  ? t("preview.failed")
+                                  : rec.preview.trackName}
+                              </span>
+                              {!hasFailed && (
+                                <span className="shrink-0 rounded-full bg-neutral-100 px-2 py-0.5 text-neutral-600">
+                                  {t("preview.label")}
+                                </span>
+                              )}
+                            </div>
+
+                            {/* 試聴音源の近くにストアへの導線を置くことが利用条項の条件。 */}
+                            <a
+                              href={rec.preview.storeUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              aria-label={t("preview.storeLabel", {
+                                track: rec.preview.trackName,
+                              })}
+                              className="self-end"
+                            >
+                              {/* eslint-disable-next-line @next/next/no-img-element -- 加工禁止のバッジなので next/image で変換しない */}
+                              <img
+                                src={APPLE_MUSIC_BADGE.src}
+                                alt=""
+                                width={APPLE_MUSIC_BADGE.width}
+                                height={APPLE_MUSIC_BADGE.height}
+                              />
+                            </a>
+                          </div>
+                        )}
+                      </div>
+                    </li>
+                  );
+                })}
               </ul>
             )}
 
@@ -93,6 +193,17 @@ export function RecommendationList({
           </>
         )}
       </div>
+
+      <audio
+        ref={audioRef}
+        className="hidden"
+        preload="none"
+        onEnded={() => setPlayingName(null)}
+        onError={() => {
+          setPlayingName(null);
+          setFailedName(requestedName.current);
+        }}
+      />
     </section>
   );
 }

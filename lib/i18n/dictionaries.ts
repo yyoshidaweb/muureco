@@ -1,5 +1,9 @@
 import type { Dictionary, Locale } from "./types";
 
+/** Apple が定める商標クレジット。どの言語でもこの英文のまま載せる。 */
+const APPLE_TRADEMARK_CREDIT =
+  "Apple and Apple Music are trademarks of Apple Inc., registered in the U.S. and other countries.";
+
 const ja: Dictionary = {
   "brand.name": "ミューレコ",
   "brand.tagline": "あなたの「好き」から次の出会いを。",
@@ -13,6 +17,11 @@ const ja: Dictionary = {
   "form.duplicateArtist": "同じアーティスト名を重複して指定できません",
   "suggest.searching": "検索中…",
   "suggest.noResults": "該当するアーティストが見つかりません",
+  "preview.label": "プレビュー",
+  "preview.playLabel": "「{artist}」を試聴する",
+  "preview.stopLabel": "「{artist}」の試聴を停止する",
+  "preview.failed": "再生に失敗しました",
+  "preview.storeLabel": "Apple Musicで「{track}」を開く",
   "result.thinking": "考え中...",
   "result.noRecommendations": "おすすめアーティストが見つかりませんでした",
   "result.noTags": "診断タグがありません",
@@ -23,12 +32,12 @@ const ja: Dictionary = {
     "診断に失敗しました。時間をおいて再度お試しください。",
   "footer.developedBy": "開発：",
   "footer.dataProvider": "データ提供元：",
-  "footer.imageProvider": "アーティスト画像提供元：",
+  "footer.previewCredit": "試聴音源：Provided courtesy of iTunes",
+  "footer.appleTrademark": APPLE_TRADEMARK_CREDIT,
   "footer.unofficial": "（非公式・非提携）",
   "language.label": "言語",
   "language.ja": "日本語",
   "language.en": "English",
-  "link.lastfm": "Last.fm ↗",
   "link.terms": "利用規約",
   "link.privacy": "プライバシーポリシー",
   "link.algorithm": "おすすめアルゴリズムについて",
@@ -48,6 +57,11 @@ const en: Dictionary = {
   "form.duplicateArtist": "The same artist cannot be selected more than once",
   "suggest.searching": "Searching…",
   "suggest.noResults": "No matching artists found",
+  "preview.label": "Preview",
+  "preview.playLabel": "Preview “{artist}”",
+  "preview.stopLabel": "Stop the preview of “{artist}”",
+  "preview.failed": "Playback failed",
+  "preview.storeLabel": "Open “{track}” in Apple Music",
   "result.thinking": "Thinking...",
   "result.noRecommendations": "No recommended artists found",
   "result.noTags": "No diagnosis tags",
@@ -57,12 +71,12 @@ const en: Dictionary = {
   "error.diagnoseFailed": "Diagnosis failed. Please try again later.",
   "footer.developedBy": "Developed by ",
   "footer.dataProvider": "Data provided by ",
-  "footer.imageProvider": "Artist images provided by ",
+  "footer.previewCredit": "Audio previews provided courtesy of iTunes",
+  "footer.appleTrademark": APPLE_TRADEMARK_CREDIT,
   "footer.unofficial": " (unofficial / unaffiliated)",
   "language.label": "Language",
   "language.ja": "日本語",
   "language.en": "English",
-  "link.lastfm": "Last.fm ↗",
   "link.terms": "Terms of Service",
   "link.privacy": "Privacy Policy",
   "link.algorithm": "How recommendations work",

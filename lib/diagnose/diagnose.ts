@@ -4,7 +4,8 @@ import {
   searchArtist,
 } from "@/lib/lastfm";
 import type { LastfmArtist } from "@/lib/lastfm";
-import { searchArtist as searchSpotifyArtist } from "@/lib/spotify";
+import { lookupTracks, searchArtists } from "@/lib/itunes";
+import type { ItunesArtist, ItunesTrack } from "@/lib/itunes";
 import { ArtistNotFoundError } from "./errors";
 import type { DiagnoseResult, DiagnosisTag, Recommendation } from "./types";
 
@@ -26,23 +27,18 @@ async function resolveArtist(name: string): Promise<LastfmArtist> {
 }
 
 function buildDiagnosis(
-  tagLists: { name: string; count: number; url: string }[][],
+  tagLists: { name: string; count: number }[][],
 ): DiagnosisTag[] {
-  const scores = new Map<string, { score: number; url: string }>();
+  const scores = new Map<string, number>();
 
   for (const tags of tagLists) {
     for (const tag of tags) {
-      const existing = scores.get(tag.name);
-      if (existing) {
-        existing.score += tag.count;
-      } else {
-        scores.set(tag.name, { score: tag.count, url: tag.url });
-      }
+      scores.set(tag.name, (scores.get(tag.name) ?? 0) + tag.count);
     }
   }
 
   return [...scores.entries()]
-    .map(([name, { score, url }]) => ({ name, score, url }))
+    .map(([name, score]) => ({ name, score }))
     .sort((a, b) => b.score - a.score)
     .slice(0, DIAGNOSIS_LIMIT);
 }
@@ -51,7 +47,6 @@ function buildRecommendations(
   similarLists: {
     name: string;
     match: number;
-    url: string;
     mbid?: string;
   }[][],
   excludedNames: Set<string>,
@@ -61,7 +56,6 @@ function buildRecommendations(
     {
       name: string;
       score: number;
-      url: string;
       mbid?: string;
       seedCount: number;
     }
@@ -82,7 +76,6 @@ function buildRecommendations(
         entries.set(key, {
           name: artist.name,
           score: artist.match,
-          url: artist.url,
           mbid: artist.mbid,
           seedCount: 1,
         });
@@ -91,10 +84,9 @@ function buildRecommendations(
   }
 
   return [...entries.values()]
-    .map(({ name, score, url, mbid, seedCount }) => ({
+    .map(({ name, score, mbid, seedCount }) => ({
       name,
       score: score * seedCount,
-      url,
       mbid,
     }))
     .sort((a, b) => b.score - a.score)
@@ -102,33 +94,78 @@ function buildRecommendations(
 }
 
 /** ひらがな・カタカナ・漢字（半角カナを含む）。 */
-const JAPANESE_PATTERN = /[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff\uff66-\uff9f]/;
+const JAPANESE_PATTERN =
+  /[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff\uff66-\uff9f]/;
 
-async function withImageUrl(
-  recommendation: Recommendation,
-): Promise<Recommendation> {
-  try {
-    const artist = await searchSpotifyArtist(recommendation.name);
-
-    if (!artist?.imageUrl) {
-      return recommendation;
-    }
-
-    // Last.fm が日本語表記、Spotify がローマ字表記を返すことが多く、日本語名では
-    // 文字列が一致しない。表記体系が揃うラテン文字名のときだけ、別アーティストの
-    // 画像を拾わないよう名前の一致を求める。
-    if (
-      !JAPANESE_PATTERN.test(recommendation.name) &&
-      normalizeName(artist.name) !== normalizeName(recommendation.name)
-    ) {
-      return recommendation;
-    }
-
-    return { ...recommendation, imageUrl: artist.imageUrl };
-  } catch {
-    // Spotify 側の失敗で診断全体を止めず、画像なしで返す。
-    return recommendation;
+function matchArtist(
+  candidates: ItunesArtist[],
+  name: string,
+): ItunesArtist | undefined {
+  // Last.fm が日本語表記、Apple がローマ字表記を返すことが多く、日本語名では
+  // 文字列が一致しない。表記体系が揃うラテン文字名のときだけ、別アーティストの
+  // 曲を拾わないよう名前の一致を求める。
+  if (JAPANESE_PATTERN.test(name)) {
+    return candidates[0];
   }
+
+  return candidates.find(
+    (candidate) => normalizeName(candidate.name) === normalizeName(name),
+  );
+}
+
+async function withPreviews(
+  recommendations: Recommendation[],
+): Promise<Recommendation[]> {
+  const failures: string[] = [];
+
+  const artists = await Promise.all(
+    recommendations.map(async (recommendation) => {
+      try {
+        return matchArtist(
+          await searchArtists(recommendation.name),
+          recommendation.name,
+        );
+      } catch (error) {
+        failures.push(error instanceof Error ? error.message : String(error));
+        return undefined;
+      }
+    }),
+  );
+
+  let tracks = new Map<number, ItunesTrack>();
+  try {
+    tracks = await lookupTracks([
+      ...new Set(artists.flatMap((artist) => (artist ? [artist.id] : []))),
+    ]);
+  } catch (error) {
+    failures.push(error instanceof Error ? error.message : String(error));
+  }
+
+  if (failures.length > 0) {
+    // 試聴が付かないだけで診断は成立するため、利用者には見せずログにだけ残す。
+    console.error("Failed to fetch iTunes previews", {
+      failed: failures.length,
+      reasons: [...new Set(failures)],
+    });
+  }
+
+  return recommendations.map((recommendation, index) => {
+    const artist = artists[index];
+    const track = artist && tracks.get(artist.id);
+
+    if (!track) {
+      return recommendation;
+    }
+
+    return {
+      ...recommendation,
+      preview: {
+        url: track.previewUrl,
+        trackName: track.name,
+        storeUrl: track.viewUrl,
+      },
+    };
+  });
 }
 
 export async function diagnose(artistNames: string[]): Promise<DiagnoseResult> {
@@ -159,6 +196,6 @@ export async function diagnose(artistNames: string[]): Promise<DiagnoseResult> {
 
   return {
     diagnosis: buildDiagnosis(artistData.map((d) => d.tags)),
-    recommendations: await Promise.all(recommendations.map(withImageUrl)),
+    recommendations: await withPreviews(recommendations),
   };
 }

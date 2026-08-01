@@ -6,7 +6,6 @@ import { useLocale } from "@/lib/i18n";
 export type ArtistSuggestion = {
   name: string;
   mbid?: string;
-  url: string;
 };
 
 type ArtistSuggestFieldProps = {

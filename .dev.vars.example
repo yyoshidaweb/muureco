@@ -2,5 +2,3 @@
 # Copy to `.dev.vars` and fill in values.
 NEXTJS_ENV=development
 LASTFM_API_KEY=
-SPOTIFY_CLIENT_ID=
-SPOTIFY_CLIENT_SECRET=
