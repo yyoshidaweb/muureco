@@ -123,16 +123,16 @@ export default function Home() {
   return (
     <div className="flex flex-1 flex-col bg-white">
       <header className="border-b border-neutral-200">
-        <div className="mx-auto flex w-full max-w-5xl items-start justify-between gap-4 px-4 py-4 sm:px-6 sm:py-5">
-          <div>
+        <div className="mx-auto w-full max-w-5xl px-4 py-4 sm:px-6 sm:py-5">
+          <div className="flex items-start justify-between gap-4">
             <h1 className="text-[1.6875rem] font-bold tracking-tight text-black sm:text-[2.025rem]">
               {t("brand.name")}
             </h1>
-            <p className="mt-1 text-sm text-neutral-600 sm:text-base">
-              {t("brand.tagline")}
-            </p>
+            <LanguageSwitcher />
           </div>
-          <LanguageSwitcher />
+          <p className="mt-1 text-sm text-neutral-600 sm:text-base">
+            {t("brand.tagline")}
+          </p>
         </div>
       </header>
 
