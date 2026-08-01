@@ -129,7 +129,7 @@ function SiteFooterContent() {
                   rel="noopener noreferrer"
                   className="cursor-pointer underline hover:text-black"
                 >
-                  みんなのタイムテーブル
+                  {t("footer.minnanotimetable")}
                 </a>
               </li>
             </ul>

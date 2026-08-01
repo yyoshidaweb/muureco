@@ -36,6 +36,7 @@ export type TranslationKey =
   | "footer.appleTrademark"
   | "footer.unofficial"
   | "footer.otherServices"
+  | "footer.minnanotimetable"
   | "language.label"
   | "language.ja"
   | "language.en"
