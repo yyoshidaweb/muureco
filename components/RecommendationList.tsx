@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import type { DiagnosisTag, Recommendation } from "@/lib/diagnose";
 import { DiagnosisResult } from "@/components/DiagnosisResult";
-import { type Locale, useLocale } from "@/lib/i18n";
+import { useLocale } from "@/lib/i18n";
 
 type RecommendationListProps = {
   recommendations: Recommendation[] | null;
@@ -12,16 +12,15 @@ type RecommendationListProps = {
 };
 
 /**
- * Apple 配布の「Listen on Apple Music」バッジ。加工・自作は禁止されているため、
- * 配布物をそのまま置いて寸法だけガイドラインに合わせる。
+ * Apple 配布の小サイズバッジ。一覧に添える用途で用意されているもので、翻訳対象の
+ * 文字を含まないため言語共通。加工・自作は禁止されているため配布物をそのまま置く。
  */
-const APPLE_MUSIC_BADGES: Record<Locale, { src: string; width: number }> = {
-  ja: { src: "/apple-music-badge-ja.svg", width: 105 },
-  en: { src: "/apple-music-badge-en.svg", width: 103 },
+const APPLE_MUSIC_BADGE = {
+  src: "/apple-music-badge.svg",
+  // 配布物と同じ寸法。ガイドラインの下限は高さ12px。
+  width: 78,
+  height: 16,
 };
-
-/** ガイドラインが定めるデジタル表示の最小の高さ。 */
-const APPLE_MUSIC_BADGE_HEIGHT = 30;
 
 /** Google Material Icons の play_circle。 */
 function PlayCircleIcon() {
@@ -51,8 +50,7 @@ export function RecommendationList({
   tags,
   isLoading,
 }: RecommendationListProps) {
-  const { locale, t } = useLocale();
-  const badge = APPLE_MUSIC_BADGES[locale];
+  const { t } = useLocale();
   const audioRef = useRef<HTMLAudioElement>(null);
   // audio 要素の error はどの行の失敗か持たないため、要求した行を覚えておく。
   const requestedName = useRef<string | null>(null);
@@ -176,10 +174,10 @@ export function RecommendationList({
                             >
                               {/* eslint-disable-next-line @next/next/no-img-element -- 加工禁止のバッジなので next/image で変換しない */}
                               <img
-                                src={badge.src}
+                                src={APPLE_MUSIC_BADGE.src}
                                 alt=""
-                                width={badge.width}
-                                height={APPLE_MUSIC_BADGE_HEIGHT}
+                                width={APPLE_MUSIC_BADGE.width}
+                                height={APPLE_MUSIC_BADGE.height}
                               />
                             </a>
                           </div>
