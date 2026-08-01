@@ -20,11 +20,11 @@ function PlayCircleIcon() {
   );
 }
 
-/** Google Material Icons の pause_circle。 */
-function PauseCircleIcon() {
+/** Google Material Icons の stop_circle。 */
+function StopCircleIcon() {
   return (
     <svg viewBox="0 0 24 24" fill="currentColor" className="size-6" aria-hidden>
-      <path d="M12,2C6.48,2,2,6.48,2,12s4.48,10,10,10s10-4.48,10-10S17.52,2,12,2z M10,16L10,16c-0.55,0-1-0.45-1-1V9c0-0.55,0.45-1,1-1l0,0c0.55,0,1,0.45,1,1v6C11,15.55,10.55,16,10,16z M14,16L14,16c-0.55,0-1-0.45-1-1V9c0-0.55,0.45-1,1-1l0,0c0.55,0,1,0.45,1,1v6C15,15.55,14.55,16,14,16z" />
+      <path d="M9,16h6c0.55,0,1-0.45,1-1V9c0-0.55-0.45-1-1-1H9C8.45,8,8,8.45,8,9v6C8,15.55,8.45,16,9,16z M12,2C6.48,2,2,6.48,2,12s4.48,10,10,10s10-4.48,10-10S17.52,2,12,2L12,2z" />
     </svg>
   );
 }
@@ -62,7 +62,9 @@ export function RecommendationList({
     }
 
     if (playingName === recommendation.name) {
+      // 一時停止ではなく停止として扱い、次の再生は曲の頭から始める。
       audio.pause();
+      audio.currentTime = 0;
       setPlayingName(null);
       return;
     }
@@ -120,7 +122,7 @@ export function RecommendationList({
                               className="flex shrink-0 cursor-pointer items-center gap-1 text-sm text-neutral-500 transition-colors hover:text-black"
                             >
                               {isPlaying ? (
-                                <PauseCircleIcon />
+                                <StopCircleIcon />
                               ) : (
                                 <PlayCircleIcon />
                               )}
