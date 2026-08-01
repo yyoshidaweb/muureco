@@ -5,6 +5,7 @@
   "main": ".open-next/worker.js",
   "compatibility_date": "2026-07-29",
   "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "preview_urls": true,
   "secrets": {
     "required": ["LASTFM_API_KEY"]
   },

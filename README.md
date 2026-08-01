@@ -67,8 +67,6 @@ npm run dev
 
 ```bash
 npx wrangler secret put LASTFM_API_KEY
-npx wrangler secret put SPOTIFY_CLIENT_ID
-npx wrangler secret put SPOTIFY_CLIENT_SECRET
 ```
 
 値はプロンプト入力で設定し、Issue・PR・コミットには書かないでください。
@@ -85,19 +83,27 @@ npm run deploy
 
 `workers.dev` のURLは `{Worker名}.{アカウントのサブドメイン}.workers.dev` 形式です（本番は `muureco.yyoshidaweb.workers.dev`）。
 
-### GitHub Actionsでの自動デプロイ
+### Workers Buildsでの自動デプロイ
 
-`main` ブランチへのマージ時に [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml) が `npm run deploy` を実行します。
+[Workers Builds](https://developers.cloudflare.com/workers/ci-cd/builds/) でリポジトリと Cloudflare を直接連携しているため、`main` ブランチへのマージで自動的にビルド・デプロイされます。GitHub 側にデプロイ用のAPIトークンを保存する必要はありません。
 
-リポジトリの **Settings** → **Secrets and variables** → **Actions** に次を登録してください。
+Cloudflare ダッシュボードの Worker → **Settings** → **Builds** で次を設定します。
 
-| Secret | 説明 |
-|--------|------|
-| `CLOUDFLARE_API_TOKEN` | Workers デプロイ用APIトークン（[作成手順](https://developers.cloudflare.com/fundamentals/api/get-started/create-token/)） |
-| `CLOUDFLARE_ACCOUNT_ID` | CloudflareアカウントID（`npx wrangler whoami` で確認） |
-| `LASTFM_API_KEY` | デプロイ時の `wrangler` 検証用（本番ランタイムは Cloudflare 側のシークレットを使用） |
+| 項目 | 値 |
+|------|-----|
+| Production branch | `main` |
+| Build command | `npx opennextjs-cloudflare build` |
+| Deploy command | `npx opennextjs-cloudflare deploy` |
+| Non-production branch deploy command | `npx opennextjs-cloudflare upload` |
+| Builds for non-production branches | 有効 |
 
-APIトークンには最低限 **Account** の **Workers Scripts: Edit** 権限が必要です。デプロイ workflow は **Node.js 22** で実行します（Wrangler 4.x の要件）。
+Next.js のビルド成果物を Workers 向けに変換する必要があるため、ビルドは `next build` ではなく `opennextjs-cloudflare build` を実行します。デプロイ側の `deploy` / `upload` は再ビルドせず、キャッシュの配置と `wrangler deploy` / `wrangler versions upload` の実行のみを行います。
+
+非本番ブランチビルドを有効にしているため、PR にはブランチごとの[プレビューURL](https://developers.cloudflare.com/workers/versions-and-deployments/preview-urls/)がコメントされます（`wrangler.jsonc` の `preview_urls: true` が必要）。
+
+Node.js のバージョンは [`.node-version`](.node-version) で固定しています。
+
+テストは Workers Builds では実行されません。PR時の `npm run test:ci` は [`.github/workflows/ci.yml`](.github/workflows/ci.yml) が担当します。
 
 ### 本番での注意
 
