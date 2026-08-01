@@ -130,34 +130,40 @@ export function RecommendationList({
                         </div>
 
                         {rec.preview && (
-                          <div className="flex items-center gap-2 border-t border-neutral-200 px-4 py-2 text-xs text-neutral-500">
-                            <button
-                              type="button"
-                              onClick={() => void togglePreview(rec)}
-                              aria-label={t(
-                                isPlaying
-                                  ? "preview.stopLabel"
-                                  : "preview.playLabel",
-                                { artist: rec.name },
+                          <div className="flex flex-col gap-2 border-t border-neutral-200 px-4 py-2 text-xs text-neutral-500">
+                            <div className="flex items-center gap-2">
+                              <button
+                                type="button"
+                                onClick={() => void togglePreview(rec)}
+                                aria-label={t(
+                                  isPlaying
+                                    ? "preview.stopLabel"
+                                    : "preview.playLabel",
+                                  { artist: rec.name },
+                                )}
+                                className="shrink-0 cursor-pointer transition-colors hover:text-black"
+                              >
+                                {isPlaying ? (
+                                  <StopCircleIcon />
+                                ) : (
+                                  <PlayCircleIcon />
+                                )}
+                              </button>
+                              <span
+                                className="truncate text-sm"
+                                aria-live="polite"
+                              >
+                                {hasFailed
+                                  ? t("preview.failed")
+                                  : rec.preview.trackName}
+                              </span>
+                              {!hasFailed && (
+                                <span className="shrink-0 rounded-full bg-neutral-100 px-2 py-0.5 text-neutral-600">
+                                  {t("preview.label")}
+                                </span>
                               )}
-                              className="shrink-0 cursor-pointer transition-colors hover:text-black"
-                            >
-                              {isPlaying ? (
-                                <StopCircleIcon />
-                              ) : (
-                                <PlayCircleIcon />
-                              )}
-                            </button>
-                            <span className="truncate text-sm">
-                              {rec.preview.trackName}
-                            </span>
-                            <span className="shrink-0" aria-live="polite">
-                              {hasFailed
-                                ? t("preview.failed")
-                                : isPlaying
-                                  ? t("preview.playing")
-                                  : t("preview.label")}
-                            </span>
+                            </div>
+
                             {/* 試聴音源の近くにストアへの導線を置くことが利用条項の条件。 */}
                             <a
                               href={rec.preview.storeUrl}
@@ -166,7 +172,7 @@ export function RecommendationList({
                               aria-label={t("preview.storeLabel", {
                                 track: rec.preview.trackName,
                               })}
-                              className="ml-auto shrink-0"
+                              className="self-end"
                             >
                               {/* eslint-disable-next-line @next/next/no-img-element -- 加工禁止のバッジなので next/image で変換しない */}
                               <img

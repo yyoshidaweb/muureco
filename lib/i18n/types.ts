@@ -21,7 +21,6 @@ export type TranslationKey =
   | "preview.label"
   | "preview.playLabel"
   | "preview.stopLabel"
-  | "preview.playing"
   | "preview.failed"
   | "preview.storeLabel"
   | "result.thinking"
