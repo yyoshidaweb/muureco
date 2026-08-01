@@ -1,10 +1,10 @@
 import type { MetadataRoute } from "next";
-import { LOCALE_PATHS, SITE_URL } from "@/lib/site";
+import { localeUrl } from "@/lib/site";
 
 const languages = {
-  en: `${SITE_URL}${LOCALE_PATHS.en}`,
-  ja: `${SITE_URL}${LOCALE_PATHS.ja}`,
-  "x-default": `${SITE_URL}${LOCALE_PATHS.en}`,
+  en: localeUrl("en"),
+  ja: localeUrl("ja"),
+  "x-default": localeUrl("en"),
 };
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -12,14 +12,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   return [
     {
-      url: `${SITE_URL}${LOCALE_PATHS.en}`,
+      url: localeUrl("en"),
       lastModified,
       changeFrequency: "weekly",
       priority: 1,
       alternates: { languages },
     },
     {
-      url: `${SITE_URL}${LOCALE_PATHS.ja}`,
+      url: localeUrl("ja"),
       lastModified,
       changeFrequency: "weekly",
       priority: 1,
