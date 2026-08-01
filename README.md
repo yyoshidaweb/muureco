@@ -134,4 +134,6 @@ APIトークンには最低限 **Account** の **Workers Scripts: Edit** 権限�
 
 データ提供元：[Last.fm](https://www.last.fm/)（非公式・非提携。API を利用しています）
 
-試聴音源提供元：[Apple Music](https://www.apple.com/apple-music/)（非公式・非提携。iTunes Search API を利用しています）
+試聴音源：Provided courtesy of iTunes（非公式・非提携。iTunes Search API を利用しています）
+
+Apple and Apple Music are trademarks of Apple Inc., registered in the U.S. and other countries.

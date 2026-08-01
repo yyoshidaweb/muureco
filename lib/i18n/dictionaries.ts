@@ -1,5 +1,9 @@
 import type { Dictionary, Locale } from "./types";
 
+/** Apple が定める商標クレジット。どの言語でもこの英文のまま載せる。 */
+const APPLE_TRADEMARK_CREDIT =
+  "Apple and Apple Music are trademarks of Apple Inc., registered in the U.S. and other countries.";
+
 const ja: Dictionary = {
   "brand.name": "ミューレコ",
   "brand.tagline": "あなたの「好き」から次の出会いを。",
@@ -19,7 +23,6 @@ const ja: Dictionary = {
   "preview.stopLabel": "「{artist}」の試聴を停止する",
   "preview.playing": "再生中：{track}",
   "preview.failed": "再生できませんでした",
-  "preview.store": "Apple Music ↗",
   "preview.storeLabel": "Apple Musicで「{track}」を開く",
   "result.thinking": "考え中...",
   "result.noRecommendations": "おすすめアーティストが見つかりませんでした",
@@ -31,7 +34,8 @@ const ja: Dictionary = {
     "診断に失敗しました。時間をおいて再度お試しください。",
   "footer.developedBy": "開発：",
   "footer.dataProvider": "データ提供元：",
-  "footer.previewProvider": "試聴音源提供元：",
+  "footer.previewCredit": "試聴音源：Provided courtesy of iTunes",
+  "footer.appleTrademark": APPLE_TRADEMARK_CREDIT,
   "footer.unofficial": "（非公式・非提携）",
   "language.label": "言語",
   "language.ja": "日本語",
@@ -61,7 +65,6 @@ const en: Dictionary = {
   "preview.stopLabel": "Stop the preview of “{artist}”",
   "preview.playing": "Now playing: {track}",
   "preview.failed": "Playback failed",
-  "preview.store": "Apple Music ↗",
   "preview.storeLabel": "Open “{track}” in Apple Music",
   "result.thinking": "Thinking...",
   "result.noRecommendations": "No recommended artists found",
@@ -72,7 +75,8 @@ const en: Dictionary = {
   "error.diagnoseFailed": "Diagnosis failed. Please try again later.",
   "footer.developedBy": "Developed by ",
   "footer.dataProvider": "Data provided by ",
-  "footer.previewProvider": "Audio previews provided by ",
+  "footer.previewCredit": "Audio previews provided courtesy of iTunes",
+  "footer.appleTrademark": APPLE_TRADEMARK_CREDIT,
   "footer.unofficial": " (unofficial / unaffiliated)",
   "language.label": "Language",
   "language.ja": "日本語",

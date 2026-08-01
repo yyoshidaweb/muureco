@@ -3,13 +3,25 @@
 import { useEffect, useRef, useState } from "react";
 import type { DiagnosisTag, Recommendation } from "@/lib/diagnose";
 import { DiagnosisResult } from "@/components/DiagnosisResult";
-import { useLocale } from "@/lib/i18n";
+import { type Locale, useLocale } from "@/lib/i18n";
 
 type RecommendationListProps = {
   recommendations: Recommendation[] | null;
   tags: DiagnosisTag[] | null;
   isLoading: boolean;
 };
+
+/**
+ * Apple 配布の「Listen on Apple Music」バッジ。加工・自作は禁止されているため、
+ * 配布物をそのまま置いて寸法だけガイドラインに合わせる。
+ */
+const APPLE_MUSIC_BADGES: Record<Locale, { src: string; width: number }> = {
+  ja: { src: "/apple-music-badge-ja.svg", width: 105 },
+  en: { src: "/apple-music-badge-en.svg", width: 103 },
+};
+
+/** ガイドラインが定めるデジタル表示の最小の高さ。 */
+const APPLE_MUSIC_BADGE_HEIGHT = 30;
 
 /** Google Material Icons の play_circle。 */
 function PlayCircleIcon() {
@@ -39,7 +51,8 @@ export function RecommendationList({
   tags,
   isLoading,
 }: RecommendationListProps) {
-  const { t } = useLocale();
+  const { locale, t } = useLocale();
+  const badge = APPLE_MUSIC_BADGES[locale];
   const audioRef = useRef<HTMLAudioElement>(null);
   // audio 要素の error はどの行の失敗か持たないため、要求した行を覚えておく。
   const requestedName = useRef<string | null>(null);
@@ -137,15 +150,15 @@ export function RecommendationList({
                         </div>
 
                         {rec.preview && (
-                          <div className="flex items-baseline justify-between gap-3 border-t border-neutral-200 px-4 py-2 text-xs text-neutral-500">
+                          <div className="flex items-center justify-between gap-3 border-t border-neutral-200 px-4 py-2 text-xs text-neutral-500">
                             <span className="truncate" aria-live="polite">
-                              {isPlaying
-                                ? t("preview.playing", {
-                                    track: rec.preview.trackName,
-                                  })
-                                : hasFailed
-                                  ? t("preview.failed")
-                                  : ""}
+                              {hasFailed
+                                ? t("preview.failed")
+                                : isPlaying
+                                  ? t("preview.playing", {
+                                      track: rec.preview.trackName,
+                                    })
+                                  : rec.preview.trackName}
                             </span>
                             {/* 試聴音源の近くにストアへの導線を置くことが利用条項の条件。 */}
                             <a
@@ -155,9 +168,15 @@ export function RecommendationList({
                               aria-label={t("preview.storeLabel", {
                                 track: rec.preview.trackName,
                               })}
-                              className="shrink-0 hover:text-black hover:underline"
+                              className="shrink-0"
                             >
-                              {t("preview.store")}
+                              {/* eslint-disable-next-line @next/next/no-img-element -- 加工禁止のバッジなので next/image で変換しない */}
+                              <img
+                                src={badge.src}
+                                alt=""
+                                width={badge.width}
+                                height={APPLE_MUSIC_BADGE_HEIGHT}
+                              />
                             </a>
                           </div>
                         )}
