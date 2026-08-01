@@ -24,6 +24,12 @@ const APPLE_MUSIC_BADGE = {
   height: 16,
 };
 
+/**
+ * 試聴を待つ上限。名前だけ先に出て曲名が遅れて足されると表示が飛ぶため、揃うのを
+ * 待つ。ただし待ちが長引くときは名前だけでも見せる。
+ */
+const PREVIEW_WAIT_MS = 1500;
+
 /** Google Material Icons の play_circle。 */
 function PlayCircleIcon() {
   return (
@@ -61,6 +67,7 @@ export function RecommendationList({
   const [previews, setPreviews] = useState<Map<string, ArtistPreview>>(
     new Map(),
   );
+  const [isPreviewPending, setIsPreviewPending] = useState(false);
   const [shownRecommendations, setShownRecommendations] =
     useState(recommendations);
 
@@ -70,6 +77,7 @@ export function RecommendationList({
     setPlayingName(null);
     setFailedName(null);
     setPreviews(new Map());
+    setIsPreviewPending((recommendations?.length ?? 0) > 0);
   }
 
   useEffect(() => {
@@ -80,16 +88,24 @@ export function RecommendationList({
       return;
     }
 
-    // 上限がIP単位で効くため、サーバーではなくブラウザから取得する。
     let isCurrent = true;
+    const timer = window.setTimeout(() => {
+      if (isCurrent) {
+        setIsPreviewPending(false);
+      }
+    }, PREVIEW_WAIT_MS);
+
+    // 上限がIP単位で効くため、サーバーではなくブラウザから取得する。
     void fetchPreviews(recommendations.map((rec) => rec.name)).then((next) => {
       if (isCurrent) {
         setPreviews(next);
+        setIsPreviewPending(false);
       }
     });
 
     return () => {
       isCurrent = false;
+      window.clearTimeout(timer);
     };
   }, [recommendations]);
 
@@ -121,16 +137,18 @@ export function RecommendationList({
     }
   }
 
+  const isPending = isLoading || isPreviewPending;
+
   return (
     <section className="flex h-full min-h-[240px] flex-col md:min-h-0">
       <div className="flex flex-1 flex-col gap-8">
-        {isLoading && (
+        {isPending && (
           <p className="text-sm text-neutral-500" aria-live="polite">
             {t("result.thinking")}
           </p>
         )}
 
-        {!isLoading && recommendations && (
+        {!isPending && recommendations && (
           <>
             {recommendations.length === 0 ? (
               <p className="text-sm text-neutral-500">
