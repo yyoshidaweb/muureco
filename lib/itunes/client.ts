@@ -10,8 +10,10 @@ const ARTIST_SEARCH_LIMIT = "5";
 // lookup の limit はアーティストごとに効く。試聴に使うのは1曲だけだが、割り当て
 // られた曲が共演者名義で返ることがあるため、数曲取って自分名義のものを選ぶ。
 const TRACK_LOOKUP_LIMIT = "3";
-// 上限超過は 429 ではなく 403 で返る。残量を知るヘッダーはない。
-const RATE_LIMIT_STATUS = 403;
+// 上限超過は 403 と 429 のどちらでも返る。残量を知るヘッダーはない。
+const RATE_LIMIT_STATUSES = new Set([403, 429]);
+// 上限に当たったことを表す、こちらから投げるエラーの status。
+const RATE_LIMIT_STATUS = 429;
 // 上限は約20回/分。当たったあとはこの時間だけ呼び出しを止める。
 const RATE_LIMIT_COOLDOWN_MS = 60_000;
 
@@ -50,7 +52,7 @@ async function callApi<T>(
 
   const response = await fetch(url);
 
-  if (response.status === RATE_LIMIT_STATUS) {
+  if (RATE_LIMIT_STATUSES.has(response.status)) {
     rateLimitedUntil = Date.now() + RATE_LIMIT_COOLDOWN_MS;
   }
 

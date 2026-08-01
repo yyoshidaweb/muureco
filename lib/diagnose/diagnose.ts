@@ -4,8 +4,6 @@ import {
   searchArtist,
 } from "@/lib/lastfm";
 import type { LastfmArtist } from "@/lib/lastfm";
-import { lookupTracks, searchArtists } from "@/lib/itunes";
-import type { ItunesArtist, ItunesTrack } from "@/lib/itunes";
 import { ArtistNotFoundError } from "./errors";
 import type { DiagnoseResult, DiagnosisTag, Recommendation } from "./types";
 
@@ -93,81 +91,6 @@ function buildRecommendations(
     .slice(0, RECOMMENDATION_LIMIT);
 }
 
-/** ひらがな・カタカナ・漢字（半角カナを含む）。 */
-const JAPANESE_PATTERN =
-  /[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff\uff66-\uff9f]/;
-
-function matchArtist(
-  candidates: ItunesArtist[],
-  name: string,
-): ItunesArtist | undefined {
-  // Last.fm が日本語表記、Apple がローマ字表記を返すことが多く、日本語名では
-  // 文字列が一致しない。表記体系が揃うラテン文字名のときだけ、別アーティストの
-  // 曲を拾わないよう名前の一致を求める。
-  if (JAPANESE_PATTERN.test(name)) {
-    return candidates[0];
-  }
-
-  return candidates.find(
-    (candidate) => normalizeName(candidate.name) === normalizeName(name),
-  );
-}
-
-async function withPreviews(
-  recommendations: Recommendation[],
-): Promise<Recommendation[]> {
-  const failures: string[] = [];
-
-  const artists = await Promise.all(
-    recommendations.map(async (recommendation) => {
-      try {
-        return matchArtist(
-          await searchArtists(recommendation.name),
-          recommendation.name,
-        );
-      } catch (error) {
-        failures.push(error instanceof Error ? error.message : String(error));
-        return undefined;
-      }
-    }),
-  );
-
-  let tracks = new Map<number, ItunesTrack>();
-  try {
-    tracks = await lookupTracks([
-      ...new Set(artists.flatMap((artist) => (artist ? [artist.id] : []))),
-    ]);
-  } catch (error) {
-    failures.push(error instanceof Error ? error.message : String(error));
-  }
-
-  if (failures.length > 0) {
-    // 試聴が付かないだけで診断は成立するため、利用者には見せずログにだけ残す。
-    console.error("Failed to fetch iTunes previews", {
-      failed: failures.length,
-      reasons: [...new Set(failures)],
-    });
-  }
-
-  return recommendations.map((recommendation, index) => {
-    const artist = artists[index];
-    const track = artist && tracks.get(artist.id);
-
-    if (!track) {
-      return recommendation;
-    }
-
-    return {
-      ...recommendation,
-      preview: {
-        url: track.previewUrl,
-        trackName: track.name,
-        storeUrl: track.viewUrl,
-      },
-    };
-  });
-}
-
 export async function diagnose(artistNames: string[]): Promise<DiagnoseResult> {
   const resolved = await Promise.all(artistNames.map(resolveArtist));
 
@@ -189,13 +112,13 @@ export async function diagnose(artistNames: string[]): Promise<DiagnoseResult> {
     }),
   );
 
-  const recommendations = buildRecommendations(
-    artistData.map((d) => d.similar),
-    excludedNames,
-  );
-
   return {
     diagnosis: buildDiagnosis(artistData.map((d) => d.tags)),
-    recommendations: await withPreviews(recommendations),
+    // 試聴音源はブラウザから直接取得する。上限がIP単位で効くため、共有IPになる
+    // ここで取ると本番では常に上限に当たる。
+    recommendations: buildRecommendations(
+      artistData.map((d) => d.similar),
+      excludedNames,
+    ),
   };
 }
