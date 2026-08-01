@@ -98,9 +98,12 @@ Cloudflare ダッシュボードの Worker → **Settings** → **Builds** で�
 | 項目 | 値 |
 |------|-----|
 | Production branch | `main` |
-| Build command | （空） |
-| Deploy command | `npm run deploy` |
+| Build command | `npx opennextjs-cloudflare build` |
+| Deploy command | `npx opennextjs-cloudflare deploy` |
+| Non-production branch deploy command | `npx opennextjs-cloudflare upload` |
 | Builds for non-production branches | 有効 |
+
+Next.js のビルド成果物を Workers 向けに変換する必要があるため、ビルドは `next build` ではなく `opennextjs-cloudflare build` を実行します。デプロイ側の `deploy` / `upload` は再ビルドせず、キャッシュの配置と `wrangler deploy` / `wrangler versions upload` の実行のみを行います。
 
 非本番ブランチビルドを有効にしているため、PR にはブランチごとの[プレビューURL](https://developers.cloudflare.com/workers/versions-and-deployments/preview-urls/)がコメントされます（`wrangler.jsonc` の `preview_urls: true` が必要）。
 
