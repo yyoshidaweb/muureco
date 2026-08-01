@@ -6,7 +6,7 @@
 
 ユーザーが入力したアーティストをもとに、Last.fm API からタグ情報を集計して音楽性を診断し、類似アーティストをおすすめとして表示します。おすすめアーティストの試聴音源は iTunes Search API から取得します。
 
-**公開URL**: [https://muureco.yyoshidaweb.workers.dev](https://muureco.yyoshidaweb.workers.dev)
+**公開URL**: [https://muureco.com](https://muureco.com)
 
 ## 技術スタック
 
@@ -81,7 +81,13 @@ npm run preview
 npm run deploy
 ```
 
-`workers.dev` のURLは `{Worker名}.{アカウントのサブドメイン}.workers.dev` 形式です（本番は `muureco.yyoshidaweb.workers.dev`）。
+### 独自ドメイン
+
+本番は独自ドメイン `muureco.com` で公開しています。`workers.dev` のURLは重複コンテンツを避けるため `wrangler.jsonc` の `workers_dev: false` で無効化しています。
+
+ドメインはムームードメインで取得し、ネームサーバーをCloudflareに向けてDNSをCloudflareで管理しています。Worker への紐付けは `wrangler.jsonc` の `routes`（`custom_domain: true`）で行い、DNSレコードと証明書は [Custom Domains](https://developers.cloudflare.com/workers/configuration/routing/custom-domains/) の仕組みでCloudflareが自動発行します。
+
+`www.muureco.com` はCloudflareのリダイレクトルールで `muureco.com` へ301リダイレクトします。
 
 ### Workers Buildsでの自動デプロイ
 
