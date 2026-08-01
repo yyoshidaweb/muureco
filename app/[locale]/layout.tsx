@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Noto_Sans_JP } from "next/font/google";
 import { notFound } from "next/navigation";
+import { GoogleAnalytics } from "@next/third-parties/google";
 import {
   LocaleProvider,
   LOCALES,
@@ -8,6 +9,7 @@ import {
   translate,
   type Locale,
 } from "@/lib/i18n";
+import { LOCALE_PATHS, SITE_URL } from "@/lib/site";
 import "../globals.css";
 
 const notoSansJp = Noto_Sans_JP({
@@ -33,8 +35,17 @@ export async function generateMetadata({
   const { locale: localeParam } = await params;
   const locale: Locale = isLocale(localeParam) ? localeParam : "ja";
   return {
+    metadataBase: new URL(SITE_URL),
     title: `${translate(locale, "brand.name")} | ${translate(locale, "brand.tagline")}`,
     description: descriptions[locale],
+    alternates: {
+      canonical: LOCALE_PATHS[locale],
+      languages: {
+        en: LOCALE_PATHS.en,
+        ja: LOCALE_PATHS.ja,
+        "x-default": LOCALE_PATHS.en,
+      },
+    },
   };
 }
 
@@ -50,12 +61,14 @@ export default async function LocaleLayout({
     notFound();
   }
   const locale: Locale = localeParam;
+  const gaId = process.env.NEXT_PUBLIC_GA_ID;
 
   return (
     <html lang={locale} className={`${notoSansJp.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col font-sans">
         <LocaleProvider locale={locale}>{children}</LocaleProvider>
       </body>
+      {gaId ? <GoogleAnalytics gaId={gaId} /> : null}
     </html>
   );
 }
