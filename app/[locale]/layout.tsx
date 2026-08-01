@@ -33,7 +33,7 @@ export async function generateMetadata({
   const { locale: localeParam } = await params;
   const locale: Locale = isLocale(localeParam) ? localeParam : "ja";
   return {
-    title: translate(locale, "brand.name"),
+    title: `${translate(locale, "brand.name")} | ${translate(locale, "brand.tagline")}`,
     description: descriptions[locale],
   };
 }
