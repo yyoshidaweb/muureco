@@ -11,7 +11,6 @@ import { useLocale } from "@/lib/i18n";
 type ArtistField = {
   query: string;
   selected: string | null;
-  selectedUrl: string | null;
 };
 
 type ArtistInputFormProps = {
@@ -81,9 +80,9 @@ export function ArtistInputForm({
   onArtistsChange,
   error,
 }: ArtistInputFormProps) {
-  const { t, lastfmUrl } = useLocale();
+  const { t } = useLocale();
   const [fields, setFields] = useState<ArtistField[]>([
-    { query: "", selected: null, selectedUrl: null },
+    { query: "", selected: null },
   ]);
   const lastEmittedKey = useRef<string>("");
 
@@ -111,7 +110,7 @@ export function ArtistInputForm({
   function updateQuery(index: number, query: string) {
     commitFields(
       fields.map((field, i) =>
-        i === index ? { query, selected: null, selectedUrl: null } : field,
+        i === index ? { query, selected: null } : field,
       ),
     );
   }
@@ -119,21 +118,19 @@ export function ArtistInputForm({
   function selectArtist(index: number, artist: ArtistSuggestion) {
     commitFields(
       fields.map((field, i) =>
-        i === index
-          ? { query: artist.name, selected: artist.name, selectedUrl: artist.url }
-          : field,
+        i === index ? { query: artist.name, selected: artist.name } : field,
       ),
     );
   }
 
   function addArtist() {
     if (!canAdd) return;
-    commitFields([...fields, { query: "", selected: null, selectedUrl: null }]);
+    commitFields([...fields, { query: "", selected: null }]);
   }
 
   function removeArtist(index: number) {
     if (fields.length <= 1) {
-      commitFields([{ query: "", selected: null, selectedUrl: null }]);
+      commitFields([{ query: "", selected: null }]);
       return;
     }
     commitFields(fields.filter((_, i) => i !== index));
@@ -157,16 +154,6 @@ export function ArtistInputForm({
                 excludedNames={excludedNames}
                 aria-label={t("form.artistLabel", { n: index + 1 })}
               />
-              {field.selectedUrl && (
-                <a
-                  href={lastfmUrl(field.selectedUrl)}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex shrink-0 items-center px-1 text-sm text-neutral-500 hover:underline"
-                >
-                  {t("link.lastfm")}
-                </a>
-              )}
               {(fields.length > 1 || field.selected !== null) && (
                 <button
                   type="button"

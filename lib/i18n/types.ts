@@ -38,7 +38,6 @@ export type TranslationKey =
   | "language.label"
   | "language.ja"
   | "language.en"
-  | "link.lastfm"
   | "link.terms"
   | "link.privacy"
   | "link.algorithm"

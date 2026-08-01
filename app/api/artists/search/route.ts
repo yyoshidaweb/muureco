@@ -21,7 +21,6 @@ export async function GET(request: Request) {
       artists: artists.map((artist) => ({
         name: artist.name,
         mbid: artist.mbid || undefined,
-        url: artist.url,
       })),
     });
   } catch (error) {
