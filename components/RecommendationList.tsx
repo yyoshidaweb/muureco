@@ -136,17 +136,30 @@ export function RecommendationList({
                           )}
                         </div>
 
-                        {(isPlaying || hasFailed) && (
-                          <p
-                            className="truncate border-t border-neutral-200 px-4 py-2 text-sm text-neutral-500"
-                            aria-live="polite"
-                          >
-                            {isPlaying && rec.preview
-                              ? t("preview.playing", {
-                                  track: rec.preview.trackName,
-                                })
-                              : t("preview.failed")}
-                          </p>
+                        {rec.preview && (
+                          <div className="flex items-baseline justify-between gap-3 border-t border-neutral-200 px-4 py-2 text-xs text-neutral-500">
+                            <span className="truncate" aria-live="polite">
+                              {isPlaying
+                                ? t("preview.playing", {
+                                    track: rec.preview.trackName,
+                                  })
+                                : hasFailed
+                                  ? t("preview.failed")
+                                  : ""}
+                            </span>
+                            {/* 試聴音源の近くにストアへの導線を置くことが利用条項の条件。 */}
+                            <a
+                              href={rec.preview.storeUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              aria-label={t("preview.storeLabel", {
+                                track: rec.preview.trackName,
+                              })}
+                              className="shrink-0 hover:text-black hover:underline"
+                            >
+                              {t("preview.store")}
+                            </a>
+                          </div>
                         )}
                       </div>
                     </li>

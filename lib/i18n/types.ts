@@ -24,6 +24,8 @@ export type TranslationKey =
   | "preview.stopLabel"
   | "preview.playing"
   | "preview.failed"
+  | "preview.store"
+  | "preview.storeLabel"
   | "result.thinking"
   | "result.noRecommendations"
   | "result.noTags"

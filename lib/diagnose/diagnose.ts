@@ -159,7 +159,11 @@ async function withPreviews(
 
     return {
       ...recommendation,
-      preview: { url: track.previewUrl, trackName: track.name },
+      preview: {
+        url: track.previewUrl,
+        trackName: track.name,
+        storeUrl: track.viewUrl,
+      },
     };
   });
 }

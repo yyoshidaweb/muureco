@@ -23,6 +23,7 @@ type RawResult = {
   artistName?: string;
   trackName?: string;
   previewUrl?: string;
+  trackViewUrl?: string;
 };
 
 type ApiResponse = {
@@ -102,10 +103,12 @@ export async function lookupTracks(
     if (raw.wrapperType !== "track") {
       continue;
     }
+    // ストアのページを併記できない曲は試聴に使えないため、揃っていなければ捨てる。
     if (
       raw.artistId === undefined ||
       raw.trackName === undefined ||
-      raw.previewUrl === undefined
+      raw.previewUrl === undefined ||
+      raw.trackViewUrl === undefined
     ) {
       continue;
     }
@@ -116,6 +119,7 @@ export async function lookupTracks(
     tracks.set(raw.artistId, {
       name: raw.trackName,
       previewUrl: raw.previewUrl,
+      viewUrl: raw.trackViewUrl,
     });
   }
 

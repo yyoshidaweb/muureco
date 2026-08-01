@@ -69,18 +69,21 @@ describe("lookupTracks", () => {
             artistId: 1,
             trackName: "Madness",
             previewUrl: "https://audio.example/madness.m4a",
+            trackViewUrl: "https://music.example/madness",
           },
           {
             wrapperType: "track",
             artistId: 1,
             trackName: "Uprising",
             previewUrl: "https://audio.example/uprising.m4a",
+            trackViewUrl: "https://music.example/uprising",
           },
           {
             wrapperType: "track",
             artistId: 2,
             trackName: "Glory Box",
             previewUrl: "https://audio.example/glory-box.m4a",
+            trackViewUrl: "https://music.example/glory-box",
           },
         ],
       }),
@@ -96,12 +99,20 @@ describe("lookupTracks", () => {
       }),
     );
     expect([...tracks]).toEqual([
-      [1, { name: "Madness", previewUrl: "https://audio.example/madness.m4a" }],
+      [
+        1,
+        {
+          name: "Madness",
+          previewUrl: "https://audio.example/madness.m4a",
+          viewUrl: "https://music.example/madness",
+        },
+      ],
       [
         2,
         {
           name: "Glory Box",
           previewUrl: "https://audio.example/glory-box.m4a",
+          viewUrl: "https://music.example/glory-box",
         },
       ],
     ]);
@@ -110,7 +121,33 @@ describe("lookupTracks", () => {
   it("skips tracks without a preview", async () => {
     mockFetch.mockResolvedValueOnce(
       jsonResponse({
-        results: [{ wrapperType: "track", artistId: 1, trackName: "Madness" }],
+        results: [
+          {
+            wrapperType: "track",
+            artistId: 1,
+            trackName: "Madness",
+            trackViewUrl: "https://music.example/madness",
+          },
+        ],
+      }),
+    );
+
+    const { lookupTracks } = await loadClient();
+
+    expect(await lookupTracks([1])).toEqual(new Map());
+  });
+
+  it("skips tracks without a store page", async () => {
+    mockFetch.mockResolvedValueOnce(
+      jsonResponse({
+        results: [
+          {
+            wrapperType: "track",
+            artistId: 1,
+            trackName: "Madness",
+            previewUrl: "https://audio.example/madness.m4a",
+          },
+        ],
       }),
     );
 

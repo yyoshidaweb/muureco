@@ -8,6 +8,8 @@ export type RecommendationPreview = {
   url: string;
   /** プレビュー音源の曲名。再生中の表示に使う。 */
   trackName: string;
+  /** ストアで曲を購入できるページ。試聴の近くに導線として置く。 */
+  storeUrl: string;
 };
 
 export type Recommendation = {

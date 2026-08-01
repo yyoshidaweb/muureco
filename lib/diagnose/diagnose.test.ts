@@ -187,7 +187,11 @@ describe("diagnose recommendation previews", () => {
       new Map([
         [
           1,
-          { name: "Madness", previewUrl: "https://audio.example/madness.m4a" },
+          {
+            name: "Madness",
+            previewUrl: "https://audio.example/madness.m4a",
+            viewUrl: "https://music.example/madness",
+          },
         ],
       ]),
     );
@@ -203,6 +207,7 @@ describe("diagnose recommendation previews", () => {
         preview: {
           url: "https://audio.example/madness.m4a",
           trackName: "Madness",
+          storeUrl: "https://music.example/madness",
         },
       },
     ]);
@@ -256,7 +261,14 @@ describe("diagnose recommendation previews", () => {
     ]);
     mockLookupTracks.mockResolvedValueOnce(
       new Map([
-        [1, { name: "Lemon", previewUrl: "https://audio.example/lemon.m4a" }],
+        [
+          1,
+          {
+            name: "Lemon",
+            previewUrl: "https://audio.example/lemon.m4a",
+            viewUrl: "https://music.example/lemon",
+          },
+        ],
       ]),
     );
 
@@ -265,6 +277,7 @@ describe("diagnose recommendation previews", () => {
     expect(result.recommendations[0]?.preview).toEqual({
       url: "https://audio.example/lemon.m4a",
       trackName: "Lemon",
+      storeUrl: "https://music.example/lemon",
     });
   });
 
