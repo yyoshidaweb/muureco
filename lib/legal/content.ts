@@ -6,6 +6,10 @@ const CONTACT_URL =
 
 const APPLE_PRIVACY_URL = "https://www.apple.com/legal/privacy/";
 
+const GOOGLE_PRIVACY_URL = "https://policies.google.com/privacy";
+
+const GA_OPT_OUT_URL = "https://tools.google.com/dlpage/gaoptout";
+
 export const termsContent: Record<Locale, ContentDocument> = {
   ja: {
     title: "利用規約",
@@ -630,7 +634,35 @@ export const privacyContent: Record<Locale, ContentDocument> = {
         ],
       },
       {
-        heading: "第11条（プライバシーポリシーの変更）",
+        heading: "第11条（アクセス解析ツールの利用）",
+        blocks: [
+          {
+            type: "paragraph",
+            text: "本サービスは、利用状況の把握およびサービスの改善のため、Google LLC（以下、「Google」といいます。）が提供するアクセス解析ツール「Googleアナリティクス」を利用しています。",
+          },
+          {
+            type: "list",
+            items: [
+              "Googleアナリティクスは、Cookieを利用して、閲覧したページ、参照元、IPアドレス、ブラウザおよび端末に関する情報等を収集します。これらの情報は匿名で収集されるものであり、個人を特定するものではありません。",
+              "ユーザーが本サービスに入力したアーティスト名および診断結果を、Googleアナリティクスへ送信することはありません。",
+              "ユーザーは、ブラウザの設定でCookieを無効にするか、Googleが提供するオプトアウトアドオンを利用することにより、当該情報の収集を拒否することができます。",
+              "Googleにおける情報の取り扱いについては、Googleのプライバシーポリシーをご確認ください。",
+            ],
+          },
+          {
+            type: "link",
+            label: "Googleのプライバシーポリシー",
+            href: GOOGLE_PRIVACY_URL,
+          },
+          {
+            type: "link",
+            label: "Googleアナリティクス オプトアウトアドオン",
+            href: GA_OPT_OUT_URL,
+          },
+        ],
+      },
+      {
+        heading: "第12条（プライバシーポリシーの変更）",
         blocks: [
           {
             type: "list",
@@ -642,7 +674,7 @@ export const privacyContent: Record<Locale, ContentDocument> = {
         ],
       },
       {
-        heading: "第12条（お問い合わせ窓口）",
+        heading: "第13条（お問い合わせ窓口）",
         blocks: [
           {
             type: "paragraph",
@@ -656,7 +688,7 @@ export const privacyContent: Record<Locale, ContentDocument> = {
         ],
       },
     ],
-    closing: ["制定日：2026年7月30日", "以上"],
+    closing: ["制定日：2026年7月30日", "改定日：2026年8月1日", "以上"],
   },
   en: {
     title: "Privacy Policy",
@@ -832,7 +864,35 @@ export const privacyContent: Record<Locale, ContentDocument> = {
         ],
       },
       {
-        heading: "Article 11 (Changes to the Privacy Policy)",
+        heading: "Article 11 (Use of Access Analysis Tools)",
+        blocks: [
+          {
+            type: "paragraph",
+            text: 'The Service uses "Google Analytics," an access analysis tool provided by Google LLC ("Google"), to understand how the Service is used and to improve it.',
+          },
+          {
+            type: "list",
+            items: [
+              "Google Analytics uses cookies to collect information such as the pages viewed, the referring source, the IP address, and browser and device information. Such information is collected anonymously and does not identify individuals.",
+              "Artist names entered by Users into the Service and diagnosis results are not sent to Google Analytics.",
+              "Users may refuse the collection of such information by disabling cookies in their browser settings or by using the opt-out add-on provided by Google.",
+              "For how Google handles such information, please refer to Google's privacy policy.",
+            ],
+          },
+          {
+            type: "link",
+            label: "Google's Privacy Policy",
+            href: GOOGLE_PRIVACY_URL,
+          },
+          {
+            type: "link",
+            label: "Google Analytics Opt-out Browser Add-on",
+            href: GA_OPT_OUT_URL,
+          },
+        ],
+      },
+      {
+        heading: "Article 12 (Changes to the Privacy Policy)",
         blocks: [
           {
             type: "list",
@@ -844,7 +904,7 @@ export const privacyContent: Record<Locale, ContentDocument> = {
         ],
       },
       {
-        heading: "Article 12 (Contact)",
+        heading: "Article 13 (Contact)",
         blocks: [
           {
             type: "paragraph",
@@ -858,6 +918,10 @@ export const privacyContent: Record<Locale, ContentDocument> = {
         ],
       },
     ],
-    closing: ["Effective date: July 30, 2026", "End of Policy"],
+    closing: [
+      "Effective date: July 30, 2026",
+      "Last revised: August 1, 2026",
+      "End of Policy",
+    ],
   },
 };
