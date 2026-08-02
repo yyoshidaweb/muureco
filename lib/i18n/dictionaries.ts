@@ -1,9 +1,5 @@
 import type { Dictionary, Locale } from "./types";
 
-/** Apple が定める商標クレジット。どの言語でもこの英文のまま載せる。 */
-const APPLE_TRADEMARK_CREDIT =
-  "Apple and Apple Music are trademarks of Apple Inc., registered in the U.S. and other countries.";
-
 const ja: Dictionary = {
   "brand.name": "ミューレコ",
   "brand.tagline": "音楽探索サービス - 「好き」から次の出会いを。",
@@ -30,11 +26,7 @@ const ja: Dictionary = {
   "error.artistNotFoundNamed": "「{artist}」が見つかりません",
   "error.diagnoseFailed":
     "診断に失敗しました。時間をおいて再度お試しください。",
-  "footer.developedBy": "開発：",
-  "footer.dataProvider": "データ提供元：",
-  "footer.previewCredit": "試聴音源：Provided courtesy of iTunes",
-  "footer.appleTrademark": APPLE_TRADEMARK_CREDIT,
-  "footer.unofficial": "（非公式・非提携）",
+  "footer.developedBy": "開発・運営：",
   "footer.otherServices": "他のサービス",
   "footer.minnanotimetable": "みんなのタイムテーブル",
   "language.label": "言語",
@@ -43,6 +35,8 @@ const ja: Dictionary = {
   "link.terms": "利用規約",
   "link.privacy": "プライバシーポリシー",
   "link.algorithm": "おすすめアルゴリズムについて",
+  "link.credits": "クレジット",
+  "link.contact": "お問い合わせ",
   "modal.close": "閉じる",
 };
 
@@ -72,11 +66,7 @@ const en: Dictionary = {
   "error.artistNotFound": "Artist not found",
   "error.artistNotFoundNamed": "“{artist}” was not found",
   "error.diagnoseFailed": "Diagnosis failed. Please try again later.",
-  "footer.developedBy": "Developed by ",
-  "footer.dataProvider": "Data provided by ",
-  "footer.previewCredit": "Audio previews provided courtesy of iTunes",
-  "footer.appleTrademark": APPLE_TRADEMARK_CREDIT,
-  "footer.unofficial": " (unofficial / unaffiliated)",
+  "footer.developedBy": "Developed & operated by ",
   "footer.otherServices": "Other services",
   "footer.minnanotimetable": "Minnanotimetable",
   "language.label": "Language",
@@ -85,6 +75,8 @@ const en: Dictionary = {
   "link.terms": "Terms of Service",
   "link.privacy": "Privacy Policy",
   "link.algorithm": "How recommendations work",
+  "link.credits": "Credits",
+  "link.contact": "Contact",
   "modal.close": "Close",
 };
 
