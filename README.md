@@ -38,9 +38,13 @@ npm install
 
 ```bash
 LASTFM_API_KEY=your_api_key
+# 任意。設定した環境でのみGoogleアナリティクスを読み込みます
+NEXT_PUBLIC_GA_ID=G-XXXXXXXXXX
 ```
 
 API キーは [Last.fm API アカウント作成](https://www.last.fm/api/account/create) から取得できます。BFF 経由でのみ使用し、クライアントには露出しません。
+
+`NEXT_PUBLIC_GA_ID` はビルド時にクライアントバンドルへ埋め込まれる公開値です。ローカルの計測データを本番と混ぜたくない場合は、開発環境では設定しないでください。
 
 iTunes Search API は認証不要のため設定は要りません。ただし呼び出し回数の上限（およそ 20 回/分）が IP 単位で効きます。Cloudflare Workers の外向き通信は他の Worker と IP を共有していて常に上限を超えているため、この API はブラウザから直接呼び出します。上限に達している間は試聴ボタンが表示されません。
 
@@ -111,9 +115,24 @@ Node.js のバージョンは [`.node-version`](.node-version) で固定して�
 
 テストは Workers Builds では実行されません。PR時の `npm run test:ci` は [`.github/workflows/ci.yml`](.github/workflows/ci.yml) が担当します。
 
+### ビルド変数
+
+`NEXT_PUBLIC_GA_ID` はビルド時にバンドルへ埋め込まれるため、シークレット（`wrangler secret put`）では反映されません。Cloudflareダッシュボードの Worker → **Settings** → **Build** → **Variables and Secrets** に、ビルド変数として登録します。
+
 ### 本番での注意
 
 - `LASTFM_API_KEY` は Cloudflare のシークレットとしてのみ保持し、クライアントバンドルには含めません
+
+## SEOとアクセス解析
+
+`/sitemap.xml`（[`app/sitemap.ts`](app/sitemap.ts)）と `/robots.txt`（[`app/robots.ts`](app/robots.ts)）を配信します。middlewareの `matcher` はドットを含むパスを除外しているため、これらはロケール判定を経由せずそのまま配信されます。
+
+英語は接頭辞なしの `/`、日本語は `/ja` で公開しているため、各ページに canonical と hreflang（`en` / `ja` / `x-default`）を出力しています。
+
+| ツール | 設定 |
+|--------|------|
+| Google Search Console | ドメインプロパティ（`muureco.com`）。DNSのTXTレコードで所有権を確認し、`https://muureco.com/sitemap.xml` を送信 |
+| Googleアナリティクス | GA4。計測IDは `NEXT_PUBLIC_GA_ID` で渡し、未設定の環境では計測タグを読み込まない |
 
 ## スクリプト
 
