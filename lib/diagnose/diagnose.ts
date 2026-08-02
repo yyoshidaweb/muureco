@@ -11,8 +11,24 @@ const DIAGNOSIS_LIMIT = 10;
 const RECOMMENDATION_LIMIT = 10;
 const SIMILAR_ARTISTS_LIMIT = 10;
 
+/** ひらがな・カタカナ・漢字（半角カナを含む）。 */
+const JAPANESE_PATTERN =
+  /[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff\uff66-\uff9f]/;
+
 function normalizeName(name: string): string {
   return name.trim().toLowerCase();
+}
+
+function hasJapanese(name: string): boolean {
+  return JAPANESE_PATTERN.test(name);
+}
+
+/** 日英別名が混在する場合は日本語表記を残す。 */
+function preferDisplayName(current: string, candidate: string): string {
+  if (hasJapanese(candidate) && !hasJapanese(current)) {
+    return candidate;
+  }
+  return current;
 }
 
 async function resolveArtist(name: string): Promise<LastfmArtist> {
@@ -48,36 +64,83 @@ function buildRecommendations(
     mbid?: string;
   }[][],
   excludedNames: Set<string>,
+  excludedMbids: Set<string>,
 ): Recommendation[] {
-  const entries = new Map<
-    string,
-    {
-      name: string;
-      score: number;
-      mbid?: string;
-      seedCount: number;
+  type Entry = {
+    name: string;
+    score: number;
+    mbid?: string;
+    seedCount: number;
+  };
+
+  const entries = new Map<string, Entry>();
+  const nameIndex = new Map<string, string>();
+  const mbidIndex = new Map<string, string>();
+  let nextId = 0;
+
+  function findId(artist: { name: string; mbid?: string }): string | undefined {
+    if (artist.mbid) {
+      const byMbid = mbidIndex.get(artist.mbid);
+      if (byMbid !== undefined) {
+        return byMbid;
+      }
     }
-  >();
+    return nameIndex.get(normalizeName(artist.name));
+  }
 
   for (const similar of similarLists) {
+    // 同一seed内で日英別名が両方挙がっても、seedボーナスを二重に付けない
+    const matchFromSeed = new Map<string, number>();
+
     for (const artist of similar) {
+      if (artist.mbid && excludedMbids.has(artist.mbid)) {
+        continue;
+      }
       if (excludedNames.has(normalizeName(artist.name))) {
         continue;
       }
 
-      const key = normalizeName(artist.name);
-      const existing = entries.get(key);
-      if (existing) {
+      const existingId = findId(artist);
+      if (existingId !== undefined) {
+        const existing = entries.get(existingId);
+        if (!existing) {
+          continue;
+        }
+
+        existing.name = preferDisplayName(existing.name, artist.name);
+        if (artist.mbid && !existing.mbid) {
+          existing.mbid = artist.mbid;
+          mbidIndex.set(artist.mbid, existingId);
+        }
+        nameIndex.set(normalizeName(artist.name), existingId);
+
+        const prevMatch = matchFromSeed.get(existingId);
+        if (prevMatch !== undefined) {
+          if (artist.match > prevMatch) {
+            existing.score += artist.match - prevMatch;
+            matchFromSeed.set(existingId, artist.match);
+          }
+          continue;
+        }
+
         existing.score += artist.match;
         existing.seedCount += 1;
-      } else {
-        entries.set(key, {
-          name: artist.name,
-          score: artist.match,
-          mbid: artist.mbid,
-          seedCount: 1,
-        });
+        matchFromSeed.set(existingId, artist.match);
+        continue;
       }
+
+      const id = String(nextId++);
+      entries.set(id, {
+        name: artist.name,
+        score: artist.match,
+        mbid: artist.mbid,
+        seedCount: 1,
+      });
+      nameIndex.set(normalizeName(artist.name), id);
+      if (artist.mbid) {
+        mbidIndex.set(artist.mbid, id);
+      }
+      matchFromSeed.set(id, artist.match);
     }
   }
 
@@ -98,6 +161,9 @@ export async function diagnose(artistNames: string[]): Promise<DiagnoseResult> {
     ...artistNames.map(normalizeName),
     ...resolved.map((a) => normalizeName(a.name)),
   ]);
+  const excludedMbids = new Set(
+    resolved.map((a) => a.mbid).filter((mbid): mbid is string => Boolean(mbid)),
+  );
 
   const artistData = await Promise.all(
     resolved.map(async (artist) => {
@@ -119,6 +185,7 @@ export async function diagnose(artistNames: string[]): Promise<DiagnoseResult> {
     recommendations: buildRecommendations(
       artistData.map((d) => d.similar),
       excludedNames,
+      excludedMbids,
     ),
   };
 }

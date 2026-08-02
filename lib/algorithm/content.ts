@@ -65,7 +65,7 @@ export const algorithmContent: Record<Locale, ContentDocument> = {
           },
           {
             type: "paragraph",
-            text: "同じアーティストが複数の入力アーティストから挙がった場合は、一致度を合計したうえで、そのアーティストを挙げた入力アーティストの組数を掛けます。これにより、あなたの好みの複数に重なるアーティストが上位に来やすくなります。",
+            text: "同じアーティストが複数の入力アーティストから挙がった場合は、一致度を合計したうえで、そのアーティストを挙げた入力アーティストの組数を掛けます。これにより、あなたの好みの複数に重なるアーティストが上位に来やすくなります。名前が違っても、MusicBrainz ID（mbid）が同じであれば同一アーティストとしてまとめ、日本語表記があればそちらを表示します。",
           },
           {
             type: "paragraph",
@@ -180,7 +180,7 @@ export const algorithmContent: Record<Locale, ContentDocument> = {
           },
           {
             type: "paragraph",
-            text: "When the same artist is suggested by several of your artists, the match values are added up and then multiplied by the number of your artists that suggested them. This pushes artists that overlap with more of your tastes toward the top.",
+            text: "When the same artist is suggested by several of your artists, the match values are added up and then multiplied by the number of your artists that suggested them. This pushes artists that overlap with more of your tastes toward the top. Different display names that share the same MusicBrainz ID (mbid) are treated as one artist, and a Japanese name is preferred when available.",
           },
           {
             type: "paragraph",

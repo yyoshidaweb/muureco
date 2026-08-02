@@ -150,4 +150,73 @@ describe("diagnose", () => {
       ArtistNotFoundError,
     );
   });
+
+  it("merges same-mbid aliases and prefers the Japanese display name", async () => {
+    mockSearchArtist.mockResolvedValueOnce([
+      {
+        name: "Radwimps",
+        mbid: "radwimps-mbid",
+        url: "https://www.last.fm/music/Radwimps",
+      },
+    ]);
+    mockGetArtistTopTags.mockResolvedValueOnce([]);
+    mockGetSimilarArtists.mockResolvedValueOnce([
+      {
+        name: "Kenshi Yonezu",
+        match: 0.8,
+        url: "https://www.last.fm/music/Kenshi+Yonezu",
+        mbid: "yonezu-mbid",
+      },
+      {
+        name: "米津玄師",
+        match: 0.7,
+        url: "https://www.last.fm/music/%E7%B1%B3%E6%B4%A5%E7%8E%84%E5%B8%AB",
+        mbid: "yonezu-mbid",
+      },
+      {
+        name: "Yoasobi",
+        match: 0.6,
+        url: "https://www.last.fm/music/Yoasobi",
+        mbid: "yoasobi-mbid",
+      },
+    ]);
+
+    const result = await diagnose(["Radwimps"]);
+
+    expect(result.recommendations).toEqual([
+      { name: "米津玄師", score: 0.8, mbid: "yonezu-mbid" },
+      { name: "Yoasobi", score: 0.6, mbid: "yoasobi-mbid" },
+    ]);
+  });
+
+  it("excludes input artists from recommendations by mbid", async () => {
+    mockSearchArtist.mockResolvedValueOnce([
+      {
+        name: "Kenshi Yonezu",
+        mbid: "yonezu-mbid",
+        url: "https://www.last.fm/music/Kenshi+Yonezu",
+      },
+    ]);
+    mockGetArtistTopTags.mockResolvedValueOnce([]);
+    mockGetSimilarArtists.mockResolvedValueOnce([
+      {
+        name: "米津玄師",
+        match: 0.95,
+        url: "https://www.last.fm/music/%E7%B1%B3%E6%B4%A5%E7%8E%84%E5%B8%AB",
+        mbid: "yonezu-mbid",
+      },
+      {
+        name: "Vaundy",
+        match: 0.7,
+        url: "https://www.last.fm/music/Vaundy",
+        mbid: "vaundy-mbid",
+      },
+    ]);
+
+    const result = await diagnose(["Kenshi Yonezu"]);
+
+    expect(result.recommendations).toEqual([
+      { name: "Vaundy", score: 0.7, mbid: "vaundy-mbid" },
+    ]);
+  });
 });
