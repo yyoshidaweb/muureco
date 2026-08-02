@@ -84,6 +84,7 @@ export function ArtistInputForm({
   const [fields, setFields] = useState<ArtistField[]>([
     { query: "", selected: null },
   ]);
+  const [autoFocusIndex, setAutoFocusIndex] = useState<number | null>(null);
   const lastEmittedKey = useRef<string>("");
 
   const duplicateIndex = findDuplicateIndex(fields.map((f) => f.selected));
@@ -115,17 +116,36 @@ export function ArtistInputForm({
     );
   }
 
-  function selectArtist(index: number, artist: ArtistSuggestion) {
-    commitFields(
-      fields.map((field, i) =>
-        i === index ? { query: artist.name, selected: artist.name } : field,
-      ),
+  function selectArtist(
+    index: number,
+    artist: ArtistSuggestion,
+    options?: { addNext?: boolean },
+  ) {
+    const nextFields = fields.map((field, i) =>
+      i === index ? { query: artist.name, selected: artist.name } : field,
     );
+
+    const canAddAfterSelect =
+      options?.addNext === true &&
+      index === fields.length - 1 &&
+      nextFields.length < MAX_ARTISTS &&
+      nextFields.every((field) => field.selected !== null) &&
+      findDuplicateIndex(nextFields.map((field) => field.selected)) === null;
+
+    if (canAddAfterSelect) {
+      commitFields([...nextFields, { query: "", selected: null }]);
+      setAutoFocusIndex(nextFields.length);
+      return;
+    }
+
+    commitFields(nextFields);
   }
 
   function addArtist() {
     if (!canAdd) return;
+    const nextIndex = fields.length;
     commitFields([...fields, { query: "", selected: null }]);
+    setAutoFocusIndex(nextIndex);
   }
 
   function removeArtist(index: number) {
@@ -150,8 +170,12 @@ export function ArtistInputForm({
                 query={field.query}
                 selected={field.selected}
                 onQueryChange={(query) => updateQuery(index, query)}
-                onSelect={(artist) => selectArtist(index, artist)}
+                onSelect={(artist, options) =>
+                  selectArtist(index, artist, options)
+                }
+                onRequestAddNext={addArtist}
                 excludedNames={excludedNames}
+                autoFocus={autoFocusIndex === index}
                 aria-label={t("form.artistLabel", { n: index + 1 })}
               />
               {(fields.length > 1 || field.selected !== null) && (
