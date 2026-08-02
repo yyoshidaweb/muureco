@@ -6,7 +6,7 @@ const APPLE_TRADEMARK_CREDIT =
 
 const ja: Dictionary = {
   "brand.name": "ミューレコ",
-  "brand.tagline": "音楽探索サービス - あなたの「好き」から次の出会いを。",
+  "brand.tagline": "音楽探索サービス - 「好き」から次の出会いを。",
   "section.favoriteArtists": "好きなアーティスト",
   "section.recommendedArtists": "おすすめアーティスト",
   "section.recommendedGenres": "おすすめジャンル",
@@ -49,7 +49,7 @@ const ja: Dictionary = {
 const en: Dictionary = {
   "brand.name": "Muureco",
   "brand.tagline":
-    "Music discovery service - From what you love to your next discovery.",
+    "Music discovery service - From love to the next discovery.",
   "section.favoriteArtists": "Favorite artists",
   "section.recommendedArtists": "Recommended artists",
   "section.recommendedGenres": "Recommended genres",
