@@ -52,7 +52,7 @@ export function DocumentModal({ document, onClose }: DocumentModalProps) {
             type="button"
             onClick={onClose}
             aria-label={t("modal.close")}
-            className="inline-flex h-9 w-9 items-center justify-center rounded text-2xl leading-none text-neutral-600 hover:bg-neutral-100 hover:text-black focus:outline-none focus-visible:ring-2 focus-visible:ring-black"
+            className="inline-flex h-9 w-9 cursor-pointer items-center justify-center rounded text-2xl leading-none text-neutral-600 hover:bg-neutral-100 hover:text-black focus:outline-none focus-visible:ring-2 focus-visible:ring-black"
           >
             ×
           </button>
