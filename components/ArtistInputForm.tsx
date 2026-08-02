@@ -48,6 +48,7 @@ function resolveReadyArtists(fields: ArtistField[]): string[] {
   return selectedNames.filter((name): name is string => name !== null);
 }
 
+/** Google Material Icons の close。 */
 function CloseIcon() {
   return (
     <svg
@@ -62,6 +63,22 @@ function CloseIcon() {
   );
 }
 
+/** Google Material Icons の edit。 */
+function EditIcon() {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      className="h-5 w-5"
+      aria-hidden="true"
+    >
+      <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" />
+    </svg>
+  );
+}
+
+/** Google Material Icons の add。 */
 function AddIcon() {
   return (
     <svg
@@ -156,6 +173,18 @@ export function ArtistInputForm({
     commitFields(fields.filter((_, i) => i !== index));
   }
 
+  function editArtist(index: number) {
+    const field = fields[index];
+    if (!field?.selected) return;
+    const name = field.selected;
+    commitFields(
+      fields.map((f, i) =>
+        i === index ? { query: name, selected: null } : f,
+      ),
+    );
+    setAutoFocusIndex(index);
+  }
+
   function handleFieldBlur(index: number) {
     if (index === 0) return;
     const field = fields[index];
@@ -171,23 +200,43 @@ export function ArtistInputForm({
           const excludedNames = fields
             .map((f, i) => (i === index ? null : f.selected))
             .filter((name): name is string => name !== null);
+          const isSelected = field.selected !== null;
 
           return (
             <div key={index} className="flex gap-2">
-              <ArtistSuggestField
-                query={field.query}
-                selected={field.selected}
-                onQueryChange={(query) => updateQuery(index, query)}
-                onSelect={(artist, options) =>
-                  selectArtist(index, artist, options)
-                }
-                onRequestAddNext={addArtist}
-                onBlur={() => handleFieldBlur(index)}
-                excludedNames={excludedNames}
-                autoFocus={autoFocusIndex === index}
-                aria-label={t("form.artistLabel", { n: index + 1 })}
-              />
-              {(fields.length > 1 || field.selected !== null) && (
+              {isSelected ? (
+                <div
+                  className="flex min-w-0 flex-1 items-center gap-2 border border-neutral-300 bg-white px-3 py-2"
+                  aria-label={t("form.artistLabel", { n: index + 1 })}
+                >
+                  <span className="min-w-0 flex-1 truncate text-black">
+                    {field.selected}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => editArtist(index)}
+                    aria-label={t("form.editArtist", { n: index + 1 })}
+                    className="flex shrink-0 cursor-pointer items-center justify-center text-black hover:text-neutral-500"
+                  >
+                    <EditIcon />
+                  </button>
+                </div>
+              ) : (
+                <ArtistSuggestField
+                  query={field.query}
+                  selected={field.selected}
+                  onQueryChange={(query) => updateQuery(index, query)}
+                  onSelect={(artist, options) =>
+                    selectArtist(index, artist, options)
+                  }
+                  onRequestAddNext={addArtist}
+                  onBlur={() => handleFieldBlur(index)}
+                  excludedNames={excludedNames}
+                  autoFocus={autoFocusIndex === index}
+                  aria-label={t("form.artistLabel", { n: index + 1 })}
+                />
+              )}
+              {(fields.length > 1 || isSelected) && (
                 <button
                   type="button"
                   onClick={() => removeArtist(index)}
