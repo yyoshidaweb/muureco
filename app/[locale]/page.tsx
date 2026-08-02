@@ -137,7 +137,7 @@ export default function Home() {
       </header>
 
       <main className="mx-auto flex w-full max-w-5xl flex-1 flex-col px-4 py-6 sm:px-6 sm:py-8">
-        <div className="flex flex-1 flex-col gap-[1ch] md:min-h-[360px] md:flex-row">
+        <div className="flex min-h-0 flex-1 flex-col gap-[1ch] md:min-h-[360px] md:flex-row">
           <div className="flex flex-1 flex-col gap-2">
             <h2 className="text-lg font-medium text-black">
               {t("section.favoriteArtists")}
@@ -150,11 +150,11 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="flex flex-1 flex-col gap-2">
+          <div className="flex min-h-0 flex-1 flex-col gap-2">
             <h2 className="text-lg font-medium text-black">
               {t("section.recommendedArtists")}
             </h2>
-            <div className="flex min-h-svh flex-1 flex-col rounded-md border border-neutral-200 bg-neutral-100 p-4 sm:p-6 md:min-h-0">
+            <div className="flex min-h-0 flex-1 flex-col rounded-md border border-neutral-200 bg-neutral-100 p-4 sm:p-6">
               <RecommendationList
                 recommendations={result?.recommendations ?? null}
                 tags={result?.diagnosis ?? null}
