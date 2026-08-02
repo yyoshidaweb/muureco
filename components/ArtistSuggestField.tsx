@@ -42,6 +42,7 @@ export function ArtistSuggestField({
   const { t } = useLocale();
   const listboxId = useId();
   const containerRef = useRef<HTMLDivElement>(null);
+  const listRef = useRef<HTMLUListElement>(null);
   const isComposingRef = useRef(false);
   const [searchState, setSearchState] = useState<SearchState>({ status: "idle" });
   const [isOpen, setIsOpen] = useState(false);
@@ -129,6 +130,24 @@ export function ArtistSuggestField({
     document.addEventListener("mousedown", handlePointerDown);
     return () => document.removeEventListener("mousedown", handlePointerDown);
   }, []);
+
+  useEffect(() => {
+    if (highlightedIndex < 0 || !listRef.current) return;
+    const list = listRef.current;
+    const option = list.querySelector<HTMLElement>(
+      `[data-suggestion-index="${highlightedIndex}"]`,
+    );
+    if (!option) return;
+
+    const listRect = list.getBoundingClientRect();
+    const optionRect = option.getBoundingClientRect();
+
+    if (optionRect.bottom > listRect.bottom) {
+      list.scrollTop += optionRect.bottom - listRect.bottom;
+    } else if (optionRect.top < listRect.top) {
+      list.scrollTop -= listRect.top - optionRect.top;
+    }
+  }, [highlightedIndex]);
 
   function selectSuggestion(
     artist: ArtistSuggestion,
@@ -242,6 +261,7 @@ export function ArtistSuggestField({
 
       {showList && (
         <ul
+          ref={listRef}
           id={listboxId}
           role="listbox"
           className="absolute z-10 mt-1 max-h-60 w-full overflow-auto border border-neutral-300 bg-white"
@@ -258,6 +278,7 @@ export function ArtistSuggestField({
             visibleSuggestions.map((suggestion, index) => (
               <li
                 key={`${suggestion.mbid ?? suggestion.name}-${index}`}
+                data-suggestion-index={index}
                 role="option"
                 aria-selected={index === highlightedIndex}
               >
