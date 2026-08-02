@@ -154,7 +154,7 @@ export default function Home() {
             <h2 className="text-lg font-medium text-black">
               {t("section.recommendedArtists")}
             </h2>
-            <div className="flex min-h-[2em] flex-1 flex-col rounded-md border border-neutral-200 bg-neutral-100 p-4 sm:p-6">
+            <div className="flex flex-1 flex-col rounded-md border border-neutral-200 bg-neutral-100 p-4 sm:p-6">
               <RecommendationList
                 recommendations={result?.recommendations ?? null}
                 tags={result?.diagnosis ?? null}

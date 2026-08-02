@@ -140,7 +140,7 @@ export function RecommendationList({
   const isPending = isLoading || isPreviewPending;
 
   return (
-    <section className="flex h-full min-h-0 flex-col">
+    <section className="flex h-full min-h-[2em] flex-col md:min-h-0">
       <div className="flex flex-1 flex-col gap-8">
         {isPending && (
           <p className="text-sm text-neutral-500" aria-live="polite">
