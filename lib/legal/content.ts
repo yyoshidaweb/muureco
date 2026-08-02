@@ -2,7 +2,7 @@ import type { ContentDocument } from "@/lib/content/types";
 import type { Locale } from "@/lib/i18n";
 
 const CONTACT_URL =
-  "https://docs.google.com/forms/d/e/1FAIpQLSc8eKryKffl-fMdxtvVjxsXrXvU1WnwbDtRVMA5tw3hghR9AQ/viewform?usp=header";
+  "https://docs.google.com/forms/d/e/1FAIpQLScWg0NGg7MSSkab4qxMY1J1smhQQMB4pasiowoPy2MBBUXSyg/viewform?usp=publish-editor";
 
 const APPLE_PRIVACY_URL = "https://www.apple.com/legal/privacy/";
 
