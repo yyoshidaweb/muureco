@@ -14,6 +14,7 @@ export type TranslationKey =
   | "form.artistPlaceholder"
   | "form.artistLabel"
   | "form.addArtist"
+  | "form.editArtist"
   | "form.removeArtist"
   | "form.duplicateArtist"
   | "suggest.searching"
