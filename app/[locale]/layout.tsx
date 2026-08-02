@@ -23,6 +23,16 @@ const descriptions: Record<Locale, string> = {
   en: "Diagnose your musical taste from artists you love and discover recommendations.",
 };
 
+const ogImageAlts: Record<Locale, string> = {
+  ja: "ミューレコ — 音楽探索サービス",
+  en: "Muureco — Music discovery service",
+};
+
+const ogImagePaths: Record<Locale, string> = {
+  ja: "/og/ja.jpg",
+  en: "/og/en.jpg",
+};
+
 export function generateStaticParams() {
   return LOCALES.map((locale) => ({ locale }));
 }
@@ -54,11 +64,20 @@ export async function generateMetadata({
       type: "website",
       locale: locale === "ja" ? "ja_JP" : "en_US",
       siteName: translate(locale, "brand.name"),
+      images: [
+        {
+          url: ogImagePaths[locale],
+          width: 1024,
+          height: 537,
+          alt: ogImageAlts[locale],
+        },
+      ],
     },
     twitter: {
       card: "summary_large_image",
       title,
       description,
+      images: [ogImagePaths[locale]],
     },
   };
 }
