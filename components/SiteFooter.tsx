@@ -148,6 +148,9 @@ function SiteFooterContent() {
               </li>
             </ul>
           </div>
+          <p className="mt-1 text-center">
+            © {new Date().getFullYear()} ミューレコ（Muureco）
+          </p>
         </div>
       </footer>
 
