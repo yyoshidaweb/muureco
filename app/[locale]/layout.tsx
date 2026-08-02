@@ -64,8 +64,8 @@ export default async function LocaleLayout({
   const gaId = process.env.NEXT_PUBLIC_GA_ID;
 
   return (
-    <html lang={locale} className={`${notoSansJp.variable} min-h-svh antialiased`}>
-      <body className="flex min-h-svh flex-col font-sans">
+    <html lang={locale} className={`${notoSansJp.variable} h-full antialiased`}>
+      <body className="flex min-h-full flex-col font-sans">
         <LocaleProvider locale={locale}>{children}</LocaleProvider>
       </body>
       {gaId ? <GoogleAnalytics gaId={gaId} /> : null}
