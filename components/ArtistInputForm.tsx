@@ -205,22 +205,19 @@ export function ArtistInputForm({
           return (
             <div key={index} className="flex gap-2">
               {isSelected ? (
-                <div
-                  className="flex min-w-0 flex-1 items-center gap-2 rounded-md bg-neutral-100 px-3 py-2"
-                  aria-label={t("form.artistLabel", { n: index + 1 })}
+                <button
+                  type="button"
+                  onClick={() => editArtist(index)}
+                  aria-label={t("form.editArtist", { n: index + 1 })}
+                  className="flex min-w-0 flex-1 cursor-pointer items-center gap-2 rounded-md bg-neutral-100 px-3 py-2 text-left text-black hover:bg-neutral-200"
                 >
-                  <span className="min-w-0 flex-1 truncate text-black">
+                  <span className="min-w-0 flex-1 truncate">
                     {field.selected}
                   </span>
-                  <button
-                    type="button"
-                    onClick={() => editArtist(index)}
-                    aria-label={t("form.editArtist", { n: index + 1 })}
-                    className="flex shrink-0 cursor-pointer items-center justify-center text-black hover:text-neutral-500"
-                  >
+                  <span className="flex shrink-0 items-center justify-center">
                     <EditIcon />
-                  </button>
-                </div>
+                  </span>
+                </button>
               ) : (
                 <ArtistSuggestField
                   query={field.query}
