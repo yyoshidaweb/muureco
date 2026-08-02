@@ -23,6 +23,16 @@ const descriptions: Record<Locale, string> = {
   en: "Diagnose your musical taste from artists you love and discover recommendations.",
 };
 
+const ogImageAlts: Record<Locale, string> = {
+  ja: "ミューレコ — 音楽探索サービス",
+  en: "Muureco — Music discovery service",
+};
+
+const ogImagePaths: Record<Locale, string> = {
+  ja: "/og/ja.jpg",
+  en: "/og/en.jpg",
+};
+
 export function generateStaticParams() {
   return LOCALES.map((locale) => ({ locale }));
 }
@@ -34,10 +44,12 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale: localeParam } = await params;
   const locale: Locale = isLocale(localeParam) ? localeParam : "ja";
+  const title = `${translate(locale, "brand.name")} | ${translate(locale, "brand.tagline")}`;
+  const description = descriptions[locale];
   return {
     metadataBase: new URL(SITE_URL),
-    title: `${translate(locale, "brand.name")} | ${translate(locale, "brand.tagline")}`,
-    description: descriptions[locale],
+    title,
+    description,
     alternates: {
       canonical: LOCALE_PATHS[locale],
       languages: {
@@ -45,6 +57,27 @@ export async function generateMetadata({
         ja: LOCALE_PATHS.ja,
         "x-default": LOCALE_PATHS.en,
       },
+    },
+    openGraph: {
+      title,
+      description,
+      type: "website",
+      locale: locale === "ja" ? "ja_JP" : "en_US",
+      siteName: translate(locale, "brand.name"),
+      images: [
+        {
+          url: ogImagePaths[locale],
+          width: 1024,
+          height: 537,
+          alt: ogImageAlts[locale],
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [ogImagePaths[locale]],
     },
   };
 }
