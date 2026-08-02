@@ -156,6 +156,14 @@ export function ArtistInputForm({
     commitFields(fields.filter((_, i) => i !== index));
   }
 
+  function handleFieldBlur(index: number) {
+    if (index === 0) return;
+    const field = fields[index];
+    if (!field || field.query.trim() !== "") return;
+    setAutoFocusIndex(null);
+    removeArtist(index);
+  }
+
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-col gap-3">
@@ -174,6 +182,7 @@ export function ArtistInputForm({
                   selectArtist(index, artist, options)
                 }
                 onRequestAddNext={addArtist}
+                onBlur={() => handleFieldBlur(index)}
                 excludedNames={excludedNames}
                 autoFocus={autoFocusIndex === index}
                 aria-label={t("form.artistLabel", { n: index + 1 })}

@@ -14,6 +14,7 @@ type ArtistSuggestFieldProps = {
   onQueryChange: (query: string) => void;
   onSelect: (artist: ArtistSuggestion, options?: { addNext?: boolean }) => void;
   onRequestAddNext?: () => void;
+  onBlur?: () => void;
   excludedNames: string[];
   disabled?: boolean;
   autoFocus?: boolean;
@@ -34,6 +35,7 @@ export function ArtistSuggestField({
   onQueryChange,
   onSelect,
   onRequestAddNext,
+  onBlur,
   excludedNames,
   disabled = false,
   autoFocus = false,
@@ -245,6 +247,10 @@ export function ArtistSuggestField({
           if (selected === null && trimmedQuery) {
             setIsOpen(true);
           }
+        }}
+        onBlur={() => {
+          setIsOpen(false);
+          onBlur?.();
         }}
         onKeyDown={handleKeyDown}
         disabled={disabled}
