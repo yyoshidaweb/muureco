@@ -2,7 +2,7 @@ import type { Dictionary, Locale } from "./types";
 
 const ja: Dictionary = {
   "brand.name": "ミューレコ",
-  "brand.tagline": "音楽探索サービス - 「好き」から次の出会いを。",
+  "brand.tagline": "音楽探索サービス ― 「好き」から次の出会いを。",
   "section.favoriteArtists": "好きなアーティスト",
   "section.recommendedArtists": "おすすめアーティスト",
   "section.recommendedGenres": "おすすめジャンル",
