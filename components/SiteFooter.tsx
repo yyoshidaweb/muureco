@@ -114,7 +114,7 @@ function SiteFooterContent() {
               href="https://piku.page/@yyoshidaweb"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 underline hover:text-black"
+              className="inline-flex items-center gap-0.5 underline hover:text-black"
             >
               <img
                 src="/yyoshidaweb-icon.png"
