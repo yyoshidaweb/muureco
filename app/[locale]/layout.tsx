@@ -65,7 +65,7 @@ export default async function LocaleLayout({
 
   return (
     <html lang={locale} className={`${notoSansJp.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col font-sans">
+      <body className="flex min-h-full flex-col font-sans">
         <LocaleProvider locale={locale}>{children}</LocaleProvider>
       </body>
       {gaId ? <GoogleAnalytics gaId={gaId} /> : null}
