@@ -34,10 +34,12 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale: localeParam } = await params;
   const locale: Locale = isLocale(localeParam) ? localeParam : "ja";
+  const title = `${translate(locale, "brand.name")} | ${translate(locale, "brand.tagline")}`;
+  const description = descriptions[locale];
   return {
     metadataBase: new URL(SITE_URL),
-    title: `${translate(locale, "brand.name")} | ${translate(locale, "brand.tagline")}`,
-    description: descriptions[locale],
+    title,
+    description,
     alternates: {
       canonical: LOCALE_PATHS[locale],
       languages: {
@@ -45,6 +47,18 @@ export async function generateMetadata({
         ja: LOCALE_PATHS.ja,
         "x-default": LOCALE_PATHS.en,
       },
+    },
+    openGraph: {
+      title,
+      description,
+      type: "website",
+      locale: locale === "ja" ? "ja_JP" : "en_US",
+      siteName: translate(locale, "brand.name"),
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
     },
   };
 }
