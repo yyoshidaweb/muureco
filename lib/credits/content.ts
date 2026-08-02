@@ -35,7 +35,11 @@ export const creditsContent: Record<Locale, ContentDocument> = {
         blocks: [
           {
             type: "paragraph",
-            text: "おすすめアーティストの試聴音源は、Provided courtesy of iTunes。",
+            text: "おすすめアーティストの試聴音源は、iTunes提供です。",
+          },
+          {
+            type: "paragraph",
+            text: "Provided courtesy of iTunes",
           },
           {
             type: "paragraph",
