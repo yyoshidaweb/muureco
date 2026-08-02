@@ -12,9 +12,11 @@ type ArtistSuggestFieldProps = {
   query: string;
   selected: string | null;
   onQueryChange: (query: string) => void;
-  onSelect: (artist: ArtistSuggestion) => void;
+  onSelect: (artist: ArtistSuggestion, options?: { addNext?: boolean }) => void;
+  onRequestAddNext?: () => void;
   excludedNames: string[];
   disabled?: boolean;
+  autoFocus?: boolean;
   "aria-label": string;
 };
 
@@ -31,13 +33,17 @@ export function ArtistSuggestField({
   selected,
   onQueryChange,
   onSelect,
+  onRequestAddNext,
   excludedNames,
   disabled = false,
+  autoFocus = false,
   "aria-label": ariaLabel,
 }: ArtistSuggestFieldProps) {
   const { t } = useLocale();
   const listboxId = useId();
   const containerRef = useRef<HTMLDivElement>(null);
+  const listRef = useRef<HTMLUListElement>(null);
+  const isComposingRef = useRef(false);
   const [searchState, setSearchState] = useState<SearchState>({ status: "idle" });
   const [isOpen, setIsOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(-1);
@@ -65,6 +71,12 @@ export function ArtistSuggestField({
     searchState.query === trimmedQuery;
 
   const showList = isOpen && canShowSuggestions;
+  const highlightedIndex =
+    showList && visibleSuggestions.length > 0
+      ? activeIndex >= 0
+        ? Math.min(activeIndex, visibleSuggestions.length - 1)
+        : 0
+      : -1;
 
   useEffect(() => {
     if (selected !== null || disabled || !trimmedQuery) {
@@ -93,7 +105,7 @@ export function ArtistSuggestField({
           artists: Array.isArray(body.artists) ? body.artists : [],
         });
         setIsOpen(true);
-        setActiveIndex(-1);
+        setActiveIndex(0);
       } catch (error) {
         if (error instanceof DOMException && error.name === "AbortError") {
           return;
@@ -119,8 +131,29 @@ export function ArtistSuggestField({
     return () => document.removeEventListener("mousedown", handlePointerDown);
   }, []);
 
-  function selectSuggestion(artist: ArtistSuggestion) {
-    onSelect(artist);
+  useEffect(() => {
+    if (highlightedIndex < 0 || !listRef.current) return;
+    const list = listRef.current;
+    const option = list.querySelector<HTMLElement>(
+      `[data-suggestion-index="${highlightedIndex}"]`,
+    );
+    if (!option) return;
+
+    const listRect = list.getBoundingClientRect();
+    const optionRect = option.getBoundingClientRect();
+
+    if (optionRect.bottom > listRect.bottom) {
+      list.scrollTop += optionRect.bottom - listRect.bottom;
+    } else if (optionRect.top < listRect.top) {
+      list.scrollTop -= listRect.top - optionRect.top;
+    }
+  }, [highlightedIndex]);
+
+  function selectSuggestion(
+    artist: ArtistSuggestion,
+    options?: { addNext?: boolean },
+  ) {
+    onSelect(artist, options);
     setIsOpen(false);
     setSearchState({ status: "idle" });
     setActiveIndex(-1);
@@ -136,6 +169,21 @@ export function ArtistSuggestField({
   }
 
   function handleKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
+    // 日本語IMEの変換確定Enterを候補選択・フォーム追加と区別する。
+    // 一部ブラウザでは compositionend 後に isComposing=false の Enter が来るため、
+    // composition 中フラグも合わせて見る。
+    const isComposing =
+      isComposingRef.current ||
+      event.nativeEvent.isComposing ||
+      event.keyCode === 229;
+
+    if (event.key === "Enter" && selected !== null) {
+      if (isComposing) return;
+      event.preventDefault();
+      onRequestAddNext?.();
+      return;
+    }
+
     if (!showList || visibleSuggestions.length === 0) {
       if (event.key === "Escape") {
         setIsOpen(false);
@@ -144,6 +192,7 @@ export function ArtistSuggestField({
     }
 
     if (event.key === "ArrowDown") {
+      if (isComposing) return;
       event.preventDefault();
       setActiveIndex((prev) =>
         prev < visibleSuggestions.length - 1 ? prev + 1 : 0,
@@ -152,6 +201,7 @@ export function ArtistSuggestField({
     }
 
     if (event.key === "ArrowUp") {
+      if (isComposing) return;
       event.preventDefault();
       setActiveIndex((prev) =>
         prev > 0 ? prev - 1 : visibleSuggestions.length - 1,
@@ -160,10 +210,12 @@ export function ArtistSuggestField({
     }
 
     if (event.key === "Enter") {
+      if (isComposing) return;
       event.preventDefault();
-      if (visibleSuggestions.length > 0) {
-        const index = activeIndex >= 0 ? activeIndex : 0;
-        selectSuggestion(visibleSuggestions[index]);
+      if (highlightedIndex >= 0) {
+        selectSuggestion(visibleSuggestions[highlightedIndex], {
+          addNext: true,
+        });
       }
       return;
     }
@@ -180,6 +232,15 @@ export function ArtistSuggestField({
         type="text"
         value={query}
         onChange={(e) => handleQueryChange(e.target.value)}
+        onCompositionStart={() => {
+          isComposingRef.current = true;
+        }}
+        onCompositionEnd={() => {
+          // compositionend の直後に届く変換確定Enterを無視するため、解除を遅らせる
+          window.setTimeout(() => {
+            isComposingRef.current = false;
+          }, 0);
+        }}
         onFocus={() => {
           if (selected === null && trimmedQuery) {
             setIsOpen(true);
@@ -187,6 +248,7 @@ export function ArtistSuggestField({
         }}
         onKeyDown={handleKeyDown}
         disabled={disabled}
+        autoFocus={autoFocus}
         placeholder={t("form.artistPlaceholder")}
         aria-label={ariaLabel}
         aria-autocomplete="list"
@@ -199,6 +261,7 @@ export function ArtistSuggestField({
 
       {showList && (
         <ul
+          ref={listRef}
           id={listboxId}
           role="listbox"
           className="absolute z-10 mt-1 max-h-60 w-full overflow-auto border border-neutral-300 bg-white"
@@ -215,15 +278,16 @@ export function ArtistSuggestField({
             visibleSuggestions.map((suggestion, index) => (
               <li
                 key={`${suggestion.mbid ?? suggestion.name}-${index}`}
+                data-suggestion-index={index}
                 role="option"
-                aria-selected={index === activeIndex}
+                aria-selected={index === highlightedIndex}
               >
                 <button
                   type="button"
                   onMouseDown={(e) => e.preventDefault()}
                   onClick={() => selectSuggestion(suggestion)}
                   className={`block w-full px-3 py-2 text-left text-sm text-black hover:bg-neutral-100 ${
-                    index === activeIndex ? "bg-neutral-100" : ""
+                    index === highlightedIndex ? "bg-neutral-100" : ""
                   }`}
                 >
                   {suggestion.name}
