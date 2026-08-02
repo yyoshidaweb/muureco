@@ -4,14 +4,15 @@ import { Suspense, useCallback } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { DocumentModal } from "@/components/DocumentModal";
 import { algorithmContent } from "@/lib/algorithm/content";
+import { creditsContent } from "@/lib/credits/content";
 import { useLocale } from "@/lib/i18n";
-import { privacyContent, termsContent } from "@/lib/legal/content";
+import { CONTACT_URL, privacyContent, termsContent } from "@/lib/legal/content";
 
 const LEGAL_QUERY = "legal";
 const ABOUT_QUERY = "about";
 
 type LegalKind = "terms" | "privacy";
-type AboutKind = "algorithm";
+type AboutKind = "algorithm" | "credits";
 type ModalKind = LegalKind | AboutKind;
 
 function parseLegalQuery(value: string | null): LegalKind | null {
@@ -22,14 +23,14 @@ function parseLegalQuery(value: string | null): LegalKind | null {
 }
 
 function parseAboutQuery(value: string | null): AboutKind | null {
-  if (value === "algorithm") {
+  if (value === "algorithm" || value === "credits") {
     return value;
   }
   return null;
 }
 
 function SiteFooterContent() {
-  const { locale, t, lastfmUrl } = useLocale();
+  const { locale, t } = useLocale();
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -41,7 +42,7 @@ function SiteFooterContent() {
       const params = new URLSearchParams(searchParams.toString());
       params.delete(LEGAL_QUERY);
       params.delete(ABOUT_QUERY);
-      if (kind === "algorithm") {
+      if (kind === "algorithm" || kind === "credits") {
         params.set(ABOUT_QUERY, kind);
       } else if (kind) {
         params.set(LEGAL_QUERY, kind);
@@ -61,31 +62,15 @@ function SiteFooterContent() {
         ? privacyContent[locale]
         : openAbout === "algorithm"
           ? algorithmContent[locale]
-          : null;
+          : openAbout === "credits"
+            ? creditsContent[locale]
+            : null;
 
   return (
     <>
       <footer className="border-t border-neutral-200">
         <div className="mx-auto flex w-full max-w-5xl flex-col gap-1 px-4 py-6 text-sm text-neutral-500 sm:px-6">
-          <p>
-            {t("footer.dataProvider")}
-            <a
-              href={lastfmUrl("https://www.last.fm/")}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="cursor-pointer underline hover:text-black"
-            >
-              Last.fm
-            </a>
-            {t("footer.unofficial")}
-          </p>
-          {/* 試聴音源には Apple 指定の文言を添えることが利用条項の条件。 */}
-          <p>
-            {t("footer.previewCredit")}
-            {t("footer.unofficial")}
-          </p>
-          <p>{t("footer.appleTrademark")}</p>
-          <div className="mt-1 flex flex-wrap gap-x-4 gap-y-1">
+          <div className="flex flex-wrap gap-x-4 gap-y-1">
             <button
               type="button"
               onClick={() => setModalQuery("algorithm")}
@@ -107,15 +92,38 @@ function SiteFooterContent() {
             >
               {t("link.privacy")}
             </button>
-          </div>
-          <p className="mt-1">
-            {t("footer.developedBy")}
+            <button
+              type="button"
+              onClick={() => setModalQuery("credits")}
+              className="cursor-pointer underline hover:text-black"
+            >
+              {t("link.credits")}
+            </button>
             <a
-              href="https://piku.page/@yyoshidaweb"
+              href={CONTACT_URL}
               target="_blank"
               rel="noopener noreferrer"
               className="cursor-pointer underline hover:text-black"
             >
+              {t("link.contact")}
+            </a>
+          </div>
+          <p className="mt-1 inline-flex flex-wrap items-center gap-1.5">
+            <span>{t("footer.developedBy")}</span>
+            <a
+              href="https://piku.page/@yyoshidaweb"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 underline hover:text-black"
+            >
+              <img
+                src="/yyoshidaweb-icon.png"
+                alt=""
+                width={20}
+                height={20}
+                className="size-5 rounded-full"
+                decoding="async"
+              />
               @yyoshidaweb
             </a>
           </p>

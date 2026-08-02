@@ -31,10 +31,6 @@ export type TranslationKey =
   | "error.artistNotFoundNamed"
   | "error.diagnoseFailed"
   | "footer.developedBy"
-  | "footer.dataProvider"
-  | "footer.previewCredit"
-  | "footer.appleTrademark"
-  | "footer.unofficial"
   | "footer.otherServices"
   | "footer.minnanotimetable"
   | "language.label"
@@ -43,6 +39,8 @@ export type TranslationKey =
   | "link.terms"
   | "link.privacy"
   | "link.algorithm"
+  | "link.credits"
+  | "link.contact"
   | "modal.close";
 
 export type Dictionary = Record<TranslationKey, string>;
