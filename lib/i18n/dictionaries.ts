@@ -43,7 +43,7 @@ const ja: Dictionary = {
 const en: Dictionary = {
   "brand.name": "Muureco",
   "brand.tagline":
-    "Music discovery service - From what you love to what you'll love next.",
+    "Music discovery service — From what you love to what you'll love next.",
   "section.favoriteArtists": "Favorite artists",
   "section.recommendedArtists": "Recommended artists",
   "section.recommendedGenres": "Recommended genres",
