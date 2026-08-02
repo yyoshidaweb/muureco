@@ -10,6 +10,7 @@ import { CONTACT_URL, privacyContent, termsContent } from "@/lib/legal/content";
 
 const LEGAL_QUERY = "legal";
 const ABOUT_QUERY = "about";
+const EXTERNAL_LINK_MARK = "↗︎";
 
 type LegalKind = "terms" | "privacy";
 type AboutKind = "algorithm" | "credits";
@@ -106,6 +107,7 @@ function SiteFooterContent() {
               className="cursor-pointer underline hover:text-black"
             >
               {t("link.contact")}
+              {EXTERNAL_LINK_MARK}
             </a>
           </div>
           <p className="mt-1 inline-flex flex-wrap items-center gap-1.5">
@@ -124,7 +126,10 @@ function SiteFooterContent() {
                 className="size-5 rounded-full"
                 decoding="async"
               />
-              @yyoshidaweb
+              <span>
+                @yyoshidaweb
+                {EXTERNAL_LINK_MARK}
+              </span>
             </a>
           </p>
           <div className="mt-1">
@@ -138,6 +143,7 @@ function SiteFooterContent() {
                   className="cursor-pointer underline hover:text-black"
                 >
                   {t("footer.minnanotimetable")}
+                  {EXTERNAL_LINK_MARK}
                 </a>
               </li>
             </ul>
